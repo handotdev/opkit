@@ -1,0 +1,223 @@
+openapi: 3.0.1
+info:
+  title: Opkit
+  version: v1
+  description: The modern API for health insurance.
+  contact:
+    email: support@opkit.co
+    name: Opkit Support
+    url: https://opkit.co/support
+  license:
+    name: Terms of Use
+    url: https://opkit.co/license
+servers:
+  - url: https://api.opkit.co
+paths:
+  /v1/eligibility_inquiries:
+    summary: TODO
+    description: TODO
+    post:
+      summary: Create a new eligibility inquiry
+      description: Create a new eligibility inquiry for the given plan, provider and subscriber. The response should indicate whether the subscriber is eligible for any services offered by provider under this plan.
+      operationId: postEligibilityInquiries
+      requestBody:
+        description: A payload containing the plan_id, provider, subscriber and encounter information that is relevant for this eligibility inquiry.
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/PostEligibilityInquiriesRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostEligibilityInquiriesResponse"
+        default:
+          description: A default error response if no other response is provided.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Error"
+      tags:
+        - Eligibility Inquiries
+    # This should be paginated
+    get:
+      summary: Get all existing eligibility inquiries
+      description: Get a complete list of the eligibility inquiries that you have created in the past.
+      operationId: getEligibilityInquiries
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GetEligibilityInquiriesResponse"
+        default:
+          description: A default error response if no other response is provided.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Error"
+      tags:
+        - Eligibility Inquiries
+  /v1/eligibility_inquiries/{id}:
+    get:
+      summary: Get a single eligibility inquiry
+      description: Get a single eligibility inquiry that you have created in the past.
+      operationId: getEligibilityInquiriesId
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the eligibility inquiry to get
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GetEligibilityInquiriesIdResponse"
+        default:
+          description: A default error response if no other response is provided.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Error"
+      tags:
+        - Eligibility Inquiries
+  # TODO
+  # GET /v1/payers
+  # GET /v1/service_type_codes
+components:
+  schemas:
+    PostEligibilityInquiriesRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - plan_id
+        - provider
+        - subscriber
+        - encounter
+      properties:
+        plan_id:
+          type: string
+          description: ID of the insurance plan that should receive the inquiry
+        # This may not be necessary if each customer only has one NPI + org name
+        provider:
+          $ref: "#/components/schemas/Provider"
+        subscriber:
+          $ref: "#/components/schemas/Subscriber"
+        encounter:
+          $ref: "#/components/schemas/Encounter"
+    PostEligibilityInquiriesResponse:
+      $ref: "#/components/schemas/EligibilityInquiry"
+    GetEligibilityInquiriesResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - count
+        - items
+      properties:
+        count:
+          type: number
+          description: The number of items in this list
+        items:
+          type: array
+          description: A list of eligibility inquiries
+          items:
+            $ref: "#/components/schemas/EligibilityInquiry"
+    GetEligibilityInquiriesIdResponse:
+      $ref: "#/components/schemas/EligibilityInquiry"
+    EligibilityInquiry:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier
+    Error:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: A unique error code that explains what went wrong
+        message:
+          type: string
+          description: A brief description that expands on this error code
+    Provider:
+      type: object
+      additionalProperties: false
+      required:
+        - organization_name
+        - npi
+      properties:
+        # How does this work for individuals?
+        organization_name:
+          type: string
+          description: The human-readable name of this provider organization
+        npi:
+          type: string
+          description: The National Provider Identifier that has been assigned to this provider
+    Subscriber:
+      type: object
+      additionalProperties: false
+      required:
+        - first_name
+        - last_name
+        - member_id
+        - gender
+        - date_of_birth
+      properties:
+        first_name:
+          type: string
+          description: The insured person's first name, as it appears on their insurance card
+        last_name:
+          type: string
+          description: The insured person's last name, as it appears on their insurance card
+        member_id:
+          type: string
+          description: The insured person's member ID, as it appears on their insurance card
+        # Is this necessary?
+        gender:
+          type: string
+          description: The insured person's gender, as it appears on their insurance card
+        date_of_birth:
+          type: string
+          format: date
+          description: The insured person's date of birth, as it appears on their insurance card
+    Encounter:
+      type: object
+      additionalProperties: false
+      required:
+        - date_of_service
+        - service_type_codes
+      properties:
+        date_of_service:
+          type: string
+          format: date
+          description: TODO
+        service_type_codes:
+          type: array
+          description: A list of service type codes
+          items:
+            type: string
+            description: A valid service type code from a list that we maintain somewhere
+  securitySchemes:
+    # BasicAuth:
+    #   type: http
+    #   scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []
+
