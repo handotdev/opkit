@@ -1,0 +1,267 @@
+openapi: 3.0.1
+info:
+  title: Opkit
+  version: v1
+  description: The modern API for health insurance.
+  contact:
+    name: Opkit
+    url: https://opkit.co
+  license:
+    name: Terms of Use
+    url: https://opkit.co/terms
+servers:
+  - url: https://api.opkit.co
+paths:
+  /v1/eligibility_inquiries:
+    post:
+      summary: Create a new eligibility inquiry
+      description: Create a new eligibility inquiry for the given plan, provider and subscriber. The response should indicate whether the subscriber is eligible for any services offered by provider under this plan.
+      operationId: postEligibilityInquiries
+      requestBody:
+        description: A payload containing the payer_id, provider, subscriber and encounter information that is relevant for this eligibility inquiry.
+        content:
+          "application/json":
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - payer_id
+                - provider
+                - subscriber
+                - encounter
+              properties:
+                payer_id:
+                  type: string
+                  description: The ID of the insurance plan that should receive the inquiry
+                # This may not be necessary if each customer only has one NPI + org name
+                provider:
+                  $ref: "#/components/schemas/Provider"
+                subscriber:
+                  $ref: "#/components/schemas/Subscriber"
+                encounter:
+                  $ref: "#/components/schemas/Encounter"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/EligibilityInquiry"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - Eligibility Inquiries
+    # This should be paginated
+    get:
+      summary: Get all existing eligibility inquiries
+      description: Get a complete list of the eligibility inquiries that you have created in the past.
+      operationId: getEligibilityInquiries
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                properties:
+                  count:
+                    type: number
+                    description: The number of items in this list
+                  items:
+                    type: array
+                    description: A list of eligibility inquiries
+                    items:
+                      $ref: "#/components/schemas/EligibilityInquiry"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - Eligibility Inquiries
+  /v1/eligibility_inquiries/{id}:
+    get:
+      summary: Get a single eligibility inquiry
+      description: Get a single eligibility inquiry that you have created in the past.
+      operationId: getEligibilityInquiriesId
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the eligibility inquiry to get
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/EligibilityInquiry"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - Eligibility Inquiries
+  /v1/payers:
+    # This should be paginated
+    get:
+      summary: Get all payers
+      description: Get a complete list of the payers supported by Opkit.
+      operationId: getPayers
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                properties:
+                  count:
+                    type: number
+                    description: The number of items in this list.
+                  items:
+                    type: array
+                    description: A list of payers.
+                    items:
+                      $ref: "#/components/schemas/Payer"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - Payers
+components:
+  schemas:
+    EligibilityInquiry:
+      type: object
+      additionalProperties: false
+      description: A request for information from a payer about a health insurance policy's coverages, typically in relation to a particular subscriber.
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier
+    Payer:
+      type: object
+      additionalProperties: false
+      description: A health insurance carrier, which may offer more than one policy.
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier
+    Provider:
+      type: object
+      additionalProperties: false
+      description: A healthcare provider, which is assigned a National Provider Identifier, or NPI. This can be an individual or an organization.
+      required:
+        - organization_name
+        - npi
+      properties:
+        # Is this necessary? If so, what do we do for individuals?
+        organization_name:
+          type: string
+          description: The name of this provider organization.
+        npi:
+          type: string
+          description: The provider's NPI number.
+    Subscriber:
+      type: object
+      additionalProperties: false
+      description: An individual member of a health insurance policy. An insured person.
+      required:
+        - first_name
+        - last_name
+        - member_id
+        - gender
+        - date_of_birth
+      properties:
+        first_name:
+          type: string
+          description: The insured person's first name, as it appears on their insurance card.
+        last_name:
+          type: string
+          description: The insured person's last name, as it appears on their insurance card.
+        member_id:
+          type: string
+          description: The insured person's member ID, as it appears on their insurance card.
+        # Is this necessary? How does it relate to sex?
+        gender:
+          type: string
+          description: The insured person's gender, as it appears on their insurance card.
+        date_of_birth:
+          type: string
+          format: date
+          description: The insured person's date of birth, as it appears on their insurance card.
+    Encounter:
+      type: object
+      additionalProperties: false
+      description: An object representing an encounter or interaction between a patient and provider, during which medical services may be performed.
+      required:
+        - date_of_service
+        - service_type_codes
+      properties:
+        # Can this be a date in the future? What if you are checking eligibility in advance of a future appointment?
+        date_of_service:
+          type: string
+          format: date
+          description: The date of this particular patient encounter.
+        service_type_codes:
+          type: array
+          description: A list of service type codes.
+          items:
+            type: string
+            description: "A valid service type code from this list: https://x12.org/codes/service-type-codes"
+    Error:
+      type: object
+      additionalProperties: false
+      description: An object that is returned when an error has occured.
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: A unique error code indicating what went wrong.
+        message:
+          type: string
+          description: A brief text description that expands upon this particular error code.
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: The request did not pass authorization.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Default:
+      description: A default error response if no other response is provided.
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/Error"
+  securitySchemes:
+    # BasicAuth:
+    #   type: http
+    #   scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []
