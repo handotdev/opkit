@@ -47,10 +47,6 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/EligibilityInquiry"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/Default"
       tags:
@@ -81,10 +77,6 @@ paths:
                     description: A list of eligibility inquiries
                     items:
                       $ref: "#/components/schemas/EligibilityInquiry"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/Default"
       tags:
@@ -108,10 +100,6 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/EligibilityInquiry"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/Default"
       tags:
@@ -143,10 +131,6 @@ paths:
                     description: A list of payers.
                     items:
                       $ref: "#/components/schemas/Payer"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/Default"
       tags:
@@ -250,18 +234,6 @@ components:
           type: string
           description: A brief text description that expands upon this particular error code.
   responses:
-    NotFound:
-      description: The specified resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-    Unauthorized:
-      description: The request did not pass authorization.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
     Default:
       description: A default error response if no other response is provided.
       content:
