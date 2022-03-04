@@ -91,6 +91,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "description": "An object containing a list of eligibility inquiries and a count of those eligibility inquiries.",
+                                    "required": [
+                                        "count",
+                                        "items"
+                                    ],
                                     "properties": {
                                         "count": {
                                             "type": "number",
@@ -176,6 +183,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "description": "An object containing a list of payers and a count of those payers.",
+                                    "required": [
+                                        "count",
+                                        "items"
+                                    ],
                                     "properties": {
                                         "count": {
                                             "type": "number",
