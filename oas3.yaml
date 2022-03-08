@@ -194,32 +194,32 @@ paths:
         - Tokens
   /v1/internal/register:
     post:
-      summary: Create a new organization, user, client and secret
-      description: Create a new organization, user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.
+      summary: Create a new customer organization, customer user, client and secret
+      description: Create a new customer organization, customer user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.
       operationId: postInternalRegister
       requestBody:
-        description: TOD
+        description: A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.
         content:
           "application/json":
             schema:
               type: object
-              description: An object containing the full name to use for the new user, the email address to use for the new user, and the name to use for the new organization.
+              description: An object containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.
               additionalProperties: false
               required:
-                - name
-                - email
-                - organization_name
+                - customer_user_name
+                - customer_user_email
+                - customer_organization_name
               properties:
-                name:
+                customer_user_name:
                   type: string
-                  description: The full name to use for the new user.
-                email:
+                  description: The full name to use for the new customer user.
+                customer_user_email:
                   type: string
                   format: email
-                  description: The email address to use for the new user.
-                organization_name:
+                  description: The email address to use for the new customer user.
+                customer_organization_name:
                   type: string
-                  description: The name to use for the new organization.
+                  description: The name to use for the new customer organization.
       responses:
         "200":
           description: OK
@@ -227,22 +227,22 @@ paths:
             "application/json":
               schema:
                 type: object
-                description: An object containing the IDs of the newly-created user, organization and client, as well as the value of the newly-created secret.
+                description: An object containing the IDs of the newly-created customer user, customer organization and client, as well as the value of the newly-created secret.
                 additionalProperties: false
                 required:
-                  - user_id
-                  - organization_id
+                  - customer_user_id
+                  - customer_organization_id
                   - client_id
                   - secret
                 properties:
-                  user_id:
+                  customer_user_id:
                     type: string
                     format: uuid
-                    description: The ID of the new user.
-                  organization_id:
+                    description: The ID of the new customer user.
+                  customer_organization_id:
                     type: string
                     format: uuid
-                    description: The ID of the new organization.
+                    description: The ID of the new customer organization.
                   client_id:
                     type: string
                     format: uuid
@@ -274,11 +274,15 @@ components:
       description: A health insurance carrier, which may offer more than one policy.
       required:
         - id
+        - name
       properties:
         id:
           type: string
           format: uuid
           description: A unique identifier.
+        name:
+          type: string
+          description: The name of the payer.
     Provider:
       type: object
       additionalProperties: false
