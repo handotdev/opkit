@@ -198,7 +198,7 @@ paths:
       description: Create a new organization, user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.
       operationId: postInternalRegister
       requestBody:
-        description: TOD
+        description: A payload containing the full name to use for the new user, the email address to use for the new user, and the name to use for the new organization.
         content:
           "application/json":
             schema:
