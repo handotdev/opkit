@@ -67,12 +67,6 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
-                    },
                     "default": {
                         "$ref": "#/components/responses/Default"
                     }
@@ -115,12 +109,6 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
-                    },
                     "default": {
                         "$ref": "#/components/responses/Default"
                     }
@@ -156,12 +144,6 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
                     },
                     "default": {
                         "$ref": "#/components/responses/Default"
@@ -206,12 +188,6 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
                     },
                     "default": {
                         "$ref": "#/components/responses/Default"
@@ -352,26 +328,6 @@
             }
         },
         "responses": {
-            "NotFound": {
-                "description": "The specified resource was not found.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
-            "Unauthorized": {
-                "description": "The request did not pass authorization.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
             "Default": {
                 "description": "A default error response if no other response is provided.",
                 "content": {
