@@ -18,6 +18,24 @@
             "url": "https://api.opkit.co"
         }
     ],
+    "tags": [
+        {
+            "name": "Eligibility Inquiries",
+            "description": "Endpoints for creating and reading eligibility inquiries. An eligibility inquiry is a request for information about a person's health insurance coverage."
+        },
+        {
+            "name": "Payers",
+            "description": "Endpoints for accessing the Opkit payer list. This is a list of payers (also known as insurance carriers) that you can interact with via the Opkit API."
+        },
+        {
+            "name": "Tokens",
+            "description": "Endpoints for manipulating tokens, which can be used to access protected Opkit API endpoints."
+        },
+        {
+            "name": "Internal",
+            "description": "For Opkit internal use. These endpoints will return unauthorized for a non-Opkit token."
+        }
+    ],
     "paths": {
         "/v1/eligibility_inquiries": {
             "post": {
@@ -30,6 +48,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
+                                "description": "An object containing a payer_id, provider, subscriber and an encounter.",
                                 "additionalProperties": false,
                                 "required": [
                                     "payer_id",
@@ -40,7 +59,8 @@
                                 "properties": {
                                     "payer_id": {
                                         "type": "string",
-                                        "description": "The ID of the insurance plan that should receive the inquiry"
+                                        "format": "uuid",
+                                        "description": "The ID of the insurance plan that should receive the inquiry."
                                     },
                                     "provider": {
                                         "$ref": "#/components/schemas/Provider"
@@ -86,8 +106,8 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": false,
                                     "description": "An object containing a list of eligibility inquiries and a count of those eligibility inquiries.",
+                                    "additionalProperties": false,
                                     "required": [
                                         "count",
                                         "items"
@@ -95,11 +115,11 @@
                                     "properties": {
                                         "count": {
                                             "type": "number",
-                                            "description": "The number of items in this list"
+                                            "description": "The number of items in this list."
                                         },
                                         "items": {
                                             "type": "array",
-                                            "description": "A list of eligibility inquiries",
+                                            "description": "A list of eligibility inquiries.",
                                             "items": {
                                                 "$ref": "#/components/schemas/EligibilityInquiry"
                                             }
@@ -128,10 +148,12 @@
                         "in": "path",
                         "name": "id",
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "An eligibility inquiry ID."
                         },
                         "required": true,
-                        "description": "Numeric ID of the eligibility inquiry to get"
+                        "description": "ID of the eligibility inquiry to get."
                     }
                 ],
                 "responses": {
@@ -166,8 +188,8 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": false,
                                     "description": "An object containing a list of payers and a count of those payers.",
+                                    "additionalProperties": false,
                                     "required": [
                                         "count",
                                         "items"
@@ -197,6 +219,157 @@
                     "Payers"
                 ]
             }
+        },
+        "/v1/tokens": {
+            "post": {
+                "summary": "Create a new API token",
+                "description": "Create a new token for accessing protected Opkit API endpoints.",
+                "operationId": "postEligibilityInquiries",
+                "requestBody": {
+                    "description": "A payload containing a valid client ID and secret pair.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "An object containing a valid client ID and the value of an associated secret.",
+                                "additionalProperties": false,
+                                "required": [
+                                    "client_id",
+                                    "secret"
+                                ],
+                                "properties": {
+                                    "client_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "A client ID."
+                                    },
+                                    "secret": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "The value of a secret associated with this client."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "An object containing the value of a newly-created token.",
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "value": {
+                                            "type": "string",
+                                            "description": "The value of a newly-created token. This can be used with the Bearer authorization method to access protected Opkit API endpoints."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "Tokens"
+                ]
+            }
+        },
+        "/v1/internal/register": {
+            "post": {
+                "summary": "Create a new organization, user, client and secret",
+                "description": "Create a new organization, user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.",
+                "operationId": "postEligibilityInquiries",
+                "requestBody": {
+                    "description": "TOD",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "An object containing the full name to use for the new user, the email address to use for the new user, and the name to use for the new organization.",
+                                "additionalProperties": false,
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "organization_name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The full name to use for the new user."
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "The email address to use for the new user."
+                                    },
+                                    "organization_name": {
+                                        "type": "string",
+                                        "description": "The name to use for the new organization."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "An object containing the IDs of the newly-created user, organization and client, as well as the value of the newly-created secret.",
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "user_id",
+                                        "organization_id",
+                                        "client_id",
+                                        "secret"
+                                    ],
+                                    "properties": {
+                                        "user_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The ID of the new user."
+                                        },
+                                        "organization_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The ID of the new organization."
+                                        },
+                                        "client_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The ID of the new client."
+                                        },
+                                        "secret": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The value of the new secret."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "Internal"
+                ]
+            }
         }
     },
     "components": {
@@ -211,7 +384,8 @@
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "A unique identifier"
+                        "format": "uuid",
+                        "description": "A unique identifier."
                     }
                 }
             },
@@ -225,7 +399,8 @@
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "A unique identifier"
+                        "format": "uuid",
+                        "description": "A unique identifier."
                     }
                 }
             },
