@@ -224,7 +224,7 @@
             "post": {
                 "summary": "Create a new API token",
                 "description": "Create a new token for accessing protected Opkit API endpoints.",
-                "operationId": "postEligibilityInquiries",
+                "operationId": "postTokens",
                 "requestBody": {
                     "description": "A payload containing a valid client ID and secret pair.",
                     "content": {
@@ -288,7 +288,7 @@
             "post": {
                 "summary": "Create a new organization, user, client and secret",
                 "description": "Create a new organization, user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.",
-                "operationId": "postEligibilityInquiries",
+                "operationId": "postInternalRegister",
                 "requestBody": {
                     "description": "TOD",
                     "content": {
