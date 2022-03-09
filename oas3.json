@@ -25,15 +25,11 @@
         },
         {
             "name": "Payers",
-            "description": "Endpoints for accessing the Opkit payer list. This is a list of payers (also known as insurance carriers) that you can interact with via the Opkit API."
-        },
-        {
-            "name": "Tokens",
-            "description": "Endpoints for manipulating tokens, which can be used to access protected Opkit API endpoints."
+            "description": "Endpoints for reading the Opkit payer list. The Opkit API allows you to interact with health insurance carriers, also known as \"payers\".  This is the list of supported payers."
         },
         {
             "name": "Internal",
-            "description": "For Opkit internal use. These endpoints will return unauthorized for a non-Opkit token."
+            "description": "For Opkit internal use. These endpoints will not work for customer API keys. Please do not attempt to access them."
         }
     ],
     "paths": {
@@ -220,74 +216,10 @@
                 ]
             }
         },
-        "/v1/tokens": {
-            "post": {
-                "summary": "Create a new API token",
-                "description": "Create a new token for accessing protected Opkit API endpoints.",
-                "operationId": "postTokens",
-                "requestBody": {
-                    "description": "A payload containing a valid client ID and secret pair.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "An object containing a valid client ID and the value of an associated secret.",
-                                "additionalProperties": false,
-                                "required": [
-                                    "client_id",
-                                    "secret"
-                                ],
-                                "properties": {
-                                    "client_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "description": "A client ID."
-                                    },
-                                    "secret": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "description": "The value of a secret associated with this client."
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "An object containing the value of a newly-created token.",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "value"
-                                    ],
-                                    "properties": {
-                                        "value": {
-                                            "type": "string",
-                                            "description": "The value of a newly-created token. This can be used with the Bearer authorization method to access protected Opkit API endpoints."
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
-                    }
-                },
-                "tags": [
-                    "Tokens"
-                ]
-            }
-        },
         "/v1/internal/register": {
             "post": {
-                "summary": "Create a new customer organization, customer user, client and secret",
-                "description": "Create a new customer organization, customer user, client and secret in a single request. This endpoint is for Opkit internal use only. It will return unauthorized for regular tokens.",
+                "summary": "Create a new customer user, customer organizaton, and API key",
+                "description": "Create a new customer user, customer organizaton, and API key in a single request. This endpoint is for Opkit internal use only. It will not work for customer API keys.",
                 "operationId": "postInternalRegister",
                 "requestBody": {
                     "description": "A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.",
@@ -328,13 +260,13 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "description": "An object containing the IDs of the newly-created customer user, customer organization and client, as well as the value of the newly-created secret.",
+                                    "description": "An object containing various fields from the new customer user, customer organization, and API key. This object will contain the secret value of the API key, which should never be shared publicly!",
                                     "additionalProperties": false,
                                     "required": [
                                         "customer_user_id",
                                         "customer_organization_id",
-                                        "client_id",
-                                        "secret"
+                                        "api_key_id",
+                                        "api_key_value"
                                     ],
                                     "properties": {
                                         "customer_user_id": {
@@ -342,20 +274,38 @@
                                             "format": "uuid",
                                             "description": "The ID of the new customer user."
                                         },
+                                        "customer_user_name": {
+                                            "type": "string",
+                                            "description": "The name of the new customer user."
+                                        },
+                                        "customer_user_email": {
+                                            "type": "string",
+                                            "description": "The email of the new customer user."
+                                        },
                                         "customer_organization_id": {
                                             "type": "string",
                                             "format": "uuid",
                                             "description": "The ID of the new customer organization."
                                         },
-                                        "client_id": {
+                                        "customer_organization_name": {
                                             "type": "string",
                                             "format": "uuid",
-                                            "description": "The ID of the new client."
+                                            "description": "The name of the new customer organization."
                                         },
-                                        "secret": {
+                                        "api_key_id": {
                                             "type": "string",
                                             "format": "uuid",
-                                            "description": "The value of the new secret."
+                                            "description": "The ID of the new API key."
+                                        },
+                                        "api_key_name": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The name of the new API key."
+                                        },
+                                        "api_key_value": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The value of the new API key. This value is secret and should never be shared publicly!"
                                         }
                                     }
                                 }
@@ -520,15 +470,16 @@
             }
         },
         "securitySchemes": {
-            "BearerAuth": {
+            "BasicAuth": {
                 "type": "http",
-                "scheme": "bearer"
+                "scheme": "basic",
+                "description": "Basic HTTP authentication. To authenticate, please include this request header: \"Authorization: Basic `<your-base64-encoded-API-key>`\". If you are using a client that asks for a username and password (e.g. curl), provide your API key as the username and omit the password."
             }
         }
     },
     "security": [
         {
-            "BearerAuth": []
+            "BasicAuth": []
         }
     ]
 }
