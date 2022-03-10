@@ -146,7 +146,7 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - Payers
-  /v1/internal/register:
+  /v1/register:
     post:
       summary: Create a new customer user, customer organizaton, and API key
       description: Create a new customer user, customer organizaton, and API key in a single request. This endpoint is for Opkit internal use only. It will not work for customer API keys.
