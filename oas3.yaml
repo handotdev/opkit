@@ -150,7 +150,7 @@ paths:
     post:
       summary: Create a new customer user, customer organizaton, and API key
       description: Create a new customer user, customer organizaton, and API key in a single request. This endpoint is for Opkit internal use only. It will not work for customer API keys.
-      operationId: postInternalRegister
+      operationId: postRegister
       requestBody:
         description: A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.
         content:
