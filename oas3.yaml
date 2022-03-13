@@ -444,6 +444,7 @@ components:
         description:
           type: string
           description: Description or number that identifies the plan or coverage.
+        # Copied this over from Stripe. This is how they send date information
         start_date:
           type: integer
           format: unix-time
