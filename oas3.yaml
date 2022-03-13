@@ -809,14 +809,22 @@ components:
     Error:
       type: object
       additionalProperties: false
-      description: An object that is returned when an error has occured.
+      description: >-
+        An object that is returned when an error has occured.
+        This includes both client- and server-side errors.
       required:
         - code
         - message
       properties:
         code:
           type: string
-          description: A unique error code indicating what went wrong.
+          description: An error code indicating the category of problem.
+          enum:
+            - not_allowed
+            - invalid_api_key
+            - invalid_payload
+            - not_found
+            - unexpected
         message:
           type: string
           description: >-
