@@ -2,27 +2,47 @@ openapi: 3.0.1
 info:
   title: Opkit
   version: v1
-  description: The modern API for health insurance.
+  description: >-
+    The fastest, easiest way to integrate with health insurance.<br><br>
+    Opkit (YC S21) is Stripe for healthcare - a modern, easy-to-use developer
+    toolkit for healthcare payments. We provide simple APIs for verifying
+    insurance and submitting health insurance claims.<br><br>To get started,
+    see <a href=https://docs.opkit.co/>here</a>.
   contact:
-    name: Opkit
-    url: https://opkit.co
-  license:
-    name: Terms of Use
-    url: https://opkit.co/terms
+    email: founders@opkit.co
+externalDocs:
+  url: https://docs.opkit.co/
+  description: Read the documentation
 servers:
-  - url: https://api.opkit.co
+  - url: https://api.opkit.co/v1
+    description: Production
 tags:
   - name: Eligibility Inquiries
-    description: Create and read eligibility inquiries. An eligibility inquiry is a request for information about a person's health insurance. The eligibility inquiry response can confirm that a patient has active health insurance or provide details of coverage for various specialties.
+    description: >-
+      Create and read eligibility inquiries. An eligibility inquiry is a request
+      for information about a subscriber's health insurance plan and coverages.
+      The eligibility inquiry response can confirm whether a subscriber's plan is
+      active or not, and whether it includes benefits that relate to specific services.
   - name: Payers
-    description: Read payers. This endpoint returns the list of insurance carriers, also known as \"payers\", supported by Opkit's API. Opkit supports thousands of payers across the United States.
+    description: >-
+      Read payers. This endpoint returns a list of insurance carriers, also
+      known as "payers", that you can interact with via the Opkit API. 
+      Opkit supports thousands of payers across the United States.
   - name: Internal
-    description: For Opkit internal use. These endpoints will not work for customer API keys. Please do not attempt to access them.
+    description: >-
+      For Opkit internal use. These endpoints will not work for customer
+      API keys. Please do not attempt to access them.
 paths:
-  /v1/eligibility_inquiries:
+  /eligibility_inquiries:
     post:
       summary: Create a new eligibility inquiry
-      description: Create a new eligibility inquiry for the given plan, provider, and subscriber. The response should indicate whether the subscriber is eligible for any services offered by provider under this plan.
+      description: >-
+        Create a new eligibility inquiry for the given payer, provider and subscriber.
+        The response will contain information about the subscriber's plan, including
+        whether or not the plan is active, and whether or not the plan includes benefits
+        relating to particular services. If you are interested in specific services,
+        can include them in the request payload. Otherwise, Opkit will assume the default
+        service, "health_benefit_plan_coverage", which returns general benefits.
       operationId: postEligibilityInquiries
       requestBody:
         description: >-
@@ -83,7 +103,8 @@ paths:
     # This should be paginated
     get:
       summary: Get all existing eligibility inquiries
-      description: Get a complete list of the eligibility inquiries that you have created in the past.
+      description: >-
+        Get a list of eligibility inquiries that you have created in the past.
       operationId: getEligibilityInquiries
       responses:
         "200":
@@ -92,7 +113,9 @@ paths:
             "application/json":
               schema:
                 type: object
-                description: An object containing a list of eligibility inquiries and a count of those eligibility inquiries.
+                description: >-
+                  An object containing a list of eligibility inquiries 
+                  and a count that indicates the number of items in the list.
                 additionalProperties: false
                 required:
                   - count
@@ -110,10 +133,11 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - Eligibility Inquiries
-  /v1/eligibility_inquiries/{id}:
+  /eligibility_inquiries/{id}:
     get:
       summary: Get a single eligibility inquiry
-      description: Get a single eligibility inquiry that you have created in the past.
+      description: >-
+        Get a single eligibility inquiry that you have created in the past.
       operationId: getEligibilityInquiriesId
       parameters:
         - in: path
@@ -121,9 +145,9 @@ paths:
           schema:
             type: string
             format: uuid
-            description: An eligibility inquiry ID.
+            description: The ID of the eligibility inquiry.
           required: true
-          description: ID of the eligibility inquiry to get.
+          description: The ID of the eligibility inquiry.
       responses:
         "200":
           description: OK
@@ -135,11 +159,14 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - Eligibility Inquiries
-  /v1/payers:
+  /payers:
     # This should be paginated
     get:
       summary: Get all payers
-      description: Get a complete list of the payers supported by Opkit.
+      description: >-
+        Get a complete list of the payers supported by Opkit.
+        This endpoint returns a list payers that you can interact with via
+        the Opkit API. Opkit supports thousands of payers across the United States.
       operationId: getPayers
       responses:
         "200":
@@ -148,7 +175,9 @@ paths:
             "application/json":
               schema:
                 type: object
-                description: An object containing a list of payers and a count of those payers.
+                description: >-
+                  An object containing a list of payers and a count
+                  that indicates the number of items in this list.
                 additionalProperties: false
                 required:
                   - count
@@ -166,23 +195,37 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - Payers
-  /v1/register:
+  /register:
     post:
-      summary: Create a new customer user, customer organizaton, and API key
-      description: Create a new customer user, customer organizaton, and API key in a single request. This endpoint is for Opkit internal use only. It will not work for customer API keys.
+      summary: >-
+        Create a new customer user, customer organizaton, and API key
+      description: >-
+        Create a new customer user, customer organizaton, and API key in
+        a single request. This endpoint is for Opkit internal use only and
+        will return unauthorized for customer API keys. Please do not attempt
+        to access it.
       operationId: postRegister
       requestBody:
-        description: A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.
+        description: >-
+          A payload containing the full name to use for the new customer user,
+          the email address to use for the new customer user, and (optionally)
+          the name to use for the new customer organization. If customer_organization_name
+          is absent, the server will use a default value for the new customer organization
+          name.
         content:
           "application/json":
             schema:
               type: object
-              description: An object containing the full name to use for the new customer user, the email address to use for the new customer user, and the name to use for the new customer_organization.
+              description: >-
+                An object containing the full name to use for the new customer user,
+                the email address to use for the new customer user, and (optionally)
+                the name to use for the new customer organization. If customer_organization_name
+                is absent, the server will use a default value for the new customer organization
+                name.
               additionalProperties: false
               required:
                 - customer_user_name
                 - customer_user_email
-                - customer_organization_name
               properties:
                 customer_user_name:
                   type: string
@@ -193,7 +236,10 @@ paths:
                   description: The email address to use for the new customer user.
                 customer_organization_name:
                   type: string
-                  description: The name to use for the new customer organization.
+                  description: >-
+                    The name to use for the new customer organization. If this field is
+                    not provided, the server will use a default value for the customer
+                    organization name.
       responses:
         "200":
           description: OK
@@ -201,7 +247,10 @@ paths:
             "application/json":
               schema:
                 type: object
-                description: "An object containing various fields from the new customer user, customer organization, and API key. This object will contain the secret value of the API key, which should never be shared publicly!"
+                description: >-
+                  An object containing various fields from the new customer user,
+                  customer organization, and API key. This object will contain the secret
+                  value of the API key, which should NEVER be shared publicly.
                 additionalProperties: false
                 required:
                   - customer_user_id
@@ -242,7 +291,9 @@ paths:
                   api_key_value:
                     type: string
                     format: uuid
-                    description: The value of the new API key. This value is secret and should never be shared publicly!
+                    description: >-
+                      The value of the new API key. This value is secret and
+                      should never be shared publicly!
         default:
           $ref: "#/components/responses/Default"
       tags:
@@ -696,7 +747,8 @@ components:
     Payer:
       type: object
       additionalProperties: false
-      description: A health insurance carrier that may offer many plans.
+      description: >-
+        A health insurance carrier that offers one or more health insurance plans.
       required:
         - id
         - name
@@ -712,7 +764,10 @@ components:
     Provider:
       type: object
       additionalProperties: false
-      description: A healthcare provider organization that has been assigned an NPI.
+      description: >-
+        A healthcare provider organization that has been assigned a
+        <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
+        National Provider Identifier (NPI)</a>.
       required:
         - organization_name
         - npi
@@ -723,7 +778,7 @@ components:
           description: The name of this provider organization.
         npi:
           type: string
-          description: The provider organization's National Provider Identifier.
+          description: The NPI that has been assigned to this provider organization.
     Subscriber:
       type: object
       additionalProperties: false
