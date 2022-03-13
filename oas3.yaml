@@ -25,12 +25,18 @@ paths:
       description: Create a new eligibility inquiry for the given plan, provider, and subscriber. The response should indicate whether the subscriber is eligible for any services offered by provider under this plan.
       operationId: postEligibilityInquiries
       requestBody:
-        description: A payload containing the payer_id, provider, and subscriber information that is relevant for this eligibility inquiry.
+        description: >-
+          A payload containing information about the subscriber you are inquiring about,
+          the health insurance carrier (or "payer") you are issuing the inquiry to,
+          and the provider you are issuing the inquiry on behalf of.
         content:
           "application/json":
             schema:
               type: object
-              description: An object containing a payer_id, provider, and subscriber.
+              description: >-
+                An object that containing information about the subscriber you are inquiring about,
+                the health insurance carrier (or "payer") you are issuing the inquiry to,
+                and the provider you are issuing the inquiry on behalf of.
               additionalProperties: false
               required:
                 - payer_id
@@ -40,7 +46,10 @@ paths:
                 payer_id:
                   type: string
                   format: uuid
-                  description: The ID of the insurance plan that should receive the inquiry.
+                  description: >-
+                    The ID of the payer that you are issuing this inquiry to.
+                    This an Opkit ID. You can get a list of payer IDs by calling the
+                    the GET /v1/payers endpoint.
                 # This may not be necessary if each customer only has one NPI + org name
                 provider:
                   $ref: "#/components/schemas/Provider"
@@ -460,6 +469,7 @@ components:
         description:
           type: string
           description: The plan description.
+        # Should this be optional?
         start_date:
           type: integer
           format: date
@@ -467,6 +477,7 @@ components:
             The start date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
             you should refer to the "active" field.
+        # Should this be optional?
         end_date:
           type: integer
           format: date
