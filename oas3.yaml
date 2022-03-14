@@ -4,9 +4,9 @@ info:
   version: v1
   description: >-
     The fastest, easiest way to integrate with health insurance.<br><br>
-    Opkit (YC S21) is Stripe for healthcare - a modern, easy-to-use developer
-    toolkit for healthcare payments. We provide simple APIs for verifying
-    insurance and submitting health insurance claims.<br><br>To get started,
+    Opkit (YC S21) is a modern, easy-to-use developer toolkit for healthcare 
+    payments. We provide simple APIs for verifying insurance and
+    submitting health insurance claims.<br><br>To get started,
     see <a href=https://docs.opkit.co/>here</a>.
   contact:
     email: founders@opkit.co
@@ -507,8 +507,6 @@ components:
       required:
         - number
         - description
-        - start_date
-        - end_date
         - active
       properties:
         number:
