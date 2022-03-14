@@ -305,7 +305,7 @@ components:
       description: >-
         An enum that describes medical services. "health_benefit_plan_coverage" is a
         generic value that is used to retrieve benefits that do not relate to any particular medical
-        service. For example, a subscriber's out-of-pocket maximum. These values were taken
+        service. For example, a subscriber's out-of-pocket maximum. These enum values were taken
         from the <a href=https://edi.stedi.com/x12-005010/element/1365>Stedi X12 EDI
         documentation</a>.
       enum:
@@ -514,15 +514,16 @@ components:
         - active
       properties:
         number:
-          type: number
+          type: string
           description: >-
-            A number that the payer used to identify this plan. This is not an Opkit ID.
+            A short string, usually containing numbers only, that the payer uses to
+            identify this plan. This is not to be confused with an Opkit ID.
         description:
           type: string
           description: The plan description.
         # Should this be optional?
         start_date:
-          type: integer
+          type: string
           format: date
           description: >-
             The start date of the insurance plan. Note that the start_date and end_date
@@ -530,7 +531,7 @@ components:
             you should refer to the "active" field.
         # Should this be optional?
         end_date:
-          type: integer
+          type: string
           format: date
           description: >-
             The end date of the insurance plan. Note that the start_date and end_date
@@ -542,6 +543,139 @@ components:
             A boolean value that indicates whether a plan is currently active or not.
             The plan may be inactive if the end_date has passed, the subscriber has stopped
             paying their premiums, or various other reasons.
+    BenefitType:
+      type: string
+      description: >-
+        An enum that indicates type of a benefit. The most common benefit types are
+        "active_coverage", "co_insurance", "co_payment", "deductible" and "out_of_pocket_stop_loss".
+        "active_coverage" indicates that the subscriber enjoys some coverage for the service
+        described by this benefit. "co_insurance" and "co_payment" indicate that the subscriber
+        must pay co-insurance or co-pay for the service. "deductible" indicates that the
+        subscriber is responsible for the cost of the service until they meet their deductible.
+        Finally, "out_of_pocket_stop_loss" indicates that the subscriber is protected by an
+        out-of-pocket maximum for this service. These enum values were taken from the
+        <a href=https://edi.stedi.com/x12-005010/element/1390>Stedi X12 EDI documentation</a>.
+      enum:
+        - active_coverage
+        - active_full_risk_capitation
+        - active_pending_investigation
+        - active_services_capitated
+        - active_services_capitated_to_primary_care_physician
+        - benefit_description
+        - benefit_disclaimer
+        - cannot_process
+        - card_s_reported_lost_stolen
+        - co_insurance
+        - co_insurance_maximum
+        - co_payment
+        - co_payment_maximum
+        - contact_following_entity_for_eligibility_or_benefit_information
+        - cost_containment
+        - coverage_basis
+        - deductible
+        - exclusions
+        - health_care_facility
+        - inactive
+        - inactive_pending_eligibility_update
+        - inactive_pending_investigation
+        - limitations
+        - managed_care_coordinator
+        - non_covered
+        - not_deemed_a_medical_necessity
+        - other_or_additional_payor
+        - other_source_of_data
+        - out_of_pocket_stop_loss
+        - patient_reimbursement
+        - pre_existing_condition
+        - primary_care_provider
+        - prior_year_s_history
+        - reserve
+        - second_surgical_opinion_required
+        - services_restricted_to_following_provider
+        - spend_down
+        - unlimited
+        - waiver
+    BenefitCoverageLevel:
+      type: string
+      description: >-
+        An enum that describes the level of coverage for a benefit.
+        In most cases, this will be "individual", but for some plans there will
+        be benefits that extend to parties other than the subscriber. This field is
+        not applicable for many benefits and may be absent. These enum values
+        were taken from the <a href=https://edi.stedi.com/x12-005010/element/1207>
+        Stedi X12 EDI documentation</a>.
+      enum:
+        - children_only
+        - dependents_only
+        - employee_and_children
+        - employee_and_five_or_more_dependents
+        - employee_and_four_or_more_dependents
+        - employee_and_one_dependent
+        - employee_and_one_or_more_dependents
+        - employee_and_spouse
+        - employee_and_three_dependents
+        - employee_and_three_or_more_dependents
+        - employee_and_two_dependents
+        - employee_and_two_or_more_dependents
+        - employee_only
+        - family
+        - individual
+        - spouse_and_children
+        - spouse_only
+        - subscriber_and_1_child
+        - subscriber_and_1_or_more_children
+        - subscriber_and_2_or_more_children
+        - subscriber_and_spouse
+        - subscriber_spouse_and_1_child
+        - subscriber_spouse_and_1_or_more_children
+        - subscriber_spouse_and_2_or_more_children
+        - two_party
+    BenefitTimePeriod:
+      type: string
+      description: >-
+        An enum that describes a time period which may be present on a benefit.
+        This field is not applicable for many benefits and may be absent.
+        These enum values were taken from the <a href=https://edi.stedi.com/x12-005010/element/615>
+        Stedi X12 EDI documentation</a>.
+      enum:
+        - 12_hours
+        - 18_hours
+        - 24_hours
+        - admission
+        - calendar_year
+        - chargeable_periods
+        - contract
+        - credit_days
+        - day
+        - debit_days
+        - episode
+        - exceeded
+        - excess_days
+        - free_periods
+        - hazardous_days
+        - holidays
+        - hour
+        - initial_visit
+        - lifetime
+        - lifetime_remaining
+        - month
+        - mutually_defined
+        - not_applicable
+        - not_exceeded
+        - other_allowance_periods
+        - outlier
+        - periods_held
+        - remaining
+        - saturdays_and_sundays
+        - saturdays_sundays_and_holidays
+        - service_year
+        - six_hours
+        - sundays_and_holidays
+        - three_months
+        - visit
+        - week
+        - year_to_date
+        - years
     Benefit:
       type: object
       additionalProperties: false
@@ -559,92 +693,9 @@ components:
         service:
           $ref: "#/components/schemas/Service"
         type:
-          type: string
-          description: >-
-            An enum that indicates the benefit type. The most common benefit types are
-            "active_coverage", "co_insurance", "co_payment", "deductible" and "out_of_pocket_stop_loss".
-            "active_coverage" indicates that the subscriber enjoys some coverage for the service
-            described by this benefit. "co_insurance" and "co_payment" indicate that the subscriber
-            must pay co-insurance or co-pay for the service. "deductible" indicates that the
-            subscriber is responsible for the cost of the service until they meet their deductible.
-            Finally, "out_of_pocket_stop_loss" indicates that the subscriber is protected by an
-            out-of-pocket maximum for this service. These enum values were taken from the
-            <a href=https://edi.stedi.com/x12-005010/element/1390>Stedi X12 EDI documentation</a>.
-          enum:
-            - active_coverage
-            - active_full_risk_capitation
-            - active_pending_investigation
-            - active_services_capitated
-            - active_services_capitated_to_primary_care_physician
-            - benefit_description
-            - benefit_disclaimer
-            - cannot_process
-            - card_s_reported_lost_stolen
-            - co_insurance
-            - co_insurance_maximum
-            - co_payment
-            - co_payment_maximum
-            - contact_following_entity_for_eligibility_or_benefit_information
-            - cost_containment
-            - coverage_basis
-            - deductible
-            - exclusions
-            - health_care_facility
-            - inactive
-            - inactive_pending_eligibility_update
-            - inactive_pending_investigation
-            - limitations
-            - managed_care_coordinator
-            - non_covered
-            - not_deemed_a_medical_necessity
-            - other_or_additional_payor
-            - other_source_of_data
-            - out_of_pocket_stop_loss
-            - patient_reimbursement
-            - pre_existing_condition
-            - primary_care_provider
-            - prior_year_s_history
-            - reserve
-            - second_surgical_opinion_required
-            - services_restricted_to_following_provider
-            - spend_down
-            - unlimited
-            - waiver
+          $ref: "#/components/schemas/BenefitType"
         coverage_level:
-          type: string
-          description: >-
-            The level of coverage for this benefit. In most cases, this
-            will be "individual", but for some plans there will be benefits
-            that extend to parties other than the subscriber. This field is not
-            applicable for many benefits and may be absent. These enum values
-            were taken from the <a href=https://edi.stedi.com/x12-005010/element/1207>
-            Stedi X12 EDI documentation</a>.
-          enum:
-            - children_only
-            - dependents_only
-            - employee_and_children
-            - employee_and_five_or_more_dependents
-            - employee_and_four_or_more_dependents
-            - employee_and_one_dependent
-            - employee_and_one_or_more_dependents
-            - employee_and_spouse
-            - employee_and_three_dependents
-            - employee_and_three_or_more_dependents
-            - employee_and_two_dependents
-            - employee_and_two_or_more_dependents
-            - employee_only
-            - family
-            - individual
-            - spouse_and_children
-            - spouse_only
-            - subscriber_and_1_child
-            - subscriber_and_1_or_more_children
-            - subscriber_and_2_or_more_children
-            - subscriber_and_spouse
-            - subscriber_spouse_and_1_child
-            - subscriber_spouse_and_1_or_more_children
-            - subscriber_spouse_and_2_or_more_children
-            - two_party
+          $ref: "#/components/schemas/BenefitCoverageLevel"
         in_network:
           type: boolean
           description: >-
@@ -662,51 +713,7 @@ components:
             The percentage amount that the subscriber is responsible for.
             This field is not applicable for many benefits and may be absent.
         time_period:
-          type: string
-          description: >-
-            A time period qualifer that describes this benefit.
-            This field is not applicable for many benefits and may be absent.
-            These values were taken from the <a href=https://edi.stedi.com/x12-005010/element/615>
-            Stedi X12 EDI documentation</a>.
-          enum:
-            - 12_hours
-            - 18_hours
-            - 24_hours
-            - admission
-            - calendar_year
-            - chargeable_periods
-            - contract
-            - credit_days
-            - day
-            - debit_days
-            - episode
-            - exceeded
-            - excess_days
-            - free_periods
-            - hazardous_days
-            - holidays
-            - hour
-            - initial_visit
-            - lifetime
-            - lifetime_remaining
-            - month
-            - mutually_defined
-            - not_applicable
-            - not_exceeded
-            - other_allowance_periods
-            - outlier
-            - periods_held
-            - remaining
-            - saturdays_and_sundays
-            - saturdays_sundays_and_holidays
-            - service_year
-            - six_hours
-            - sundays_and_holidays
-            - three_months
-            - visit
-            - week
-            - year_to_date
-            - years
+          $ref: "#/components/schemas/BenefitTimePeriod"
     EligibilityInquiry:
       type: object
       additionalProperties: false
@@ -806,6 +813,15 @@ components:
           type: string
           format: date
           description: The subscriber's date of birth as it appears on their insurance card.
+    ErrorCode:
+      type: string
+      description: An error code indicating the category of problem.
+      enum:
+        - not_allowed
+        - invalid_api_key
+        - invalid_payload
+        - not_found
+        - unexpected
     Error:
       type: object
       additionalProperties: false
@@ -817,14 +833,7 @@ components:
         - message
       properties:
         code:
-          type: string
-          description: An error code indicating the category of problem.
-          enum:
-            - not_allowed
-            - invalid_api_key
-            - invalid_payload
-            - not_found
-            - unexpected
+          $ref: "#/components/schemas/ErrorCode"
         message:
           type: string
           description: >-
