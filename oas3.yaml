@@ -522,6 +522,7 @@ components:
         start_date:
           type: string
           format: date
+          example: 01-01-2021
           description: >-
             The start date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
@@ -530,6 +531,7 @@ components:
         end_date:
           type: string
           format: date
+          example: 01-01-2021
           description: >-
             The end date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
@@ -809,6 +811,7 @@ components:
         date_of_birth:
           type: string
           format: date
+          example: 01-01-2021
           description: The subscriber's date of birth as it appears on their insurance card.
     ErrorCode:
       type: string
