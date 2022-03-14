@@ -66,6 +66,7 @@ paths:
                 payer_id:
                   type: string
                   format: uuid
+                  example: 612e564c-567b-4d05-871c-1ba3a841b12d
                   description: >-
                     The ID of the payer that you are issuing this inquiry to.
                     This an Opkit ID. You can get a list of payer IDs by calling the
@@ -143,6 +144,7 @@ paths:
           schema:
             type: string
             format: uuid
+            example: 612e564c-567b-4d05-871c-1ba3a841b12d
             description: The ID of the eligibility inquiry.
           required: true
           description: The ID of the eligibility inquiry.
@@ -263,6 +265,7 @@ paths:
                   customer_user_id:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: The ID of the new customer user.
                   customer_user_name:
                     type: string
@@ -273,22 +276,27 @@ paths:
                   customer_organization_id:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: The ID of the new customer organization.
                   customer_organization_name:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: The name of the new customer organization.
                   api_key_id:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: The ID of the new API key.
                   api_key_name:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: The name of the new API key.
                   api_key_value:
                     type: string
                     format: uuid
+                    example: 612e564c-567b-4d05-871c-1ba3a841b12d
                     description: >-
                       The value of the new API key. This value is secret and
                       should never be shared publicly!
@@ -526,7 +534,7 @@ components:
           description: >-
             The start date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
-            you should refer to the "active" field.
+            you should refer to the "active" field. This should be formatted like 01-01-2021.
         # Should this be optional?
         end_date:
           type: string
@@ -535,7 +543,7 @@ components:
           description: >-
             The end date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
-            you should refer to the "active" field.
+            you should refer to the "active" field. This should be formatted like 01-01-2021.
         active:
           type: boolean
           description: >-
@@ -594,6 +602,221 @@ components:
         - spend_down
         - unlimited
         - waiver
+    EligibilityInquiryError:
+      type: string
+      description: >-
+        An enum that describes an eligibility inquiry error.
+        An eligibility inquiry error may be returned by the POST /eligibility_inquiries
+        endpoint if the inquiry was created successfully, but rejected by the payer.
+        A payer may reject an inquiry for a variety of reasons. For example,
+        if the payer does not recongize the subscriber member ID. These enum
+        values were taken from the <a href=https://edi.stedi.com/x12-005010X279A1/element/901>
+        Stedi X12 EDI documentation</a>.
+      enum:
+        - accident_damage_derail_sideswiped
+        - actual_information_different_claim_has_been_re_adjudicated_since_initial_payment
+        - actual_information_different_than_reported
+        - additional_patient_condition_information_required
+        - administrative_cancellation
+        - air_brakes_inoperative_etc
+        - arrivals
+        - authorization_access_restrictions
+        - authorization_number_not_found
+        - authorized_quantity_exceeded
+        - bad_order_due_to_wreck
+        - bad_order_for_upgrading_of_car
+        - bad_order_reinitialing_and_numbering
+        - bad_order_to_transfer_lading
+        - cannot_identify_insured_as_tpo_third_party_organization_participant
+        - cannot_identify_payer_as_tpo_third_party_organization_participant
+        - cannot_identify_provider_as_tpo_third_party_organization_participant
+        - car_not_ordered
+        - catalog_cost_incorrect
+        - certification_information_does_not_match_patient
+        - certification_information_missing
+        - certification_not_required_for_this_service
+        - certification_responsibility_of_external_review_organization
+        - claim_can_not_be_identified_for_verification
+        - claim_does_not_contain_enough_information_for_re_pricing
+        - claim_submitted_past_exercise_period
+        - complete_loading
+        - date_of_birth_follows_date_s_of_service
+        - date_of_death_precedes_date_s_of_service
+        - date_of_service_in_future
+        - date_of_service_not_within_allowable_inquiry_period
+        - defective_safety_devices
+        - departed
+        - dismantle
+        - disposition_pending_vendor_review
+        - duplicate_invoice_number
+        - duplicate_patient_id_number
+        - duplicate_request
+        - duplicate_sequence_number
+        - duplicate_subscriber_insured_id_number
+        - empty_equipment_available_for_loading
+        - empty_trailer_flat_release
+        - equipment_not_used
+        - exceeds_plan_maximums
+        - experimental_service_or_procedure
+        - freight_damage_claim
+        - inappropriate_date
+        - inappropriate_product_service_id
+        - inappropriate_product_service_id_qualifier
+        - inappropriate_provider_role
+        - inconsistent_with_patient_s_age
+        - inconsistent_with_patient_s_gender
+        - industrial_interchange
+        - input_errors
+        - input_incomplete
+        - inquired_benefit_inconsistent_with_provider_type
+        - invalid_authorization_number_format
+        - invalid_book_cost
+        - invalid_customer_number
+        - invalid_debit_number
+        - invalid_meet_competition_cost
+        - invalid_missing_accident_date
+        - invalid_missing_admission_date
+        - invalid_missing_date_of_birth
+        - invalid_missing_date_of_death
+        - invalid_missing_date_s_of_service
+        - invalid_missing_diagnosis_code_s
+        - invalid_missing_discharge_date
+        - invalid_missing_expected_date_of_birth
+        - invalid_missing_last_menstrual_period_date
+        - invalid_missing_onset_of_current_condition_or_illness_date
+        - invalid_missing_patient_gender_code
+        - invalid_missing_patient_id
+        - invalid_missing_patient_name
+        - invalid_missing_procedure_code_s
+        - invalid_missing_provider_identification
+        - invalid_missing_provider_name
+        - invalid_missing_provider_phone_number
+        - invalid_missing_provider_specialty
+        - invalid_missing_provider_state
+        - invalid_missing_referring_provider_identification_number
+        - invalid_missing_subscriber_insured_gender_code
+        - invalid_missing_subscriber_insured_id
+        - invalid_missing_subscriber_insured_name
+        - invalid_missing_surgery_date
+        - invalid_or_missing_case_number
+        - invalid_or_missing_provider_address
+        - invalid_participant_identification
+        - invalid_part_number
+        - invalid_ship_date
+        - invalid_ship_location
+        - level_of_care_not_appropriate
+        - light_weigh_and_restencil
+        - loaded_car_unable_to_load
+        - local_waybill
+        - missing_authorization_number
+        - move_from_current_spot_to_next
+        - mutually_defined
+        - negotiated_price_was_not_less_than_book_price
+        - non_covered_service
+        - not_medically_necessary
+        - not_valid_for_price_protection
+        - no_certification_information_found
+        - no_coverage
+        - no_credit_allowed
+        - no_prior_approval
+        - no_response_received_transaction_terminated
+        - ordered_for_replacement
+        - out_of_network
+        - patient_birth_date_does_not_match_that_for_the_patient_on_the_database
+        - patient_not_eligible
+        - patient_not_found
+        - payer_name_or_identifier_missing
+        - preventative_maintenance
+        - pre_existing_condition
+        - price_authorization_expired
+        - price_authorization_has_been_deleted
+        - price_authorization_invalid
+        - price_authorization_is_a_rebill_type
+        - price_authorization_used_on_a_sales_order
+        - primary_care_service
+        - product_not_on_the_price_authorization
+        - provider_ineligible_for_inquiries
+        - provider_is_not_primary_care_physician
+        - provider_not_on_file
+        - put_on_constructive_placement
+        - reject_due_to_air_bags
+        - reject_due_to_bad_floor
+        - reject_due_to_bad_order_slides
+        - reject_due_to_bad_order_valves_piping
+        - reject_due_to_bad_order_walls
+        - reject_due_to_bearings
+        - reject_due_to_brake_rigging_beam_lever
+        - reject_due_to_bridge_plate
+        - reject_due_to_center_bowls_plates_and_pins
+        - reject_due_to_couplers
+        - reject_due_to_crank_arm_application
+        - reject_due_to_damps
+        - reject_due_to_dirty
+        - reject_due_to_doors
+        - reject_due_to_draft_gear_yoke
+        - reject_due_to_handbrake
+        - reject_due_to_hand_hold_ladder_step_running_boards_platforms_etc
+        - reject_due_to_hot_journal_box
+        - reject_due_to_leaking_contents
+        - reject_due_to_load_dividers_side_filters_special_equipment
+        - reject_due_to_load_divider_bad_order
+        - reject_due_to_load_shifted
+        - reject_due_to_no_chains
+        - reject_due_to_outlet_gate_valve_lo_and_open_hopper
+        - reject_due_to_overloaded
+        - reject_due_to_racks_bi_or_tri_levels
+        - reject_due_to_refrigeration_unit
+        - reject_due_to_roof_hatches
+        - reject_due_to_spotted_in_error
+        - reject_due_to_superstructure_end_roof_and_sides
+        - reject_due_to_tie_down_devices
+        - reject_due_to_trailer_hitch
+        - reject_due_to_train_line_air_hose_anglecock
+        - reject_due_to_truck_s_frame_bolster
+        - reject_due_to_uncoupling_rod
+        - reject_due_to_underframe_including_sills
+        - reject_due_to_wheel_axle
+        - released
+        - released_as_railroad_company_material
+        - released_from_demurrage_after_being_scrapped
+        - released_from_industry_to_be_inspected
+        - released_from_industry_to_custody_of_broker
+        - released_from_shop_track
+        - released_loaded_for_line_haul_shipment
+        - released_partially_unloaded
+        - releases_an_idler
+        - release_as_a_cross_town_load
+        - release_from_demurrage_and_start_storage_until_waybilled
+        - release_load_through_bill_connecting_road
+        - requested_information_not_received
+        - requested_record_cannot_be_sent_electronically_record_resides_in_paper_format_only_which_will_be_sent_by_mail
+        - requested_record_will_not_be_sent
+        - requested_record_will_not_be_sent_cannot_identify_the_record
+        - requested_record_will_not_be_sent_need_student_or_parent_permission
+        - requested_record_will_not_be_sent_never_enrolled
+        - requested_record_will_not_be_sent_no_degree_awarded
+        - requested_record_will_not_be_sent_no_grades_posted
+        - request_forwarded_to_and_decision_response_forthcoming_from_an_external_review_organization
+        - required_application_data_missing
+        - requires_medical_review
+        - requires_primary_care_physician_authorization
+        - run_through_equipment_not_spotted
+        - service_dates_not_within_provider_plan_enrollment
+        - service_inconsistent_with_diagnosis
+        - ship_date_cannot_be_prior_to_price_authorization_issue_date
+        - ship_date_must_not_be_after_current_date
+        - ship_date_should_not_be_before_price_authorization_date_for_rebills
+        - special_cost_incorrect
+        - subscriber_found_patient_not_found
+        - subscriber_insured_not_found
+        - subscriber_insured_not_in_group_plan_identified
+        - testing_not_included
+        - to_be_reloaded
+        - unable_to_respond_at_current_time
+        - unit_resale_higher_than_authorized
+        - wrong_car_type
+        - wrong_consignee
+        - zero_balance
     BenefitCoverageLevel:
       type: string
       description: >-
@@ -724,12 +947,11 @@ components:
         - provider
         - payer
         - subscriber
-        - plan
-        - benefits
       properties:
         id:
           type: string
           format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: A unique identifier.
         provider:
           $ref: "#/components/schemas/Provider"
@@ -750,6 +972,18 @@ components:
             overall deductible, fall under the "health_benefit_plan_coverage" service.
           items:
             $ref: "#/components/schemas/Benefit"
+        errors:
+          type: array
+          description: ->
+            A list of eligibility inquiry errors that were returned by the payer.
+            An eligibility inquiry error may be returned by the POST /eligibility_inquiries
+            endpoint if the inquiry was created successfully, but rejected by the payer.
+            A payer may reject an inquiry for a variety of reasons. For example,
+            if the payer does not recongize the subscriber member ID. If this property
+            is absent, it means the eligibility inquiry was accepted by the payer
+            without any errors.
+          items:
+            $ref: "#/components/schemas/EligibilityInquiryError"
     Payer:
       type: object
       additionalProperties: false
@@ -762,6 +996,7 @@ components:
         id:
           type: string
           format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: A unique identifier.
         name:
           type: string
@@ -812,7 +1047,9 @@ components:
           type: string
           format: date
           example: 01-01-2021
-          description: The subscriber's date of birth as it appears on their insurance card.
+          description: >-
+            The subscriber's date of birth as it appears on their insurance card.
+            This should be formatted like 01-01-2021.
     ErrorCode:
       type: string
       description: An error code indicating the category of problem.
