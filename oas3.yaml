@@ -505,8 +505,6 @@ components:
         The start_date and end_date indicate the time period during which the
         subscriber is covered by this plan.
       required:
-        - number
-        - description
         - active
       properties:
         number:
@@ -514,9 +512,12 @@ components:
           description: >-
             A short string, usually containing numbers only, that the payer uses to
             identify this plan. This is not to be confused with an Opkit ID.
+            Some payers will not return a plan number.
         description:
           type: string
-          description: The plan description.
+          description: >-
+            A description that the payer has assigned to this plan.
+            Some payers will not return a plan description.
         # Should this be optional?
         start_date:
           type: string
