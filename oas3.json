@@ -3,7 +3,7 @@
     "info": {
         "title": "Opkit",
         "version": "v1",
-        "description": "The fastest, easiest way to integrate with health insurance.<br><br> Opkit (YC S21) is Stripe for healthcare - a modern, easy-to-use developer toolkit for healthcare payments. We provide simple APIs for verifying insurance and submitting health insurance claims.<br><br>To get started, see <a href=https://docs.opkit.co/>here</a>.",
+        "description": "The fastest, easiest way to integrate with health insurance.<br><br> Opkit (YC S21) is a modern, easy-to-use developer toolkit for healthcare  payments. We provide simple APIs for verifying insurance and submitting health insurance claims.<br><br>To get started, see <a href=https://docs.opkit.co/>here</a>.",
         "contact": {
             "email": "founders@opkit.co"
         }
@@ -65,7 +65,7 @@
                                     },
                                     "services": {
                                         "type": "array",
-                                        "description": "A list of medical services to return benefits for. The eligibility response will only contain benefits relating to the services in this list. These enum values correspond to X12 EDI <a href=https://x12.org/codes/service-type-codes> service type codes</a>. If you do include this list in your request payload, the server will default to a single-item array with \"health_benefit_plan_coverage\". This is a generic service that should include benefits that do not relate to any particular medical service. For example, the subscriber's overall deductible and out-of-pocket maximum.",
+                                        "description": "A list of services to return benefits for. The eligibility response will only contain benefits relating to the services in this list. If you do not specify any services in your request, the server will default to the generic service \"health_benefit_plan_coverage\", which is used for benefits that do not relate to any particular medical service. These include, foror example, the subscriber's overall deductible and out-of-pocket maximum.",
                                         "items": {
                                             "$ref": "#/components/schemas/Service"
                                         },
@@ -534,20 +534,16 @@
                 "additionalProperties": false,
                 "description": "An object representing a health insurance plan offered by a payer. The start_date and end_date indicate the time period during which the subscriber is covered by this plan.",
                 "required": [
-                    "number",
-                    "description",
-                    "start_date",
-                    "end_date",
                     "active"
                 ],
                 "properties": {
                     "number": {
                         "type": "string",
-                        "description": "A short string, usually containing numbers only, that the payer uses to identify this plan. This is not to be confused with an Opkit ID."
+                        "description": "A short string, usually containing numbers only, that the payer uses to identify this plan. This is not to be confused with an Opkit ID. Some payers will not return a plan number."
                     },
                     "description": {
                         "type": "string",
-                        "description": "The plan description."
+                        "description": "A description that the payer has assigned to this plan. Some payers will not return a plan description."
                     },
                     "start_date": {
                         "type": "string",
