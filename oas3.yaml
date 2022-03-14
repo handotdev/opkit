@@ -512,21 +512,19 @@ components:
         An object representing a health insurance plan offered by a payer.
         The start_date and end_date indicate the time period during which the
         subscriber is covered by this plan.
-      required:
-        - active
       properties:
         number:
           type: string
           description: >-
             A short string, usually containing numbers only, that the payer uses to
             identify this plan. This is not to be confused with an Opkit ID.
-            Some payers will not return a plan number.
+            Some payers will not return a plan number. This value may or may not be
+            present on the plan, depending on whether the payer includes it.
         description:
           type: string
           description: >-
             A description that the payer has assigned to this plan.
             Some payers will not return a plan description.
-        # Should this be optional?
         start_date:
           type: string
           format: date
@@ -535,7 +533,7 @@ components:
             The start date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
             you should refer to the "active" field. This should be formatted like 01-01-2021.
-        # Should this be optional?
+            This value may or may not be present on the plan, depending on whether the payer includes it.
         end_date:
           type: string
           format: date
@@ -544,12 +542,14 @@ components:
             The end date of the insurance plan. Note that the start_date and end_date
             can not be used to determine whether the plan is currently active. For that,
             you should refer to the "active" field. This should be formatted like 01-01-2021.
+            This value may or may not be present on the plan, depending on whether the payer includes it.
         active:
           type: boolean
           description: >-
             A boolean value that indicates whether a plan is currently active or not.
             The plan may be inactive if the end_date has passed, the subscriber has stopped
-            paying their premiums, or various other reasons.
+            paying their premiums, or various other reasons. This value may or may not be
+            present on the plan, depending on whether the payer includes it.
     BenefitType:
       type: string
       description: >-
