@@ -33,7 +33,8 @@
         "/eligibility_inquiries": {
             "post": {
                 "summary": "Create a new eligibility inquiry",
-                "description": "<p>Create a new eligibility inquiry with this payer, provider and subscriber.</p> <p>The response will contain information about the subscriber's health insurance plan, including its status and any associated benefits.</p> <p>If you are interested in specific medical services, you should specify them in the request payload using the \"services\" parameter. Otherwise, Opkit will use the default service - \"health_benefit_plan_coverage\" - which returns only  general benefits.</p>",
+                "operationId": "postEligibilityInquiries",
+                "description": "<p>Create a new eligibility inquiry with this payer, provider and subscriber.</p> <p>The response will contain information about the subscriber's health insurance plan, including its status and any associated benefits.</p> <p>If you are interested in specific medical services, you should specify them in the request payload using the \"services\" parameter. Otherwise, Opkit will use the default service, \"health_benefit_plan_coverage\", which returns only  general benefits.</p>",
                 "requestBody": {
                     "description": "<p>A payload containing information about the subscriber you are inquiring about, the health insurance carrier (or \"payer\") you are issuing the inquiry to, and the provider you are issuing the inquiry on behalf of.</p>",
                     "content": {
@@ -52,7 +53,7 @@
                                         "type": "string",
                                         "format": "uuid",
                                         "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of the payer that you are issuing this inquiry to.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p>"
+                                        "description": "<p>The ID of the payer that you are issuing this inquiry to.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here.</a>"
                                     },
                                     "provider_npi": {
                                         "type": "string",
@@ -63,7 +64,7 @@
                                     },
                                     "services": {
                                         "type": "array",
-                                        "description": "<p>A list of services to return benefits for.</p> <p>The eligibility response will only contain benefits relating to the services in this list.</p> <p>If you do not specify any services in your request, the server will default to the generic service \"health_benefit_plan_coverage\", which is used for benefits that do not relate to any particular medical service. These include, foror example, the subscriber's overall deductible and out-of-pocket maximum.</p>",
+                                        "description": "<p>A list of services to return benefits for. The eligibility response will only contain benefits relating to the services in this list.</p> <p>If you are unsure about which service or services to include, see <a href=\"https://docs.opkit.co/docs/faq\">here.</a> <p>If you do not specify any services in your request, Opkit will use the default service, \"health_benefit_plan_coverage\", which is used for benefits that do not relate to any particular medical service. These include, foror example, the subscriber's overall deductible and out-of-pocket maximum.</p>",
                                         "items": {
                                             "$ref": "#/components/schemas/Service"
                                         },
