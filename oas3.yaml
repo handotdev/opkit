@@ -1123,7 +1123,7 @@ components:
   responses:
     Default:
       description: >-
-        A default error response if no other response is provided.
+        <p>A default error response if no other response is provided.</p>
       content:
         "application/json":
           schema:
