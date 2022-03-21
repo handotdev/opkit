@@ -84,7 +84,7 @@ paths:
                     <p>If you do not
                     specify any services in your request, Opkit will use the default service,
                     "health_benefit_plan_coverage", which is used for benefits that do not relate
-                    to any particular medical service. These include, foror example, the subscriber's overall
+                    to any particular medical service. These include, for example, the subscriber's overall
                     deductible and out-of-pocket maximum.</p>
                   items:
                     $ref: "#/components/schemas/Service"
