@@ -172,6 +172,19 @@ paths:
         <p>This endpoint returns a list payers that you can interact with via
         the Opkit API. Opkit supports hundreds of payers across the United States.</p>
       operationId: getPayers
+      parameters:
+        - in: query
+          name: search
+          example: anthem
+          schema:
+            type: string
+            description: >-
+              <p>A substring to match payer names on. The casing
+              of this value does not matter.</p>
+          required: false
+          description: >-
+            <p>A substring to match payer names on. The casing
+            of this value does not matter.</p>
       responses:
         "200":
           description: >-
