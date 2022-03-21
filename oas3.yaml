@@ -4,7 +4,7 @@ info:
   version: v1
   description: >-
     The fastest, easiest way to integrate with health insurance.<br><br>
-    Opkit (YC S21) is a modern, easy-to-use developer toolkit for healthcare 
+    Opkit is a modern, easy-to-use developer toolkit for healthcare 
     payments. We provide simple APIs for verifying insurance and
     submitting health insurance claims.<br><br>To get started,
     see <a href=https://docs.opkit.co/>here</a>.
@@ -12,51 +12,41 @@ info:
     email: founders@opkit.co
 externalDocs:
   url: https://docs.opkit.co/
-  description: Read the documentation
+  description: >-
+    Read the documentation
 servers:
   - url: https://api.opkit.co/v1
-    description: Production
+    description: >-
+      Production
 tags:
   - name: Eligibility Inquiries
-    description: >-
-      Create and read eligibility inquiries. An eligibility inquiry is a request
-      for information about a subscriber's health insurance plan and coverages.
-      The eligibility inquiry response can confirm whether a subscriber's plan is
-      active or not, and whether it includes benefits that relate to specific services.
   - name: Payers
-    description: >-
-      Read payers. This endpoint returns a list of insurance carriers, also
-      known as "payers", that you can interact with via the Opkit API. 
-      Opkit supports thousands of payers across the United States.
   - name: Internal
-    description: >-
-      For Opkit internal use. These endpoints will not work for customer
-      API keys. Please do not attempt to access them.
 paths:
   /eligibility_inquiries:
     post:
       summary: Create a new eligibility inquiry
       description: >-
-        Create a new eligibility inquiry for the given payer, provider and subscriber.
-        The response will contain information about the subscriber's plan, including
-        whether or not the plan is active, and whether or not the plan includes benefits
-        relating to particular services. If you are interested in specific services,
-        can include them in the request payload. Otherwise, Opkit will assume the default
-        service, "health_benefit_plan_coverage", which returns general benefits.
-      operationId: postEligibilityInquiries
+        <p>Create a new eligibility inquiry with this payer, provider and subscriber.</p>
+        <p>The response will contain information about the subscriber's health insurance plan,
+        including its status and any associated benefits.</p>
+        <p>If you are interested in specific medical services, you should specify
+        them in the request payload using the "services" parameter. Otherwise, Opkit will
+        use the default service - "health_benefit_plan_coverage" - which returns only 
+        general benefits.</p>
       requestBody:
         description: >-
-          A payload containing information about the subscriber you are inquiring about,
+          <p>A payload containing information about the subscriber you are inquiring about,
           the health insurance carrier (or "payer") you are issuing the inquiry to,
-          and the provider you are issuing the inquiry on behalf of.
+          and the provider you are issuing the inquiry on behalf of.</p>
         content:
           "application/json":
             schema:
               type: object
               description: >-
-                An object that containing information about the subscriber you are inquiring about,
+                <p>An object that containing information about the subscriber you are inquiring about,
                 the health insurance carrier (or "payer") you are issuing the inquiry to,
-                and the provider you are issuing the inquiry on behalf of.
+                and the provider you are issuing the inquiry on behalf of.</p>
               additionalProperties: false
               required:
                 - payer_id
@@ -68,9 +58,9 @@ paths:
                   format: uuid
                   example: 612e564c-567b-4d05-871c-1ba3a841b12d
                   description: >-
-                    The ID of the payer that you are issuing this inquiry to.
-                    This an Opkit ID. You can get a list of payer IDs by calling the
-                    the GET /v1/payers endpoint.
+                    <p>The ID of the payer that you are issuing this inquiry to.</p>
+                    <p>This an Opkit ID. You can get a list of payer IDs by calling the
+                    the GET /v1/payers endpoint.</p>
                 # This may not be necessary if each customer only has one NPI + org name
                 provider:
                   $ref: "#/components/schemas/Provider"
@@ -79,18 +69,21 @@ paths:
                 services:
                   type: array
                   description: >-
-                    A list of services to return benefits for. The eligibility response
-                    will only contain benefits relating to the services in this list. If you do not
+                    <p>A list of services to return benefits for.</p>
+                    <p>The eligibility response
+                    will only contain benefits relating to the services in this list.</p>
+                    <p>If you do not
                     specify any services in your request, the server will default to the generic service
                     "health_benefit_plan_coverage", which is used for benefits that do not relate
                     to any particular medical service. These include, foror example, the subscriber's overall
-                    deductible and out-of-pocket maximum.
+                    deductible and out-of-pocket maximum.</p>
                   items:
                     $ref: "#/components/schemas/Service"
                   default: ["health_benefit_plan_coverage"]
       responses:
         "200":
-          description: OK
+          description: >-
+            OK
           content:
             "application/json":
               schema:
@@ -107,7 +100,8 @@ paths:
       operationId: getEligibilityInquiries
       responses:
         "200":
-          description: OK
+          description: >-
+            OK
           content:
             "application/json":
               schema:
@@ -122,10 +116,12 @@ paths:
                 properties:
                   count:
                     type: number
-                    description: The number of items in this list.
+                    description: >-
+                      The number of items in this list.
                   items:
                     type: array
-                    description: A list of eligibility inquiries.
+                    description: >-
+                      A list of eligibility inquiries.
                     items:
                       $ref: "#/components/schemas/EligibilityInquiry"
         default:
@@ -145,12 +141,15 @@ paths:
             type: string
             format: uuid
             example: 612e564c-567b-4d05-871c-1ba3a841b12d
-            description: The ID of the eligibility inquiry.
+            description: >-
+              The ID of the eligibility inquiry.
           required: true
-          description: The ID of the eligibility inquiry.
+          description: >-
+            The ID of the eligibility inquiry.
       responses:
         "200":
-          description: OK
+          description: >-
+            OK
           content:
             "application/json":
               schema:
@@ -164,13 +163,14 @@ paths:
     get:
       summary: Get all payers
       description: >-
-        Get a complete list of the payers supported by Opkit.
-        This endpoint returns a list payers that you can interact with via
-        the Opkit API. Opkit supports thousands of payers across the United States.
+        <p>Get a complete list of the payers supported by Opkit.</p>
+        <p>This endpoint returns a list payers that you can interact with via
+        the Opkit API. Opkit supports hundreds of payers across the United States.</p>
       operationId: getPayers
       responses:
         "200":
-          description: OK
+          description: >-
+            OK
           content:
             "application/json":
               schema:
@@ -185,10 +185,12 @@ paths:
                 properties:
                   count:
                     type: number
-                    description: The number of items in this list.
+                    description: >-
+                      The number of items in this list.
                   items:
                     type: array
-                    description: A list of payers.
+                    description: >-
+                      A list of payers.
                     items:
                       $ref: "#/components/schemas/Payer"
         default:
@@ -200,28 +202,31 @@ paths:
       summary: >-
         Create a new customer user, customer organizaton, and API key
       description: >-
-        Create a new customer user, customer organizaton, and API key in
-        a single request. This endpoint is for Opkit internal use only and
+        <p>Create a new customer user, customer organizaton, and API key in
+        a single request.</p>
+        <p>This endpoint is for Opkit internal use only and
         will return unauthorized for customer API keys. Please do not attempt
-        to access it.
+        to access it.</p>
       operationId: postRegister
       requestBody:
         description: >-
-          A payload containing the full name to use for the new customer user,
+          <p>A payload containing the full name to use for the new customer user,
           the email address to use for the new customer user, and (optionally)
-          the name to use for the new customer organization. If customer_organization_name
+          the name to use for the new customer organization.</p>
+          <p>If customer_organization_name
           is absent, the server will use a default value for the new customer organization
-          name.
+          name.</p>
         content:
           "application/json":
             schema:
               type: object
               description: >-
-                An object containing the full name to use for the new customer user,
+                <p>An object containing the full name to use for the new customer user,
                 the email address to use for the new customer user, and (optionally)
-                the name to use for the new customer organization. If customer_organization_name
+                the name to use for the new customer organization.</p>
+                <p>If customer_organization_name
                 is absent, the server will use a default value for the new customer organization
-                name.
+                name.</p>
               additionalProperties: false
               required:
                 - customer_user_name
@@ -229,28 +234,32 @@ paths:
               properties:
                 customer_user_name:
                   type: string
-                  description: The full name to use for the new customer user.
+                  description: >-
+                    The full name to use for the new customer user.
                 customer_user_email:
                   type: string
                   format: email
-                  description: The email address to use for the new customer user.
+                  description: >-
+                    The email address to use for the new customer user.
                 customer_organization_name:
                   type: string
                   description: >-
-                    The name to use for the new customer organization. If this field is
+                    <p>The name to use for the new customer organization. If this field is
                     not provided, the server will use a default value for the customer
-                    organization name.
+                    organization name.</p>
       responses:
         "200":
-          description: OK
+          description: >-
+            OK
           content:
             "application/json":
               schema:
                 type: object
                 description: >-
-                  An object containing various fields from the new customer user,
-                  customer organization, and API key. This object will contain the secret
-                  value of the API key, which should NEVER be shared publicly.
+                  <p>An object containing various fields from the new customer user,
+                  customer organization, and API key.</p>
+                  <p>This object will contain the secret
+                  value of the API key, which should NEVER be shared publicly.</p>
                 additionalProperties: false
                 required:
                   - customer_user_id
@@ -266,33 +275,40 @@ paths:
                     type: string
                     format: uuid
                     example: 612e564c-567b-4d05-871c-1ba3a841b12d
-                    description: The ID of the new customer user.
+                    description: >-
+                      The ID of the new customer user.
                   customer_user_name:
                     type: string
-                    description: The name of the new customer user.
+                    description: >-
+                      The name of the new customer user.
                   customer_user_email:
                     type: string
-                    description: The email of the new customer user.
+                    description: >-
+                      The email of the new customer user.
                   customer_organization_id:
                     type: string
                     format: uuid
                     example: 612e564c-567b-4d05-871c-1ba3a841b12d
-                    description: The ID of the new customer organization.
+                    description: >-
+                      The ID of the new customer organization.
                   customer_organization_name:
                     type: string
                     format: uuid
                     example: 612e564c-567b-4d05-871c-1ba3a841b12d
-                    description: The name of the new customer organization.
+                    description: >-
+                      The name of the new customer organization.
                   api_key_id:
                     type: string
                     format: uuid
                     example: 612e564c-567b-4d05-871c-1ba3a841b12d
-                    description: The ID of the new API key.
+                    description: >-
+                      The ID of the new API key.
                   api_key_name:
                     type: string
                     format: uuid
                     example: 612e564c-567b-4d05-871c-1ba3a841b12d
-                    description: The name of the new API key.
+                    description: >-
+                      The name of the new API key.
                   api_key_value:
                     type: string
                     format: uuid
@@ -309,11 +325,13 @@ components:
     Service:
       type: string
       description: >-
-        An enum that describes medical services. "health_benefit_plan_coverage" is a
+        <p>An enum that describes medical services.</p>
+        <p>"health_benefit_plan_coverage" is a
         generic value that is used to retrieve benefits that do not relate to any particular medical
-        service. For example, a subscriber's out-of-pocket maximum. These enum values were taken
+        service. For example, a subscriber's out-of-pocket maximum.</p>
+        <p>These enum values were taken
         from the <a href=https://edi.stedi.com/x12-005010/element/1365>Stedi X12 EDI
-        documentation</a>.
+        documentation</a>.</p>
       enum:
         - abortion
         - acupuncture
@@ -509,17 +527,17 @@ components:
       type: object
       additionalProperties: false
       description: >-
-        An object representing a health insurance plan offered by a payer.
-        The start_date and end_date indicate the time period during which the
-        subscriber is covered by this plan.
+        <p>An object representing a health insurance plan offered by a payer.</p>
+        <p>The start_date and end_date indicate the time period during which the
+        subscriber is covered by this plan.</p>
       properties:
         number:
           type: string
           description: >-
-            A short string, usually containing numbers only, that the payer uses to
-            identify this plan. This is not to be confused with an Opkit ID.
-            Some payers will not return a plan number. This value may or may not be
-            present on the plan, depending on whether the payer includes it.
+            <p>A short string, usually containing numbers only, that the payer uses to
+            identify this plan. This is not to be confused with an Opkit ID.</p>
+            <p>Some payers will not return a plan number. This value may or may not be
+            present on the plan, depending on whether the payer includes it.</p>
         description:
           type: string
           description: >-
@@ -530,38 +548,49 @@ components:
           format: date
           example: 01-01-2021
           description: >-
-            The start date of the insurance plan. Note that the start_date and end_date
-            can not be used to determine whether the plan is currently active. For that,
-            you should refer to the "active" field. This should be formatted like 01-01-2021.
-            This value may or may not be present on the plan, depending on whether the payer includes it.
+            <p>The start date of the insurance plan.</p>
+            <p>Note that the start_date and end_date can not be used to
+            determine whether the plan is currently active.For that,
+            you should refer to the "active" field.</p>
+            <p>This value should be formatted like 01-01-2021.</p>
+            <p>This value may or may not be present on the plan,
+            depending on whether the payer includes it.</p>
         end_date:
           type: string
           format: date
           example: 01-01-2021
           description: >-
-            The end date of the insurance plan. Note that the start_date and end_date
-            can not be used to determine whether the plan is currently active. For that,
-            you should refer to the "active" field. This should be formatted like 01-01-2021.
-            This value may or may not be present on the plan, depending on whether the payer includes it.
+            <p>The end date of the insurance plan.</p>
+            <p>Note that the end_date and end_date can not be used to
+            determine whether the plan is currently active.For that,
+            you should refer to the "active" field.</p>
+            <p>This value should be formatted like 01-01-2021.</p>
+            <p>This value may or may not be present on the plan,
+            depending on whether the payer includes it.</p>
         active:
           type: boolean
           description: >-
-            A boolean value that indicates whether a plan is currently active or not.
-            The plan may be inactive if the end_date has passed, the subscriber has stopped
-            paying their premiums, or various other reasons. This value may or may not be
-            present on the plan, depending on whether the payer includes it.
+            <p>A boolean value that indicates whether a plan is currently active or not.</p>
+            <p>The plan may be inactive if the end_date has passed, the subscriber has stopped
+            paying their premiums, or various other reasons.</p>
+            <p>This value may or may not be
+            present on the plan, depending on whether the payer includes it.</p>
     BenefitType:
       type: string
       description: >-
-        An enum that indicates type of a benefit. The most common benefit types are
-        "active_coverage", "co_insurance", "co_payment", "deductible" and "out_of_pocket_stop_loss".
-        "active_coverage" indicates that the subscriber enjoys some coverage for the service
-        described by this benefit. "co_insurance" and "co_payment" indicate that the subscriber
-        must pay co-insurance or co-pay for the service. "deductible" indicates that the
-        subscriber is responsible for the cost of the service until they meet their deductible.
-        Finally, "out_of_pocket_stop_loss" indicates that the subscriber is protected by an
-        out-of-pocket maximum for this service. These enum values were taken from the
-        <a href=https://edi.stedi.com/x12-005010/element/1390>Stedi X12 EDI documentation</a>.
+        <p>An enum that indicates type of a benefit.</p>
+        <p>The most common benefit types are
+        "active_coverage", "co_insurance", "co_payment", "deductible" and "out_of_pocket_stop_loss".</p>
+        <p>"active_coverage" indicates that the subscriber enjoys some coverage for the service
+        described by this benefit.</p>
+        <p>"co_insurance" and "co_payment" indicate that the subscriber
+        must pay co-insurance or co-pay for the service.</p>
+        <p>"deductible" indicates that the
+        subscriber is responsible for the cost of the service until they meet their deductible.</p>
+        <p>Finally, "out_of_pocket_stop_loss" indicates that the subscriber is protected by an
+        out-of-pocket maximum for this service.</p>
+        <p>These enum values were taken from the
+        <a href=https://edi.stedi.com/x12-005010/element/1390>Stedi X12 EDI documentation</a>.</p>
       enum:
         - active_coverage
         - active_full_risk_capitation
@@ -605,13 +634,14 @@ components:
     EligibilityInquiryError:
       type: string
       description: >-
-        An enum that describes an eligibility inquiry error.
-        An eligibility inquiry error may be returned by the POST /eligibility_inquiries
-        endpoint if the inquiry was created successfully, but rejected by the payer.
-        A payer may reject an inquiry for a variety of reasons. For example,
-        if the payer does not recongize the subscriber member ID. These enum
+        <p>An enum that describes an eligibility inquiry error.</p>
+        <p>An eligibility inquiry error may be returned by the POST /eligibility_inquiries
+        endpoint if the inquiry was created successfully, but rejected by the payer.</p>
+        <p>A payer may reject an inquiry for a variety of reasons. For example,
+        if the payer does not recongize the subscriber member ID.</p>
+        <p>These enum
         values were taken from the <a href=https://edi.stedi.com/x12-005010X279A1/element/901>
-        Stedi X12 EDI documentation</a>.
+        Stedi X12 EDI documentation</a>.</p>
       enum:
         - accident_damage_derail_sideswiped
         - actual_information_different_claim_has_been_re_adjudicated_since_initial_payment
@@ -820,12 +850,13 @@ components:
     BenefitCoverageLevel:
       type: string
       description: >-
-        An enum that describes the level of coverage for a benefit.
-        In most cases, this will be "individual", but for some plans there will
-        be benefits that extend to parties other than the subscriber. This field is
-        not applicable for many benefits and may be absent. These enum values
+        <p>An enum that describes the level of coverage for a benefit.</p>
+        <p>In most cases, this will be "individual", but for some plans there will
+        be benefits that extend to parties other than the subscriber.</p>
+        <p>This field is not applicable for many benefits and may be absent.</p>
+        <p>These enum values
         were taken from the <a href=https://edi.stedi.com/x12-005010/element/1207>
-        Stedi X12 EDI documentation</a>.
+        Stedi X12 EDI documentation</a>.</p>
       enum:
         - children_only
         - dependents_only
@@ -855,10 +886,10 @@ components:
     BenefitTimePeriod:
       type: string
       description: >-
-        An enum that describes a time period which may be present on a benefit.
-        This field is not applicable for many benefits and may be absent.
-        These enum values were taken from the <a href=https://edi.stedi.com/x12-005010/element/615>
-        Stedi X12 EDI documentation</a>.
+        <p>An enum that describes a time period which may be present on a benefit.</p>
+        <p>This field is not applicable for many benefits and may be absent.</p>
+        <p>These enum values were taken from the <a href=https://edi.stedi.com/x12-005010/element/615>
+        Stedi X12 EDI documentation</a>.</p>
       enum:
         - 12_hours
         - 18_hours
@@ -902,12 +933,15 @@ components:
       type: object
       additionalProperties: false
       description: >-
-        An object that represents a discrete benefit. A benefit is a feature of the subscriber's
+        <p>An object that represents a discrete benefit.</p>
+        <p>A benefit is a feature of the subscriber's
         insurance plan. For example, the plan may include a $100 co-pay for in-network physician
-        office visits. The benefit object is polymorphic and may contain different fields depending
-        on the service, type, coverage_level, and other factors. You can determine whether a
+        office visits.</p>
+        <p>The benefit object is polymorphic and may contain different fields depending
+        on the service, type, coverage_level, and other factors.</p>
+        <p>You can determine whether a
         subscriber is eligible to receive a certain medical service under their insurance plan
-        by reviewing the list of benefits that are included in the eligibility inquiry response body.
+        by reviewing the list of benefits that are included in the eligibility inquiry response body.</p>
       required:
         - service
         - type
@@ -921,27 +955,28 @@ components:
         in_network:
           type: boolean
           description: >-
-            A boolean value that indicates whether this benefit relates to
-            in-network or out-of-network providers. This field is not applicable
-            for many benefits and may be absent.
+            <p>A boolean value that indicates whether this benefit relates to
+            in-network or out-of-network providers.</p>
+            <p>This field is not applicable
+            for many benefits and may be absent.</p>
         amount:
           type: integer
           description: >-
-            The dollar amount (in cents) that the subscriber is responsible for.
-            This field is not applicable for many benefits and may be absent.
+            <p>The dollar amount (in cents) that the subscriber is responsible for.</p>
+            <p>This field is not applicable for many benefits and may be absent.</p>
         percent:
           type: integer
           description: >-
-            The percentage amount that the subscriber is responsible for.
-            This field is not applicable for many benefits and may be absent.
+            <p>The percentage amount that the subscriber is responsible for.</p>
+            </p>This field is not applicable for many benefits and may be absent.</p>
         time_period:
           $ref: "#/components/schemas/BenefitTimePeriod"
     EligibilityInquiry:
       type: object
       additionalProperties: false
       description: >-
-        A request for information from a payer about a health insurance policy's
-        coverages, typically in relation to a particular subscriber.
+        <p>A request for information from a payer about a health insurance policy's
+        coverages, typically in relation to a particular subscriber.</p>
       required:
         - id
         - provider
@@ -952,7 +987,8 @@ components:
           type: string
           format: uuid
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: A unique identifier.
+          description: >-
+            A unique identifier.
         provider:
           $ref: "#/components/schemas/Provider"
         payer:
@@ -964,24 +1000,24 @@ components:
         benefits:
           type: array
           description: >-
-            A list of benefits that are included in the subscriber's insurance plan.
-            A benefit is a feature of the subscriber's insurance plan. For example,
-            the plan may include a $100 co-pay for in-network physician office visits.
-            The benefits that appear in this list are determined by the services
+            <p>A list of benefits that are included in the subscriber's insurance plan.</p>
+            <p>A benefit is a feature of the subscriber's insurance plan. For example,
+            the plan may include a $100 co-pay for in-network physician office visits.</p>
+            <p>The benefits that appear in this list are determined by the services
             specified in the request payload. General benefits, such as the subscriber's
-            overall deductible, fall under the "health_benefit_plan_coverage" service.
+            overall deductible, fall under the "health_benefit_plan_coverage" service.</p>
           items:
             $ref: "#/components/schemas/Benefit"
         errors:
           type: array
-          description: ->
-            A list of eligibility inquiry errors that were returned by the payer.
-            An eligibility inquiry error may be returned by the POST /eligibility_inquiries
-            endpoint if the inquiry was created successfully, but rejected by the payer.
-            A payer may reject an inquiry for a variety of reasons. For example,
+          description: >-
+            <p>A list of eligibility inquiry errors that were returned by the payer.</p>
+            <p>An eligibility inquiry error may be returned by the POST /eligibility_inquiries
+            endpoint if the inquiry was created successfully, but rejected by the payer.</p>
+            <p>A payer may reject an inquiry for a variety of reasons. For example,
             if the payer does not recongize the subscriber member ID. If this property
             is absent, it means the eligibility inquiry was accepted by the payer
-            without any errors.
+            without any errors.</p>
           items:
             $ref: "#/components/schemas/EligibilityInquiryError"
     Payer:
@@ -997,18 +1033,20 @@ components:
           type: string
           format: uuid
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: A unique identifier.
+          description: >-
+            A unique identifier.
         name:
           type: string
-          description: The name of the payer.
+          description: >-
+            The name of the payer.
     # Do we need to support individuals too?
     Provider:
       type: object
       additionalProperties: false
       description: >-
-        A healthcare provider organization that has been assigned a
+        <p>A healthcare provider organization that has been assigned a
         <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
-        National Provider Identifier (NPI)</a>.
+        National Provider Identifier (NPI)</a>.</p>
       required:
         - organization_name
         - npi
@@ -1016,18 +1054,21 @@ components:
         # Is this necessary? If so, what do we do for individuals?
         organization_name:
           type: string
-          description: The name of this provider organization.
+          description: >-
+            The name of this provider organization.
         npi:
           type: string
-          description: The NPI that has been assigned to this provider organization.
+          description: >-
+            The NPI that has been assigned to this provider organization.
     Subscriber:
       type: object
       additionalProperties: false
       description: >-
-        An individual who is covered under a health insurance plan.
-        This is a subscriber, not a dependent. Opkit does not currently support
-        eligibility inquiries for dependents. If you have this use-case, please
-        let us know by contacting <a href=mailto:founders@opkit.co>founders@opkit.co</a>.
+        <p>An individual who is covered under a health insurance plan.
+        This is a subscriber, not a dependent.</p>
+        <p>Opkit does not currently support eligibility inquiries for dependents.
+        If you have this use-case, please let us
+        know by contacting <a href=mailto:founders@opkit.co>founders@opkit.co</a>.</p>
       required:
         - first_name
         - last_name
@@ -1036,23 +1077,27 @@ components:
       properties:
         first_name:
           type: string
-          description: The subscriber's first name as it appears on their insurance card.
+          description: >-
+            The subscriber's first name as it appears on their insurance card.
         last_name:
           type: string
-          description: The subscriber's last name as it appears on their insurance card.
+          description: >-
+            The subscriber's last name as it appears on their insurance card.
         member_id:
           type: string
-          description: The subscriber's member ID as it appears on their insurance card.
+          description: >-
+            The subscriber's member ID as it appears on their insurance card.
         date_of_birth:
           type: string
           format: date
           example: 01-01-2021
           description: >-
-            The subscriber's date of birth as it appears on their insurance card.
-            This should be formatted like 01-01-2021.
+            <p>The subscriber's date of birth as it appears on their insurance card.</p>
+            <p>This should be formatted like 01-01-2021.</p>
     ErrorCode:
       type: string
-      description: An error code indicating the category of problem.
+      description: >-
+        An error code indicating the category of problem.
       enum:
         - not_allowed
         - invalid_api_key
@@ -1063,8 +1108,8 @@ components:
       type: object
       additionalProperties: false
       description: >-
-        An object that is returned when an error has occured.
-        This includes both client- and server-side errors.
+        <p>An object that is returned when an error has occured.
+        This includes both client- and server-side errors.</p>
       required:
         - code
         - message
@@ -1074,10 +1119,11 @@ components:
         message:
           type: string
           description: >-
-            A brief text description that expands upon this particular error code.
+            <p>A brief text description that expands upon this particular error code.</p>
   responses:
     Default:
-      description: A default error response if no other response is provided.
+      description: >-
+        A default error response if no other response is provided.
       content:
         "application/json":
           schema:
@@ -1087,9 +1133,13 @@ components:
       type: http
       scheme: basic
       description: >-
-        Basic HTTP authentication. To authenticate, please include this request header:
-        "Authorization: Basic `<your-base64-encoded-API-key>`". If you are using a client
-        that asks for a username and password (e.g. curl), provide your API key as the
-        username and omit the password.
+        <p>Opkit authenticates requests using
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP Basic Auth</a>.</p>
+        <p>Basic Auth usually involves two values: a username and password.
+        In Opkit's case, you should provide your API key as the username.
+        You do not need to provide a password.</p>
+        <p>Therefore, your requests should include the following header:
+        "Authorization: Basic &lt;base64-encode(your-api-key-with-a-trailing-colon)&gt;".</p>
+        <p>For more information, see <a href="https://docs.opkit.co/docs/authorization">here</a>.</p>
 security:
   - BasicAuth: []
