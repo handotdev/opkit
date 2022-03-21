@@ -50,7 +50,7 @@ paths:
               additionalProperties: false
               required:
                 - payer_id
-                - provider
+                - provider_npi
                 - subscriber
               properties:
                 payer_id:
@@ -61,9 +61,14 @@ paths:
                     <p>The ID of the payer that you are issuing this inquiry to.</p>
                     <p>This an Opkit ID. You can get a list of payer IDs by calling the
                     the GET /v1/payers endpoint.</p>
-                # This may not be necessary if each customer only has one NPI + org name
-                provider:
-                  $ref: "#/components/schemas/Provider"
+                provider_npi:
+                  type: string
+                  description: >-
+                    <p>A valid
+                    <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
+                    National Provider Identifier (NPI)</a>.</p>
+                    <p>This should be the NPI of your provider organization or one of
+                    your affiliated provider individuals.</p>
                 subscriber:
                   $ref: "#/components/schemas/Subscriber"
                 services:
@@ -322,6 +327,18 @@ paths:
         - Internal
 components:
   schemas:
+    PlanStatus:
+      type: string
+      description: >-
+        <p>An enum value that describes the status of a subscriber's plan.</p>
+        <p>A plan may be inactive for a variety of reasons. For example, the
+        end date may have passed, or the subscriber may have left their employer.<p>
+        <p>If the payer does not respond with the status of the plan,
+        this property will have a value of "unknown".</p>
+      enum:
+        - active
+        - inactive
+        - unknown
     Service:
       type: string
       description: >-
@@ -530,6 +547,8 @@ components:
         <p>An object representing a health insurance plan offered by a payer.</p>
         <p>The start_date and end_date indicate the time period during which the
         subscriber is covered by this plan.</p>
+      required:
+        - status
       properties:
         number:
           type: string
@@ -567,14 +586,8 @@ components:
             <p>This value should be formatted like 01-01-2021.</p>
             <p>This value may or may not be present on the plan,
             depending on whether the payer includes it.</p>
-        active:
-          type: boolean
-          description: >-
-            <p>A boolean value that indicates whether a plan is currently active or not.</p>
-            <p>The plan may be inactive if the end_date has passed, the subscriber has stopped
-            paying their premiums, or various other reasons.</p>
-            <p>This value may or may not be
-            present on the plan, depending on whether the payer includes it.</p>
+        status:
+          $ref: "#/components/schemas/PlanStatus"
     BenefitType:
       type: string
       description: >-
@@ -979,7 +992,7 @@ components:
         coverages, typically in relation to a particular subscriber.</p>
       required:
         - id
-        - provider
+        - provider_npi
         - payer
         - subscriber
       properties:
@@ -989,8 +1002,14 @@ components:
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
             A unique identifier.
-        provider:
-          $ref: "#/components/schemas/Provider"
+        provider_npi:
+          type: string
+          description: >-
+            <p>A valid
+            <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
+            National Provider Identifier (NPI)</a>.</p>
+            <p>This should be the NPI of your provider organization or one of
+            your affiliated provider individuals.</p>
         payer:
           $ref: "#/components/schemas/Payer"
         subscriber:
@@ -1039,27 +1058,6 @@ components:
           type: string
           description: >-
             The name of the payer.
-    # Do we need to support individuals too?
-    Provider:
-      type: object
-      additionalProperties: false
-      description: >-
-        <p>A healthcare provider organization that has been assigned a
-        <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
-        National Provider Identifier (NPI)</a>.</p>
-      required:
-        - organization_name
-        - npi
-      properties:
-        # Is this necessary? If so, what do we do for individuals?
-        organization_name:
-          type: string
-          description: >-
-            The name of this provider organization.
-        npi:
-          type: string
-          description: >-
-            The NPI that has been assigned to this provider organization.
     Subscriber:
       type: object
       additionalProperties: false
@@ -1099,11 +1097,9 @@ components:
       description: >-
         An error code indicating the category of problem.
       enum:
-        - not_allowed
-        - invalid_api_key
-        - invalid_payload
+        - unauthorized
+        - bad_request
         - not_found
-        - unexpected
     Error:
       type: object
       additionalProperties: false
@@ -1124,6 +1120,10 @@ components:
     Default:
       description: >-
         <p>A default error response if no other response is provided.</p>
+        <p>If you see this response, it should be accompanied by a 4XX HTTP status code.
+        You can use the error code to programmatically handle the error.</p>
+        <p>5XX responses are unanticipated will not include an error object
+        in the response body. You should try resubmitting the request.</p>
       content:
         "application/json":
           schema:
