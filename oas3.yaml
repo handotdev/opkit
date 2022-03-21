@@ -33,7 +33,7 @@ paths:
         including its status and any associated benefits.</p>
         <p>If you are interested in specific medical services, you should specify
         them in the request payload using the "services" parameter. Otherwise, Opkit will
-        use the default service - "health_benefit_plan_coverage" - which returns only 
+        use the default service, "health_benefit_plan_coverage", which returns only 
         general benefits.</p>
       requestBody:
         description: >-
@@ -62,6 +62,8 @@ paths:
                     <p>The ID of the payer that you are issuing this inquiry to.</p>
                     <p>This an Opkit ID. You can get a list of payer IDs by calling the
                     the GET /v1/payers endpoint.</p>
+                    <p>For more on finding the appropriate payer ID,
+                    see <a href="https://docs.opkit.co/docs/faq">here.</a>
                 provider_npi:
                   type: string
                   description: >-
@@ -75,11 +77,12 @@ paths:
                 services:
                   type: array
                   description: >-
-                    <p>A list of services to return benefits for.</p>
-                    <p>The eligibility response
+                    <p>A list of services to return benefits for. The eligibility response
                     will only contain benefits relating to the services in this list.</p>
+                    <p>If you are unsure about which service or services to include,
+                    see <a href="https://docs.opkit.co/docs/faq">here.</a>
                     <p>If you do not
-                    specify any services in your request, the server will default to the generic service
+                    specify any services in your request, Opkit will use the default service,
                     "health_benefit_plan_coverage", which is used for benefits that do not relate
                     to any particular medical service. These include, foror example, the subscriber's overall
                     deductible and out-of-pocket maximum.</p>
