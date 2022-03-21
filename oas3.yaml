@@ -26,6 +26,7 @@ paths:
   /eligibility_inquiries:
     post:
       summary: Create a new eligibility inquiry
+      operationId: postEligibilityInquiries
       description: >-
         <p>Create a new eligibility inquiry with this payer, provider and subscriber.</p>
         <p>The response will contain information about the subscriber's health insurance plan,
