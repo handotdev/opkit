@@ -63,7 +63,7 @@ paths:
                     <p>This an Opkit ID. You can get a list of payer IDs by calling the
                     the GET /v1/payers endpoint.</p>
                     <p>For more on finding the appropriate payer ID,
-                    see <a href="https://docs.opkit.co/docs/faq">here.</a>
+                    see <a href="https://docs.opkit.co/docs/faq">here</a>.
                 provider_npi:
                   type: string
                   description: >-
@@ -80,7 +80,7 @@ paths:
                     <p>A list of services to return benefits for. The eligibility response
                     will only contain benefits relating to the services in this list.</p>
                     <p>If you are unsure about which service or services to include,
-                    see <a href="https://docs.opkit.co/docs/faq">here.</a>
+                    see <a href="https://docs.opkit.co/docs/faq">here</a>.
                     <p>If you do not
                     specify any services in your request, Opkit will use the default service,
                     "health_benefit_plan_coverage", which is used for benefits that do not relate

@@ -43,13 +43,17 @@
                 "type": "object",
                 "description": "<p>An object that containing information about the subscriber you are inquiring about, the health insurance carrier (or \"payer\") you are issuing the inquiry to, and the provider you are issuing the inquiry on behalf of.</p>",
                 "additionalProperties": false,
-                "required": ["payer_id", "provider_npi", "subscriber"],
+                "required": [
+                  "payer_id",
+                  "provider_npi",
+                  "subscriber"
+                ],
                 "properties": {
                   "payer_id": {
                     "type": "string",
                     "format": "uuid",
                     "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                    "description": "<p>The ID of the payer that you are issuing this inquiry to.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here.</a>"
+                    "description": "<p>The ID of the payer that you are issuing this inquiry to.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>."
                   },
                   "provider_npi": {
                     "type": "string",
@@ -60,11 +64,13 @@
                   },
                   "services": {
                     "type": "array",
-                    "description": "<p>A list of services to return benefits for. The eligibility response will only contain benefits relating to the services in this list.</p> <p>If you are unsure about which service or services to include, see <a href=\"https://docs.opkit.co/docs/faq\">here.</a> <p>If you do not specify any services in your request, Opkit will use the default service, \"health_benefit_plan_coverage\", which is used for benefits that do not relate to any particular medical service. These include, for example, the subscriber's overall deductible and out-of-pocket maximum.</p>",
+                    "description": "<p>A list of services to return benefits for. The eligibility response will only contain benefits relating to the services in this list.</p> <p>If you are unsure about which service or services to include, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>. <p>If you do not specify any services in your request, Opkit will use the default service, \"health_benefit_plan_coverage\", which is used for benefits that do not relate to any particular medical service. These include, for example, the subscriber's overall deductible and out-of-pocket maximum.</p>",
                     "items": {
                       "$ref": "#/components/schemas/Service"
                     },
-                    "default": ["health_benefit_plan_coverage"]
+                    "default": [
+                      "health_benefit_plan_coverage"
+                    ]
                   }
                 }
               }
@@ -86,7 +92,9 @@
             "$ref": "#/components/responses/Default"
           }
         },
-        "tags": ["Eligibility Inquiries"]
+        "tags": [
+          "Eligibility Inquiries"
+        ]
       },
       "get": {
         "summary": "Get all existing eligibility inquiries",
@@ -101,7 +109,10 @@
                   "type": "object",
                   "description": "An object containing a list of eligibility inquiries  and a count that indicates the number of items in the list.",
                   "additionalProperties": false,
-                  "required": ["count", "items"],
+                  "required": [
+                    "count",
+                    "items"
+                  ],
                   "properties": {
                     "count": {
                       "type": "number",
@@ -123,7 +134,9 @@
             "$ref": "#/components/responses/Default"
           }
         },
-        "tags": ["Eligibility Inquiries"]
+        "tags": [
+          "Eligibility Inquiries"
+        ]
       }
     },
     "/eligibility_inquiries/{id}": {
@@ -160,7 +173,9 @@
             "$ref": "#/components/responses/Default"
           }
         },
-        "tags": ["Eligibility Inquiries"]
+        "tags": [
+          "Eligibility Inquiries"
+        ]
       }
     },
     "/payers": {
@@ -190,7 +205,10 @@
                   "type": "object",
                   "description": "An object containing a list of payers and a count that indicates the number of items in this list.",
                   "additionalProperties": false,
-                  "required": ["count", "items"],
+                  "required": [
+                    "count",
+                    "items"
+                  ],
                   "properties": {
                     "count": {
                       "type": "number",
@@ -212,7 +230,9 @@
             "$ref": "#/components/responses/Default"
           }
         },
-        "tags": ["Payers"]
+        "tags": [
+          "Payers"
+        ]
       }
     },
     "/register": {
@@ -228,7 +248,10 @@
                 "type": "object",
                 "description": "<p>An object containing the full name to use for the new customer user, the email address to use for the new customer user, and (optionally) the name to use for the new customer organization.</p> <p>If customer_organization_name is absent, the server will use a default value for the new customer organization name.</p>",
                 "additionalProperties": false,
-                "required": ["customer_user_name", "customer_user_email"],
+                "required": [
+                  "customer_user_name",
+                  "customer_user_email"
+                ],
                 "properties": {
                   "customer_user_name": {
                     "type": "string",
@@ -321,7 +344,9 @@
             "$ref": "#/components/responses/Default"
           }
         },
-        "tags": ["Internal"]
+        "tags": [
+          "Internal"
+        ]
       }
     }
   },
@@ -330,7 +355,11 @@
       "PlanStatus": {
         "type": "string",
         "description": "<p>An enum value that describes the status of a subscriber's plan.</p> <p>A plan may be inactive for a variety of reasons. For example, the end date may have passed, or the subscriber may have left their employer.<p> <p>If the payer does not respond with the status of the plan, this property will have a value of \"unknown\".</p>",
-        "enum": ["active", "inactive", "unknown"]
+        "enum": [
+          "active",
+          "inactive",
+          "unknown"
+        ]
       },
       "Service": {
         "type": "string",
@@ -532,7 +561,9 @@
         "type": "object",
         "additionalProperties": false,
         "description": "<p>An object representing a health insurance plan offered by a payer.</p> <p>The start_date and end_date indicate the time period during which the subscriber is covered by this plan.</p>",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
           "number": {
             "type": "string",
@@ -893,7 +924,10 @@
         "type": "object",
         "additionalProperties": false,
         "description": "<p>An object that represents a discrete benefit.</p> <p>A benefit is a feature of the subscriber's insurance plan. For example, the plan may include a $100 co-pay for in-network physician office visits.</p> <p>The benefit object is polymorphic and may contain different fields depending on the service, type, coverage_level, and other factors.</p> <p>You can determine whether a subscriber is eligible to receive a certain medical service under their insurance plan by reviewing the list of benefits that are included in the eligibility inquiry response body.</p>",
-        "required": ["service", "type"],
+        "required": [
+          "service",
+          "type"
+        ],
         "properties": {
           "service": {
             "$ref": "#/components/schemas/Service"
@@ -925,7 +959,12 @@
         "type": "object",
         "additionalProperties": false,
         "description": "<p>A request for information from a payer about a health insurance policy's coverages, typically in relation to a particular subscriber.</p>",
-        "required": ["id", "provider_npi", "payer", "subscriber"],
+        "required": [
+          "id",
+          "provider_npi",
+          "payer",
+          "subscriber"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -966,7 +1005,10 @@
         "type": "object",
         "additionalProperties": false,
         "description": "A health insurance carrier that offers one or more health insurance plans.",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -984,7 +1026,12 @@
         "type": "object",
         "additionalProperties": false,
         "description": "<p>An individual who is covered under a health insurance plan. This is a subscriber, not a dependent.</p> <p>Opkit does not currently support eligibility inquiries for dependents. If you have this use-case, please let us know by contacting <a href=mailto:founders@opkit.co>founders@opkit.co</a>.</p>",
-        "required": ["first_name", "last_name", "member_id", "date_of_birth"],
+        "required": [
+          "first_name",
+          "last_name",
+          "member_id",
+          "date_of_birth"
+        ],
         "properties": {
           "first_name": {
             "type": "string",
@@ -1009,13 +1056,20 @@
       "ErrorCode": {
         "type": "string",
         "description": "An error code indicating the category of problem.",
-        "enum": ["unauthorized", "bad_request", "not_found"]
+        "enum": [
+          "unauthorized",
+          "bad_request",
+          "not_found"
+        ]
       },
       "Error": {
         "type": "object",
         "additionalProperties": false,
         "description": "<p>An object that is returned when an error has occured. This includes both client- and server-side errors.</p>",
-        "required": ["code", "message"],
+        "required": [
+          "code",
+          "message"
+        ],
         "properties": {
           "code": {
             "$ref": "#/components/schemas/ErrorCode"
