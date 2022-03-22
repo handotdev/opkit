@@ -32,7 +32,7 @@
     "paths": {
         "/eligibility_inquiries": {
             "post": {
-                "summary": "Create a new eligibility inquiry",
+                "summary": "Create an eligibility inquiry",
                 "operationId": "postEligibilityInquiries",
                 "description": "<p>Create a new eligibility inquiry with this payer, provider and subscriber.</p> <p>The response will contain information about the subscriber's health insurance plan, including its status and any associated benefits.</p> <p>If you are interested in specific medical services, you should specify them in the request payload using the \"services\" parameter. Otherwise, Opkit will use the default service, \"health_benefit_plan_coverage\", which returns only  general benefits.</p>",
                 "requestBody": {
@@ -53,7 +53,7 @@
                                         "type": "string",
                                         "format": "uuid",
                                         "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of the payer that you are issuing this inquiry to.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>."
+                                        "description": "<p>The ID of the payer to whom you are issuing this inquiry.</p> <p>This an Opkit ID. You can get a list of payer IDs by calling the the GET /v1/payers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>."
                                     },
                                     "provider_npi": {
                                         "type": "string",
@@ -97,8 +97,8 @@
                 ]
             },
             "get": {
-                "summary": "Get all existing eligibility inquiries",
-                "description": "Get a list of eligibility inquiries that you have created in the past.",
+                "summary": "Fetch all eligibility inquiries",
+                "description": "Fetch a list of your existing eligibility inquiries.",
                 "operationId": "getEligibilityInquiries",
                 "responses": {
                     "200": {
@@ -141,8 +141,8 @@
         },
         "/eligibility_inquiries/{id}": {
             "get": {
-                "summary": "Get a single eligibility inquiry",
-                "description": "Get a single eligibility inquiry that you have created in the past.",
+                "summary": "Fetch one eligibility inquiry",
+                "description": "Fetch one of your existing eligibility inquiries by ID.",
                 "operationId": "getEligibilityInquiriesId",
                 "parameters": [
                     {
@@ -180,8 +180,8 @@
         },
         "/payers": {
             "get": {
-                "summary": "Get all payers",
-                "description": "<p>Get a complete list of the payers supported by Opkit.</p> <p>This endpoint returns a list payers that you can interact with via the Opkit API. Opkit supports hundreds of payers across the United States.</p>",
+                "summary": "Fetch all payers",
+                "description": "<p>Fetch a complete list of the payers supported by Opkit.</p> <p>This endpoint returns a list payers that you can interact with via the Opkit API. Opkit supports hundreds of payers across the United States.</p>",
                 "operationId": "getPayers",
                 "parameters": [
                     {
@@ -237,7 +237,7 @@
         },
         "/register": {
             "post": {
-                "summary": "Create a new customer user, customer organizaton, and API key",
+                "summary": "Register a user",
                 "description": "<p>Create a new customer user, customer organizaton, and API key in a single request.</p> <p>This endpoint is for Opkit internal use only and will return unauthorized for customer API keys. Please do not attempt to access it.</p>",
                 "operationId": "postRegister",
                 "requestBody": {
