@@ -821,6 +821,7 @@ components:
         or payer.</p>
       required:
         - id
+        - errors
       properties:
         id:
           type: string
