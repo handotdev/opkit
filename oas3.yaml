@@ -25,21 +25,21 @@ tags:
 paths:
   /eligibility_inquiries:
     post:
-      summary: Create a new eligibility inquiry
+      summary: Create an eligibility inquiry
       operationId: postEligibilityInquiries
       description: >-
-        <p>Create a new eligibility inquiry with this payer, provider and subscriber.</p>
-        <p>The response will contain information about the subscriber's health insurance plan,
-        including its status and any associated benefits.</p>
-        <p>If you are interested in specific medical services, you should specify
-        them in the request payload using the "services" parameter. Otherwise, Opkit will
-        use the default service, "health_benefit_plan_coverage", which returns only 
-        general benefits.</p>
+        <p>Create a new eligibility inquiry for this payer,
+        provider, and subscriber.</p>
+        <p>The response will contain information about the subscriber's
+        plan, including the status and any associated benefits.
+        Or, if the inquiry was rejected, it will include errors returned
+        by the clearinghouse or payer.</p>
       requestBody:
         description: >-
-          <p>A payload containing information about the subscriber you are inquiring about,
-          the health insurance carrier (or "payer") you are issuing the inquiry to,
-          and the provider you are issuing the inquiry on behalf of.</p>
+          <p>A payload with the ID of the payer you are issuing the inquiry to,
+          the NPI of the provider you are issuing the inquiry on behalf of,
+          the subscriber's insurance information, and the services you are
+          inquiring about.</p>
         content:
           "application/json":
             schema:
@@ -53,15 +53,15 @@ paths:
                 - payer_id
                 - provider_npi
                 - subscriber
+                - services
               properties:
                 payer_id:
                   type: string
                   format: uuid
                   example: 612e564c-567b-4d05-871c-1ba3a841b12d
                   description: >-
-                    <p>The ID of the payer that you are issuing this inquiry to.</p>
-                    <p>This an Opkit ID. You can get a list of payer IDs by calling the
-                    the GET /v1/payers endpoint.</p>
+                    <p>The ID of the payer you are inssuing the inquiry to.</p>
+                    <p>You can get a list of payer IDs from the getPayers endpoint.</p>
                     <p>For more on finding the appropriate payer ID,
                     see <a href="https://docs.opkit.co/docs/faq">here</a>.
                 provider_npi:
@@ -70,8 +70,7 @@ paths:
                     <p>A valid
                     <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
                     National Provider Identifier (NPI)</a>.</p>
-                    <p>This should be the NPI of your provider organization or one of
-                    your affiliated provider individuals.</p>
+                    <p>This can be the NPI of an organization or an individual.</p>
                 subscriber:
                   $ref: "#/components/schemas/Subscriber"
                 services:
@@ -79,16 +78,10 @@ paths:
                   description: >-
                     <p>A list of services to return benefits for. The eligibility response
                     will only contain benefits relating to the services in this list.</p>
-                    <p>If you are unsure about which service or services to include,
+                    <p>If you are unsure about which service or services to specify,
                     see <a href="https://docs.opkit.co/docs/faq">here</a>.
-                    <p>If you do not
-                    specify any services in your request, Opkit will use the default service,
-                    "health_benefit_plan_coverage", which is used for benefits that do not relate
-                    to any particular medical service. These include, for example, the subscriber's overall
-                    deductible and out-of-pocket maximum.</p>
                   items:
                     $ref: "#/components/schemas/Service"
-                  default: ["health_benefit_plan_coverage"]
       responses:
         "200":
           description: >-
@@ -96,16 +89,16 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/EligibilityInquiry"
+                $ref: "#/components/schemas/PostEligibilityInquiriesResponse"
         default:
           $ref: "#/components/responses/Default"
       tags:
         - Eligibility Inquiries
     # This should be paginated
     get:
-      summary: Get all existing eligibility inquiries
+      summary: Get all eligibility inquiries
       description: >-
-        Get a list of eligibility inquiries that you have created in the past.
+        Get a list of your existing eligibility inquiries.
       operationId: getEligibilityInquiries
       responses:
         "200":
@@ -139,9 +132,9 @@ paths:
         - Eligibility Inquiries
   /eligibility_inquiries/{id}:
     get:
-      summary: Get a single eligibility inquiry
+      summary: Get one eligibility inquiry
       description: >-
-        Get a single eligibility inquiry that you have created in the past.
+        Get one of your existing eligibility inquiries by ID.
       operationId: getEligibilityInquiriesId
       parameters:
         - in: path
@@ -221,8 +214,7 @@ paths:
         - Payers
   /register:
     post:
-      summary: >-
-        Create a new customer user, customer organizaton, and API key
+      summary: Register a user
       description: >-
         <p>Create a new customer user, customer organizaton, and API key in
         a single request.</p>
@@ -344,621 +336,336 @@ paths:
         - Internal
 components:
   schemas:
-    PlanStatus:
-      type: string
-      description: >-
-        <p>An enum value that describes the status of a subscriber's plan.</p>
-        <p>A plan may be inactive for a variety of reasons. For example, the
-        end date may have passed, or the subscriber may have left their employer.<p>
-        <p>If the payer does not respond with the status of the plan,
-        this property will have a value of "unknown".</p>
-      enum:
-        - active
-        - inactive
-        - unknown
     Service:
       type: string
       description: >-
-        <p>An enum that describes medical services.</p>
-        <p>"health_benefit_plan_coverage" is a
-        generic value that is used to retrieve benefits that do not relate to any particular medical
-        service. For example, a subscriber's out-of-pocket maximum.</p>
-        <p>These enum values were taken
-        from the <a href=https://edi.stedi.com/x12-005010/element/1365>Stedi X12 EDI
-        documentation</a>.</p>
+        <p>An enum that describes medical goods and services.</p>
+        <p>You must supply one or more services when performing
+        an eligibility inquiry. The services you choose determine
+        the benefits that are included in the response.</p>
+        <p>"health_benefit_plan_coverage" is a generic service
+        that covers general benefits, such as a plan's overall
+        deductible. This is a convention of the health insurance
+        industry.</p>
       enum:
-        - abortion
-        - acupuncture
-        - adjunctive_dental_services
-        - aids
-        - air_transportation
-        - alcoholism
-        - allergy
-        - allergy_testing
-        - alternate_method_dialysis
-        - ambulatory_service_center_facility
+        - medical_care
+        - surgical
+        - consultation
+        - diagnostic_x_ray
+        - diagnostic_lab
+        - radiation_therapy
         - anesthesia
-        - anesthesiologist
-        - audiology_exam
-        - benefit_disclaimer
+        - surgical_assistance
+        - other_medical
+        - non_escrow_or_non_impound_service
+        - escrow_or_impound_service
         - blood_charges
-        - brand_name_prescription_drug
-        - brand_name_prescription_drug_formulary
-        - brand_name_prescription_drug_non_formulary
-        - burn_care
-        - cabulance
-        - cancer
-        - cardiac
-        - cardiac_rehabilitation
-        - case_management
-        - chemotherapy
+        - used_durable_medical_equipment
+        - durable_medical_equipment_purchase
+        - ambulatory_service_center_facility
+        - renal_supplies_in_the_home
+        - alternate_method_dialysis
+        - chronic_renal_disease_crd_equipment
+        - pre_admission_testing
+        - durable_medical_equipment_rental
+        - pneumonia_vaccine
+        - second_surgical_opinion
+        - third_surgical_opinion
+        - social_work
+        - diagnostic_dental
+        - periodontics
+        - restorative
+        - endodontics
+        - maxillofacial_prosthetics
+        - adjunctive_dental_services
+        - health_benefit_plan_coverage
+        - benefit_disclaimer
+        - plan_waiting_period
         - chiropractic
         - chiropractic_office_visits
-        - chronic_renal_disease_crd_equipment
-        - cognitive_therapy
-        - consultation
-        - coronary_care
-        - day_care_psychiatric
-        - dental_accident
         - dental_care
         - dental_crowns
-        - dermatology
-        - diabetic_supplies
-        - diagnostic_dental
-        - diagnostic_lab
-        - diagnostic_medical
-        - diagnostic_x_ray
-        - dialysis
-        - donor_procedures
-        - drug_addiction
-        - durable_medical_equipment
-        - durable_medical_equipment_purchase
-        - durable_medical_equipment_rental
-        - emergency_services
-        - endocrine
-        - endodontics
-        - escrow_or_impound_service
-        - experimental_drug_therapy
-        - eye
-        - eyewear_and_eyewear_accessories
-        - family_planning
-        - flu_vaccination
-        - frames
-        - free_standing_prescription_drug
-        - gastrointestinal
-        - general_benefits
-        - generic_prescription_drug
-        - generic_prescription_drug_formulary
-        - generic_prescription_drug_non_formulary
-        - gynecological
-        - health_benefit_plan_coverage
+        - dental_accident
+        - orthodontics
+        - prosthodontics
+        - oral_surgery
+        - routine_preventive_dental
         - home_health_care
         - home_health_prescriptions
         - home_health_visits
         - hospice
+        - respite_care
         - hospital
-        - hospital_ambulatory_surgical
+        - hospital_inpatient
+        - hospital_room_and_board
+        - hospital_outpatient
         - hospital_emergency_accident
         - hospital_emergency_medical
-        - hospital_inpatient
-        - hospital_outpatient
-        - hospital_room_and_board
-        - immunizations
-        - in_vitro_fertilization
-        - independent_medical_evaluation
-        - infertility
-        - inhalation_therapy
-        - intensive_care
-        - invasive_procedures
-        - lenses
-        - licensed_ambulance
+        - hospital_ambulatory_surgical
         - long_term_care
-        - lymphatic
-        - mail_order_prescription_drug
-        - mail_order_prescription_drug_brand_name
-        - mail_order_prescription_drug_generic
         - major_medical
-        - mammogram_high_risk_patient
-        - mammogram_low_risk_patient
-        - massage_therapy
-        - maternity
-        - maxillofacial_prosthetics
-        - medical_care
         - medically_related_transportation
-        - mental_health
-        - mental_health_facility_inpatient
-        - mental_health_facility_outpatient
-        - mental_health_provider_inpatient
-        - mental_health_provider_outpatient
+        - air_transportation
+        - cabulance
+        - licensed_ambulance
+        - general_benefits
+        - in_vitro_fertilization
         - mri_cat_scan
-        - neonatal_intensive_care
-        - neurology
+        - donor_procedures
+        - acupuncture
         - newborn_care
-        - non_escrow_or_non_impound_service
-        - nonmedically_necessary_physical
-        - nursery
-        - obstetrical
-        - obstetrical_gynecological
-        - occupational_therapy
-        - oncology
-        - oral_surgery
-        - orthodontics
-        - orthopedic
-        - other_medical
-        - otological_exam
-        - partial_hospitalization_psychiatric
         - pathology
-        - pediatric
-        - periodontics
-        - pharmacy
-        - physical_medicine
-        - physical_therapy
-        - physician_visit_office_sick
-        - physician_visit_office_well
-        - plan_waiting_period
-        - pneumonia_vaccine
-        - podiatry
-        - podiatry_nursing_home_visits
-        - podiatry_office_visits
-        - pre_admission_testing
+        - smoking_cessation
+        - well_baby_care
+        - maternity
+        - transplants
+        - audiology_exam
+        - inhalation_therapy
+        - diagnostic_medical
         - private_duty_nursing
-        - private_duty_nursing_home
-        - private_duty_nursing_inpatient
-        - professional_physician
-        - professional_physician_visit_home
-        - professional_physician_visit_inpatient
-        - professional_physician_visit_nursing_home
-        - professional_physician_visit_office
-        - professional_physician_visit_outpatient
-        - professional_physician_visit_skilled_nursing_facility
         - prosthetic_device
-        - prosthodontics
+        - dialysis
+        - otological_exam
+        - chemotherapy
+        - allergy_testing
+        - immunizations
+        - routine_physical
+        - family_planning
+        - infertility
+        - abortion
+        - aids
+        - emergency_services
+        - cancer
+        - pharmacy
+        - free_standing_prescription_drug
+        - mail_order_prescription_drug
+        - brand_name_prescription_drug
+        - generic_prescription_drug
+        - podiatry
+        - podiatry_office_visits
+        - podiatry_nursing_home_visits
+        - professional_physician
+        - anesthesiologist
+        - professional_physician_visit_office
+        - professional_physician_visit_inpatient
+        - professional_physician_visit_outpatient
+        - professional_physician_visit_nursing_home
+        - professional_physician_visit_skilled_nursing_facility
+        - professional_physician_visit_home
         - psychiatric
-        - psychiatric_inpatient
-        - psychiatric_outpatient
         - psychiatric_room_and_board
         - psychotherapy
-        - pulmonary
-        - pulmonary_rehabilitation
-        - radiation_therapy
+        - psychiatric_inpatient
+        - psychiatric_outpatient
         - rehabilitation
+        - rehabilitation_room_and_board
         - rehabilitation_inpatient
         - rehabilitation_outpatient
-        - rehabilitation_room_and_board
-        - renal
-        - renal_supplies_in_the_home
-        - residential_psychiatric_treatment
-        - respite_care
-        - restorative
-        - routine_exam
-        - routine_physical
-        - routine_preventive_dental
-        - screening_laboratory
-        - screening_x_ray
-        - second_surgical_opinion
+        - occupational_therapy
+        - physical_medicine
+        - speech_therapy
         - skilled_nursing_care
         - skilled_nursing_care_room_and_board
-        - skin
-        - smoking_cessation
-        - social_work
-        - speech_therapy
         - substance_abuse
+        - alcoholism
+        - drug_addiction
+        - vision_optometry
+        - frames
+        - routine_exam
+        - lenses
+        - nonmedically_necessary_physical
+        - experimental_drug_therapy
+        - burn_care
+        - brand_name_prescription_drug_formulary
+        - brand_name_prescription_drug_non_formulary
+        - independent_medical_evaluation
+        - partial_hospitalization_psychiatric
+        - day_care_psychiatric
+        - cognitive_therapy
+        - massage_therapy
+        - pulmonary_rehabilitation
+        - cardiac_rehabilitation
+        - pediatric
+        - nursery
+        - skin
+        - orthopedic
+        - cardiac
+        - lymphatic
+        - gastrointestinal
+        - endocrine
+        - neurology
+        - eye
+        - invasive_procedures
+        - gynecological
+        - obstetrical
+        - obstetrical_gynecological
+        - mail_order_prescription_drug_brand_name
+        - mail_order_prescription_drug_generic
+        - physician_visit_office_sick
+        - physician_visit_office_well
+        - coronary_care
+        - private_duty_nursing_inpatient
+        - private_duty_nursing_home
+        - surgical_benefits_professional_physician
+        - surgical_benefits_facility
+        - mental_health_provider_inpatient
+        - mental_health_provider_outpatient
+        - mental_health_facility_inpatient
+        - mental_health_facility_outpatient
         - substance_abuse_facility_inpatient
         - substance_abuse_facility_outpatient
-        - surgical
-        - surgical_assistance
-        - surgical_benefits_facility
-        - surgical_benefits_professional_physician
-        - third_surgical_opinion
+        - screening_x_ray
+        - screening_laboratory
+        - mammogram_high_risk_patient
+        - mammogram_low_risk_patient
+        - flu_vaccination
+        - eyewear_and_eyewear_accessories
+        - case_management
+        - dermatology
+        - durable_medical_equipment
+        - diabetic_supplies
+        - generic_prescription_drug_formulary
+        - generic_prescription_drug_non_formulary
+        - allergy
+        - intensive_care
+        - mental_health
+        - neonatal_intensive_care
+        - oncology
+        - physical_therapy
+        - pulmonary
+        - renal
+        - residential_psychiatric_treatment
         - transitional_care
         - transitional_nursery_care
-        - transplants
         - urgent_care
-        - used_durable_medical_equipment
-        - vision_optometry
-        - well_baby_care
     Plan:
       type: object
       additionalProperties: false
       description: >-
         <p>An object representing a health insurance plan offered by a payer.</p>
-        <p>The start_date and end_date indicate the time period during which the
-        subscriber is covered by this plan.</p>
+        <p>A plan has features called "benefits". These include deductibles,
+        coinsurance, copayments, out-of-pocket maximums, limitations, and more.</p>
       required:
-        - status
+        - benefits
       properties:
-        number:
-          type: string
+        benefits:
+          type: array
           description: >-
-            <p>A short string, usually containing numbers only, that the payer uses to
-            identify this plan. This is not to be confused with an Opkit ID.</p>
-            <p>Some payers will not return a plan number. This value may or may not be
-            present on the plan, depending on whether the payer includes it.</p>
-        description:
-          type: string
-          description: >-
-            A description that the payer has assigned to this plan.
-            Some payers will not return a plan description.
-        start_date:
-          type: string
-          format: date
-          example: 01-01-2021
-          description: >-
-            <p>The start date of the insurance plan.</p>
-            <p>Note that the start_date and end_date can not be used to
-            determine whether the plan is currently active.For that,
-            you should refer to the "active" field.</p>
-            <p>This value should be formatted like 01-01-2021.</p>
-            <p>This value may or may not be present on the plan,
-            depending on whether the payer includes it.</p>
-        end_date:
-          type: string
-          format: date
-          example: 01-01-2021
-          description: >-
-            <p>The end date of the insurance plan.</p>
-            <p>Note that the end_date and end_date can not be used to
-            determine whether the plan is currently active.For that,
-            you should refer to the "active" field.</p>
-            <p>This value should be formatted like 01-01-2021.</p>
-            <p>This value may or may not be present on the plan,
-            depending on whether the payer includes it.</p>
-        status:
-          $ref: "#/components/schemas/PlanStatus"
+            <p>A list of benefits that are included in this plan.
+            A benefit is a feature of a plan.</p>
+            <p>THIS LIST IS NOT COMPREHENSIVE. The benefits that appear
+            in this list are determined by the services specified in the
+            request payload.</p>
+            <p>There are some benefits that do not relate to a specific medical
+            service. For example, the plan's overall deductible. These "general
+            benefits" will appear under the "health_benefit_plan_coverage"
+            service. This is a convention in the health insurance industry.</p>
+          items:
+            $ref: "#/components/schemas/Benefit"
     BenefitType:
       type: string
       description: >-
-        <p>An enum that indicates type of a benefit.</p>
-        <p>The most common benefit types are
-        "active_coverage", "co_insurance", "co_payment", "deductible" and "out_of_pocket_stop_loss".</p>
-        <p>"active_coverage" indicates that the subscriber enjoys some coverage for the service
-        described by this benefit.</p>
-        <p>"co_insurance" and "co_payment" indicate that the subscriber
-        must pay co-insurance or co-pay for the service.</p>
-        <p>"deductible" indicates that the
-        subscriber is responsible for the cost of the service until they meet their deductible.</p>
-        <p>Finally, "out_of_pocket_stop_loss" indicates that the subscriber is protected by an
-        out-of-pocket maximum for this service.</p>
-        <p>These enum values were taken from the
-        <a href=https://edi.stedi.com/x12-005010/element/1390>Stedi X12 EDI documentation</a>.</p>
+        <p>An enum that indicates benefit type.</p>
       enum:
         - active_coverage
-        - active_full_risk_capitation
-        - active_pending_investigation
-        - active_services_capitated
-        - active_services_capitated_to_primary_care_physician
-        - benefit_description
-        - benefit_disclaimer
-        - cannot_process
-        - card_s_reported_lost_stolen
-        - co_insurance
-        - co_insurance_maximum
-        - co_payment
-        - co_payment_maximum
-        - contact_following_entity_for_eligibility_or_benefit_information
-        - cost_containment
-        - coverage_basis
-        - deductible
-        - exclusions
-        - health_care_facility
         - inactive
-        - inactive_pending_eligibility_update
-        - inactive_pending_investigation
-        - limitations
-        - managed_care_coordinator
-        - non_covered
-        - not_deemed_a_medical_necessity
-        - other_or_additional_payor
-        - other_source_of_data
+        - deductible
         - out_of_pocket_stop_loss
-        - patient_reimbursement
-        - pre_existing_condition
-        - primary_care_provider
-        - prior_year_s_history
-        - reserve
-        - second_surgical_opinion_required
-        - services_restricted_to_following_provider
-        - spend_down
-        - unlimited
-        - waiver
+        - copayment
+        - coinsurance
+        - limitations
     EligibilityInquiryError:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>An object representing an eligibility inquiry error.</p>
+        <p>An eligibility inquiry error is an error that is returned
+        by either the clearinghouse or payer. This is is distinct from
+        HTTP 4XX and 5XX errors, which are returned by Opkit's servers.</p>
+        <p>Usually, an eligibility inquiry error occurs when there
+        was a problem with the subscriber's insurance information. For
+        example, a payer may return an error if the subscriber's member
+        ID was not recognized.</p>
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: >-
+            TODO
+    BenefitCoverage:
       type: string
       description: >-
-        <p>An enum that describes an eligibility inquiry error.</p>
-        <p>An eligibility inquiry error may be returned by the POST /eligibility_inquiries
-        endpoint if the inquiry was created successfully, but rejected by the payer.</p>
-        <p>A payer may reject an inquiry for a variety of reasons. For example,
-        if the payer does not recongize the subscriber member ID.</p>
-        <p>These enum
-        values were taken from the <a href=https://edi.stedi.com/x12-005010X279A1/element/901>
-        Stedi X12 EDI documentation</a>.</p>
-      enum:
-        - accident_damage_derail_sideswiped
-        - actual_information_different_claim_has_been_re_adjudicated_since_initial_payment
-        - actual_information_different_than_reported
-        - additional_patient_condition_information_required
-        - administrative_cancellation
-        - air_brakes_inoperative_etc
-        - arrivals
-        - authorization_access_restrictions
-        - authorization_number_not_found
-        - authorized_quantity_exceeded
-        - bad_order_due_to_wreck
-        - bad_order_for_upgrading_of_car
-        - bad_order_reinitialing_and_numbering
-        - bad_order_to_transfer_lading
-        - cannot_identify_insured_as_tpo_third_party_organization_participant
-        - cannot_identify_payer_as_tpo_third_party_organization_participant
-        - cannot_identify_provider_as_tpo_third_party_organization_participant
-        - car_not_ordered
-        - catalog_cost_incorrect
-        - certification_information_does_not_match_patient
-        - certification_information_missing
-        - certification_not_required_for_this_service
-        - certification_responsibility_of_external_review_organization
-        - claim_can_not_be_identified_for_verification
-        - claim_does_not_contain_enough_information_for_re_pricing
-        - claim_submitted_past_exercise_period
-        - complete_loading
-        - date_of_birth_follows_date_s_of_service
-        - date_of_death_precedes_date_s_of_service
-        - date_of_service_in_future
-        - date_of_service_not_within_allowable_inquiry_period
-        - defective_safety_devices
-        - departed
-        - dismantle
-        - disposition_pending_vendor_review
-        - duplicate_invoice_number
-        - duplicate_patient_id_number
-        - duplicate_request
-        - duplicate_sequence_number
-        - duplicate_subscriber_insured_id_number
-        - empty_equipment_available_for_loading
-        - empty_trailer_flat_release
-        - equipment_not_used
-        - exceeds_plan_maximums
-        - experimental_service_or_procedure
-        - freight_damage_claim
-        - inappropriate_date
-        - inappropriate_product_service_id
-        - inappropriate_product_service_id_qualifier
-        - inappropriate_provider_role
-        - inconsistent_with_patient_s_age
-        - inconsistent_with_patient_s_gender
-        - industrial_interchange
-        - input_errors
-        - input_incomplete
-        - inquired_benefit_inconsistent_with_provider_type
-        - invalid_authorization_number_format
-        - invalid_book_cost
-        - invalid_customer_number
-        - invalid_debit_number
-        - invalid_meet_competition_cost
-        - invalid_missing_accident_date
-        - invalid_missing_admission_date
-        - invalid_missing_date_of_birth
-        - invalid_missing_date_of_death
-        - invalid_missing_date_s_of_service
-        - invalid_missing_diagnosis_code_s
-        - invalid_missing_discharge_date
-        - invalid_missing_expected_date_of_birth
-        - invalid_missing_last_menstrual_period_date
-        - invalid_missing_onset_of_current_condition_or_illness_date
-        - invalid_missing_patient_gender_code
-        - invalid_missing_patient_id
-        - invalid_missing_patient_name
-        - invalid_missing_procedure_code_s
-        - invalid_missing_provider_identification
-        - invalid_missing_provider_name
-        - invalid_missing_provider_phone_number
-        - invalid_missing_provider_specialty
-        - invalid_missing_provider_state
-        - invalid_missing_referring_provider_identification_number
-        - invalid_missing_subscriber_insured_gender_code
-        - invalid_missing_subscriber_insured_id
-        - invalid_missing_subscriber_insured_name
-        - invalid_missing_surgery_date
-        - invalid_or_missing_case_number
-        - invalid_or_missing_provider_address
-        - invalid_participant_identification
-        - invalid_part_number
-        - invalid_ship_date
-        - invalid_ship_location
-        - level_of_care_not_appropriate
-        - light_weigh_and_restencil
-        - loaded_car_unable_to_load
-        - local_waybill
-        - missing_authorization_number
-        - move_from_current_spot_to_next
-        - mutually_defined
-        - negotiated_price_was_not_less_than_book_price
-        - non_covered_service
-        - not_medically_necessary
-        - not_valid_for_price_protection
-        - no_certification_information_found
-        - no_coverage
-        - no_credit_allowed
-        - no_prior_approval
-        - no_response_received_transaction_terminated
-        - ordered_for_replacement
-        - out_of_network
-        - patient_birth_date_does_not_match_that_for_the_patient_on_the_database
-        - patient_not_eligible
-        - patient_not_found
-        - payer_name_or_identifier_missing
-        - preventative_maintenance
-        - pre_existing_condition
-        - price_authorization_expired
-        - price_authorization_has_been_deleted
-        - price_authorization_invalid
-        - price_authorization_is_a_rebill_type
-        - price_authorization_used_on_a_sales_order
-        - primary_care_service
-        - product_not_on_the_price_authorization
-        - provider_ineligible_for_inquiries
-        - provider_is_not_primary_care_physician
-        - provider_not_on_file
-        - put_on_constructive_placement
-        - reject_due_to_air_bags
-        - reject_due_to_bad_floor
-        - reject_due_to_bad_order_slides
-        - reject_due_to_bad_order_valves_piping
-        - reject_due_to_bad_order_walls
-        - reject_due_to_bearings
-        - reject_due_to_brake_rigging_beam_lever
-        - reject_due_to_bridge_plate
-        - reject_due_to_center_bowls_plates_and_pins
-        - reject_due_to_couplers
-        - reject_due_to_crank_arm_application
-        - reject_due_to_damps
-        - reject_due_to_dirty
-        - reject_due_to_doors
-        - reject_due_to_draft_gear_yoke
-        - reject_due_to_handbrake
-        - reject_due_to_hand_hold_ladder_step_running_boards_platforms_etc
-        - reject_due_to_hot_journal_box
-        - reject_due_to_leaking_contents
-        - reject_due_to_load_dividers_side_filters_special_equipment
-        - reject_due_to_load_divider_bad_order
-        - reject_due_to_load_shifted
-        - reject_due_to_no_chains
-        - reject_due_to_outlet_gate_valve_lo_and_open_hopper
-        - reject_due_to_overloaded
-        - reject_due_to_racks_bi_or_tri_levels
-        - reject_due_to_refrigeration_unit
-        - reject_due_to_roof_hatches
-        - reject_due_to_spotted_in_error
-        - reject_due_to_superstructure_end_roof_and_sides
-        - reject_due_to_tie_down_devices
-        - reject_due_to_trailer_hitch
-        - reject_due_to_train_line_air_hose_anglecock
-        - reject_due_to_truck_s_frame_bolster
-        - reject_due_to_uncoupling_rod
-        - reject_due_to_underframe_including_sills
-        - reject_due_to_wheel_axle
-        - released
-        - released_as_railroad_company_material
-        - released_from_demurrage_after_being_scrapped
-        - released_from_industry_to_be_inspected
-        - released_from_industry_to_custody_of_broker
-        - released_from_shop_track
-        - released_loaded_for_line_haul_shipment
-        - released_partially_unloaded
-        - releases_an_idler
-        - release_as_a_cross_town_load
-        - release_from_demurrage_and_start_storage_until_waybilled
-        - release_load_through_bill_connecting_road
-        - requested_information_not_received
-        - requested_record_cannot_be_sent_electronically_record_resides_in_paper_format_only_which_will_be_sent_by_mail
-        - requested_record_will_not_be_sent
-        - requested_record_will_not_be_sent_cannot_identify_the_record
-        - requested_record_will_not_be_sent_need_student_or_parent_permission
-        - requested_record_will_not_be_sent_never_enrolled
-        - requested_record_will_not_be_sent_no_degree_awarded
-        - requested_record_will_not_be_sent_no_grades_posted
-        - request_forwarded_to_and_decision_response_forthcoming_from_an_external_review_organization
-        - required_application_data_missing
-        - requires_medical_review
-        - requires_primary_care_physician_authorization
-        - run_through_equipment_not_spotted
-        - service_dates_not_within_provider_plan_enrollment
-        - service_inconsistent_with_diagnosis
-        - ship_date_cannot_be_prior_to_price_authorization_issue_date
-        - ship_date_must_not_be_after_current_date
-        - ship_date_should_not_be_before_price_authorization_date_for_rebills
-        - special_cost_incorrect
-        - subscriber_found_patient_not_found
-        - subscriber_insured_not_found
-        - subscriber_insured_not_in_group_plan_identified
-        - testing_not_included
-        - to_be_reloaded
-        - unable_to_respond_at_current_time
-        - unit_resale_higher_than_authorized
-        - wrong_car_type
-        - wrong_consignee
-        - zero_balance
-    BenefitCoverageLevel:
-      type: string
-      description: >-
-        <p>An enum that describes the level of coverage for a benefit.</p>
-        <p>In most cases, this will be "individual", but for some plans there will
-        be benefits that extend to parties other than the subscriber.</p>
-        <p>This field is not applicable for many benefits and may be absent.</p>
-        <p>These enum values
-        were taken from the <a href=https://edi.stedi.com/x12-005010/element/1207>
-        Stedi X12 EDI documentation</a>.</p>
+        <p>An enum that describes a benefit's level of coverage.</p>
       enum:
         - children_only
         - dependents_only
-        - employee_and_children
-        - employee_and_five_or_more_dependents
-        - employee_and_four_or_more_dependents
         - employee_and_one_dependent
-        - employee_and_one_or_more_dependents
-        - employee_and_spouse
-        - employee_and_three_dependents
-        - employee_and_three_or_more_dependents
         - employee_and_two_dependents
+        - employee_and_three_dependents
+        - employee_and_one_or_more_dependents
         - employee_and_two_or_more_dependents
+        - employee_and_three_or_more_dependents
+        - employee_and_four_or_more_dependents
+        - employee_and_five_or_more_dependents
+        - employee_and_children
         - employee_only
+        - employee_and_spouse
         - family
         - individual
-        - spouse_and_children
-        - spouse_only
         - subscriber_and_1_child
         - subscriber_and_1_or_more_children
         - subscriber_and_2_or_more_children
-        - subscriber_and_spouse
+        - spouse_and_children
+        - spouse_only
         - subscriber_spouse_and_1_child
         - subscriber_spouse_and_1_or_more_children
         - subscriber_spouse_and_2_or_more_children
+        - subscriber_and_spouse
         - two_party
-    BenefitTimePeriod:
+    BenefitPeriod:
       type: string
       description: >-
-        <p>An enum that describes a time period which may be present on a benefit.</p>
-        <p>This field is not applicable for many benefits and may be absent.</p>
-        <p>These enum values were taken from the <a href=https://edi.stedi.com/x12-005010/element/615>
-        Stedi X12 EDI documentation</a>.</p>
+        <p>An enum that describes benefit time period.</p>
       enum:
+        - chargeable_periods
+        - periods_held
+        - free_periods
+        - saturdays_sundays_and_holidays
+        - other_allowance_periods
+        - hour
+        - day
+        - not_applicable
+        - initial_visit
+        - mutually_defined
+        - six_hours
         - 12_hours
         - 18_hours
         - 24_hours
-        - admission
-        - calendar_year
-        - chargeable_periods
-        - contract
-        - credit_days
-        - day
         - debit_days
-        - episode
-        - exceeded
+        - credit_days
         - excess_days
-        - free_periods
         - hazardous_days
         - holidays
-        - hour
-        - initial_visit
+        - saturdays_and_sundays
+        - sundays_and_holidays
+        - years
+        - service_year
+        - calendar_year
+        - year_to_date
+        - contract
+        - episode
+        - visit
+        - outlier
+        - remaining
+        - exceeded
+        - not_exceeded
         - lifetime
         - lifetime_remaining
         - month
-        - mutually_defined
-        - not_applicable
-        - not_exceeded
-        - other_allowance_periods
-        - outlier
-        - periods_held
-        - remaining
-        - saturdays_and_sundays
-        - saturdays_sundays_and_holidays
-        - service_year
-        - six_hours
-        - sundays_and_holidays
-        - three_months
-        - visit
         - week
-        - year_to_date
-        - years
+        - admission
+        - three_months
     Benefit:
       type: object
       additionalProperties: false
@@ -973,34 +680,121 @@ components:
         subscriber is eligible to receive a certain medical service under their insurance plan
         by reviewing the list of benefits that are included in the eligibility inquiry response body.</p>
       required:
-        - service
         - type
+        - service
+        - values
+        - name
+        - messages
       properties:
-        service:
-          $ref: "#/components/schemas/Service"
+        name:
+          type: string
+          description: >-
+            <p>A semi-unique name that describes this particular benefit.</p>
+            <p>This value is derived from other characteristics of the benefit,
+            specifically the benefit's type, network, coverage, and period.</p>
+            <p>Note that names are not unique across services. Two benefits
+            with different services may share the same name.</p>
         type:
           $ref: "#/components/schemas/BenefitType"
-        coverage_level:
-          $ref: "#/components/schemas/BenefitCoverageLevel"
-        in_network:
-          type: boolean
+        service:
+          $ref: "#/components/schemas/Service"
+        network:
+          $ref: "#/components/schemas/BenefitNetwork"
+        coverage:
+          $ref: "#/components/schemas/BenefitCoverage"
+        period:
+          $ref: "#/components/schemas/BenefitPeriod"
+        values:
+          type: array
           description: >-
-            <p>A boolean value that indicates whether this benefit relates to
-            in-network or out-of-network providers.</p>
-            <p>This field is not applicable
-            for many benefits and may be absent.</p>
-        amount:
-          type: integer
+            TODO
+          items:
+            $ref: "#/components/schemas/BenefitValue"
+        messages:
+          type: array
           description: >-
-            <p>The dollar amount (in cents) that the subscriber is responsible for.</p>
-            <p>This field is not applicable for many benefits and may be absent.</p>
-        percent:
-          type: integer
+            TODO
+          items:
+            type: string
+    BenefitValue:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>A value associated with a benefit.</p>
+      required:
+        - type
+        - value
+      properties:
+        type:
+          type: string
           description: >-
-            <p>The percentage amount that the subscriber is responsible for.</p>
-            </p>This field is not applicable for many benefits and may be absent.</p>
-        time_period:
-          $ref: "#/components/schemas/BenefitTimePeriod"
+            TODO
+          enum:
+            - currency
+            - percent
+            - status
+            - quantity
+        value:
+          oneOf:
+            - type: integer
+            - $ref: "#/components/schemas/StatusValue"
+        qualifier:
+          $ref: "#/components/schemas/Qualifier"
+    Qualifier:
+      type: string
+      description: >-
+        TODO
+      enum:
+        - original_transaction
+        - must_respond_by
+        - pickup_appointment_scheduled_time
+        - delivery_appointment_scheduled_time
+        - pickup_requested_scheduled_time
+        - delivery_requested_scheduled_time
+        - pickup_appointment_granted_time
+        - delivery_appointment_granted_time
+        - actual_pickup_time
+        - actual_delivery_time
+        - actual_departure_time
+        - released
+        - constructive_placement
+        - estimated_departure_time
+        - estimated_arrival_time
+        - actual_unloading_completed
+        - earliest_requested_deliver_time
+        - customs_release
+        - earliest_requested_pickup_time
+        - duty_paid
+        - latest_requested_pickup_time
+        - latest_requested_delivery_time
+        - charged_from
+        - notified
+        - charged_to
+        - actual_placement
+        - ordered
+        - actual_arrival_time
+        - scheduled_departure_time
+        - scheduled_arrival_time
+        - scheduled_pickup_time
+        - actual_unloading_started
+        - effective_time
+        - scheduled_delivery_time
+        - requested_pickup_time
+        - requested_delivery_time
+        - beginning_of_customer_plant_shutdown
+        - ending_of_customer_plant_shutdown
+        - earliest_delivery_time
+        - earliest_pickup_time
+        - latest_delivery_time
+        - latest_pickup_time
+        - ready_to_ship
+    StatusValue:
+      type: string
+      description: >-
+        TODO
+      enum:
+        - active
+        - inactive
     EligibilityInquiry:
       type: object
       additionalProperties: false
@@ -1009,9 +803,6 @@ components:
         coverages, typically in relation to a particular subscriber.</p>
       required:
         - id
-        - provider_npi
-        - payer
-        - subscriber
       properties:
         id:
           type: string
@@ -1019,41 +810,35 @@ components:
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
             A unique identifier.
-        provider_npi:
+    PostEligibilityInquiriesResponse:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>The response to a postEligibilityInquiries request.</p>
+        <p>This object contains the results of the eligibility inquiry,
+        including the subscriber's plan and any benefits. Or, if the inquiry
+        was rejected, it will include errors returned by the clearinghouse
+        or payer.</p>
+      required:
+        - id
+        - errors
+      properties:
+        id:
           type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
-            <p>A valid
-            <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand>
-            National Provider Identifier (NPI)</a>.</p>
-            <p>This should be the NPI of your provider organization or one of
-            your affiliated provider individuals.</p>
-        payer:
-          $ref: "#/components/schemas/Payer"
-        subscriber:
-          $ref: "#/components/schemas/Subscriber"
+            A unique identifier.
         plan:
           $ref: "#/components/schemas/Plan"
-        benefits:
-          type: array
-          description: >-
-            <p>A list of benefits that are included in the subscriber's insurance plan.</p>
-            <p>A benefit is a feature of the subscriber's insurance plan. For example,
-            the plan may include a $100 co-pay for in-network physician office visits.</p>
-            <p>The benefits that appear in this list are determined by the services
-            specified in the request payload. General benefits, such as the subscriber's
-            overall deductible, fall under the "health_benefit_plan_coverage" service.</p>
-          items:
-            $ref: "#/components/schemas/Benefit"
         errors:
           type: array
           description: >-
-            <p>A list of eligibility inquiry errors that were returned by the payer.</p>
-            <p>An eligibility inquiry error may be returned by the POST /eligibility_inquiries
-            endpoint if the inquiry was created successfully, but rejected by the payer.</p>
-            <p>A payer may reject an inquiry for a variety of reasons. For example,
-            if the payer does not recongize the subscriber member ID. If this property
-            is absent, it means the eligibility inquiry was accepted by the payer
-            without any errors.</p>
+            <p>A list of eligibility inquiry errors.</p>
+            <p>An eligibility inquiry error is an error that is returned
+            by either the clearinghouse or payer. This list may contain
+            error items if the eligibility inquiry was created successfully
+            but rejected by either the clearinghouse or payer.</p>
           items:
             $ref: "#/components/schemas/EligibilityInquiryError"
     Payer:
@@ -1109,10 +894,17 @@ components:
           description: >-
             <p>The subscriber's date of birth as it appears on their insurance card.</p>
             <p>This should be formatted like 01-01-2021.</p>
+    BenefitNetwork:
+      type: string
+      description: >-
+        <p>An enum that describes a benefit's network status.</p>
+      enum:
+        - in_network
+        - out_of_network
     ErrorCode:
       type: string
       description: >-
-        An error code indicating the category of problem.
+        <p>An error code indicating the category of problem.</p>
       enum:
         - unauthorized
         - bad_request
