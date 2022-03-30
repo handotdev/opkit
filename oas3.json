@@ -279,59 +279,23 @@
                                     "description": "<p>An object containing various fields from the new customer user, customer organization, and API key.</p> <p>This object will contain the secret value of the API key, which should NEVER be shared publicly.</p>",
                                     "additionalProperties": false,
                                     "required": [
-                                        "customer_user_id",
-                                        "customer_user_name",
-                                        "customer_user_email",
-                                        "customer_organization_id",
-                                        "customer_organization_name",
-                                        "api_key_id",
-                                        "api_key_name",
-                                        "api_key_value"
+                                        "customer_user",
+                                        "customer_organization",
+                                        "api_keys"
                                     ],
                                     "properties": {
-                                        "customer_user_id": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The ID of the new customer user."
+                                        "customer_user": {
+                                            "$ref": "#/components/schemas/CustomerUser"
                                         },
-                                        "customer_user_name": {
-                                            "type": "string",
-                                            "description": "The name of the new customer user."
+                                        "customer_organization": {
+                                            "$ref": "#/components/schemas/CustomerOrganization"
                                         },
-                                        "customer_user_email": {
-                                            "type": "string",
-                                            "description": "The email of the new customer user."
-                                        },
-                                        "customer_organization_id": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The ID of the new customer organization."
-                                        },
-                                        "customer_organization_name": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The name of the new customer organization."
-                                        },
-                                        "api_key_id": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The ID of the new API key."
-                                        },
-                                        "api_key_name": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The name of the new API key."
-                                        },
-                                        "api_key_value": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                            "description": "The value of the new API key. This value is secret and should never be shared publicly!"
+                                        "api_keys": {
+                                            "type": "array",
+                                            "description": "<p>A list of API key objects. This list should contain two items: a public API key and a private API key.</p>",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ApiKey"
+                                            }
                                         }
                                     }
                                 }
@@ -709,6 +673,86 @@
                         "items": {
                             "type": "string"
                         }
+                    }
+                }
+            },
+            "CustomerUser": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>An object representing a customer user.</p>",
+                "required": [
+                    "id",
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "<p>A unique identifier.</p>"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "<p>The name of the customer user.</p>"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "<p>The email of the customer user.</p>"
+                    }
+                }
+            },
+            "CustomerOrganization": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>An object representing a customer organization.</p>",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "<p>A unique identifier.</p>"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "<p>The name of the customer customer organization.</p>"
+                    }
+                }
+            },
+            "ApiKey": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>An object representing an API key. This can be a public or secret key.</p>",
+                "required": [
+                    "id",
+                    "type",
+                    "value",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                        "description": "<p>A unique identifier.</p>"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "<p>The name of the API key.</p>",
+                        "enum": [
+                            "public",
+                            "secret"
+                        ]
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "<p>The value of the API key.</p>"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "<p>The name of the API key.</p>"
                     }
                 }
             },
