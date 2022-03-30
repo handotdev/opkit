@@ -1985,28 +1985,27 @@ components:
       additionalProperties: false
       description: >-
         <p>An individual who is covered under a health insurance plan.
-        This is a subscriber, not a dependent.</p>
-        <p>Opkit does not currently support eligibility inquiries for dependents.
-        If you have this use-case, please let us
-        know by contacting <a href=mailto:founders@opkit.co>founders@opkit.co</a>.</p>
+        <p>This should be the primary insurance holder - not a dependent.
+        Opkit does not currently support eligibility inquiries for dependents.</p>
       required:
         - first_name
         - last_name
         - member_id
         - date_of_birth
+        - email
       properties:
         first_name:
           type: string
           description: >-
-            The subscriber's first name as it appears on their insurance card.
+            <p>The subscriber's first name as it appears on their insurance card.</p>
         last_name:
           type: string
           description: >-
-            The subscriber's last name as it appears on their insurance card.
+            <p>The subscriber's last name as it appears on their insurance card.</p>
         member_id:
           type: string
           description: >-
-            The subscriber's member ID as it appears on their insurance card.
+            <p>The subscriber's member ID as it appears on their insurance card.</p>
         date_of_birth:
           type: string
           format: date
@@ -2014,6 +2013,10 @@ components:
           description: >-
             <p>The subscriber's date of birth as it appears on their insurance card.</p>
             <p>This should be formatted like 01-01-2021.</p>
+        email:
+          type: string
+          description: >-
+            <p>The subscriber's email address.</p>
     BenefitNetwork:
       type: string
       description: >-
