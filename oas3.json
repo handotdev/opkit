@@ -898,7 +898,9 @@
                             "currency",
                             "percent",
                             "quantity",
-                            "status"
+                            "status",
+                            "plan_type",
+                            "plan_name"
                         ]
                     },
                     "value": {
@@ -907,7 +909,13 @@
                                 "type": "integer"
                             },
                             {
+                                "type": "string"
+                            },
+                            {
                                 "$ref": "#/components/schemas/BenefitValueStatus"
+                            },
+                            {
+                                "$ref": "#/components/schemas/PlanType"
                             }
                         ]
                     },
