@@ -353,6 +353,7 @@ components:
         - preferred_provider_organization
         - health_maintenance_organization
         - high_deductible_health_plan
+        - other
         # TODO: more
     State:
       type: string
