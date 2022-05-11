@@ -889,10 +889,14 @@ components:
             - percent
             - quantity
             - status
+            - plan_type
+            - plan_name
         value:
           oneOf:
             - type: integer
+            - type: string
             - $ref: "#/components/schemas/BenefitValueStatus"
+            - $ref: "#/components/schemas/PlanType"
         qualifier:
           $ref: "#/components/schemas/BenefitValueQualifier"
     BenefitValueQualifier:
