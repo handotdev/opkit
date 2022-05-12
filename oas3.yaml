@@ -23,6 +23,54 @@ tags:
   - name: Payers
   - name: Internal
 paths:
+  /plan_acceptance_checks:
+    post:
+      summary: Create a plan acceptance check
+      operationId: postPlanAcceptanceChecks
+      description: >-
+        <p>Create a new plan acceptance check. This resource is used
+        to determine whether a plan is considered in-network according
+        to the customer organization's plan acceptance rules.</p>
+      requestBody:
+        description: >-
+          <p>TODO</p>
+        content:
+          "application/json":
+            schema:
+              type: object
+              description: >-
+                <p>TODO</p>
+              additionalProperties: false
+              required:
+                - payer_id
+                - plan_type
+                - state
+              properties:
+                payer_id:
+                  type: string
+                  format: uuid
+                  example: 612e564c-567b-4d05-871c-1ba3a841b12d
+                  description: >-
+                    <p>The ID of the payer to whom this plan belongs.</p>
+                    <p>You can get a list of payer IDs from the getPayers endpoint.</p>
+                    <p>For more on finding the appropriate payer ID,
+                    see <a href="https://docs.opkit.co/docs/faq">here</a>.
+                plan_type:
+                  $ref: "#/components/schemas/PlanType"
+                state:
+                  $ref: "#/components/schemas/State"
+      responses:
+        "200":
+          description: >-
+            OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostPlanAcceptanceChecksResponse"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - Plan Acceptance Checks
   /eligibility_inquiries:
     post:
       summary: Create an eligibility inquiry
@@ -297,6 +345,76 @@ paths:
         - Internal
 components:
   schemas:
+    PlanType:
+      type: string
+      description: >-
+        <p>An enum that describes health insurance plan types.</p>
+      enum:
+        - preferred_provider_organization
+        - health_maintenance_organization
+        - high_deductible_health_plan
+        - other
+        # TODO: more
+    State:
+      type: string
+      description: >-
+        <p>An enum for US states.</p>
+      enum:
+        - alaska
+        - alabama
+        - arkansas
+        - american_samoa
+        - arizona
+        - california
+        - colorado
+        - connecticut
+        - district_of_columbia
+        - delaware
+        - florida
+        - georgia
+        - guam
+        - hawaii
+        - iowa
+        - idaho
+        - illinois
+        - indiana
+        - kansas
+        - kentucky
+        - louisiana
+        - massachusetts
+        - maryland
+        - maine
+        - michigan
+        - minnesota
+        - missouri
+        - mississippi
+        - montana
+        - north_carolina
+        - north_dakota
+        - nebraska
+        - new_hampshire
+        - new_jersey
+        - new_mexico
+        - nevada
+        - new_york
+        - ohio
+        - oklahoma
+        - oregon
+        - pennsylvania
+        - puerto_rico
+        - rhode_island
+        - south_carolina
+        - south_dakota
+        - tennessee
+        - texas
+        - utah
+        - virginia
+        - virgin_islands
+        - vermont
+        - washington
+        - wisconsin
+        - west_virginia
+        - wyoming
     Service:
       type: string
       description: >-
@@ -772,10 +890,14 @@ components:
             - percent
             - quantity
             - status
+            - plan_type
+            - plan_name
         value:
           oneOf:
             - type: integer
+            - type: string
             - $ref: "#/components/schemas/BenefitValueStatus"
+            - $ref: "#/components/schemas/PlanType"
         qualifier:
           $ref: "#/components/schemas/BenefitValueQualifier"
     BenefitValueQualifier:
@@ -1915,6 +2037,20 @@ components:
       enum:
         - active
         - inactive
+    PlanAcceptanceCheck:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>TODO</p>
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            A unique identifier.
     EligibilityInquiry:
       type: object
       additionalProperties: false
@@ -1930,6 +2066,28 @@ components:
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
             A unique identifier.
+    PostPlanAcceptanceChecksResponse:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>The response to a postPlanAcceptanceChecks request.</p>
+        <p>This object contains the results of a plan acceptance check,
+        which should indicate whether the plan provided is considered
+        in-network according to the customer organization's plan acceptance rules.</p>
+      required:
+        - id
+        - in_network
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            A unique identifier.
+        in_network:
+          type: boolean
+          description: >-
+            <p>A boolean value indicating whether the plan is considered in-network.</p>
     PostEligibilityInquiriesResponse:
       type: object
       additionalProperties: false
