@@ -666,15 +666,15 @@ components:
         example, a payer may return an error if the subscriber's member
         ID was not recognized.</p>
       required:
-        - code
+        - source
       properties:
-        code:
+        source:
           type: string
           description: >-
-            <p>An enum that describes the payer error.</p>
+            <p>An enum that describes the source of the eligibility inquiry error.</p>
           enum:
-            - invalid_subscriber
-            - unknown
+            - clearinghouse
+            - payer
     BenefitCoverage:
       type: string
       description: >-
