@@ -672,7 +672,7 @@
                 "additionalProperties": false,
                 "description": "<p>An object representing an eligibility inquiry error.</p> <p>An eligibility inquiry error is an error that is returned by either the clearinghouse or payer. This is is distinct from HTTP 4XX and 5XX errors, which are returned by Opkit's servers.</p> <p>Usually, an eligibility inquiry error occurs when there was a problem with the subscriber's insurance information. For example, a payer may return an error if the subscriber's member ID was not recognized.</p>",
                 "required": [
-                    "code"
+                    "source"
                 ],
                 "properties": {
                     "source": {

@@ -666,7 +666,7 @@ components:
         example, a payer may return an error if the subscriber's member
         ID was not recognized.</p>
       required:
-        - code
+        - source
       properties:
         source:
           type: string
