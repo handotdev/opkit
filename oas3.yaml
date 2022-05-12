@@ -352,9 +352,14 @@ components:
       enum:
         - preferred_provider_organization
         - health_maintenance_organization
-        - high_deductible_health_plan
+        - medicare_part_a
+        - medicare_part_b
+        - medicare_other
+        - medicaid
+        - point_of_service
+        - cobra
+        - workers_compensation
         - other
-        # TODO: more
     State:
       type: string
       description: >-
