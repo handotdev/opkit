@@ -668,13 +668,13 @@ components:
       required:
         - code
       properties:
-        code:
+        source:
           type: string
           description: >-
-            <p>An enum that describes the payer error.</p>
+            <p>An enum that describes the source of the eligibility inquiry error.</p>
           enum:
-            - invalid_subscriber
-            - unknown
+            - clearinghouse
+            - payer
     BenefitCoverage:
       type: string
       description: >-
