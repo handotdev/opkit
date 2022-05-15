@@ -30,6 +30,138 @@
         }
     ],
     "paths": {
+        "/plan_acceptance_rules": {
+            "post": {
+                "summary": "Create a plan acceptance rule",
+                "operationId": "postPlanAcceptanceRules",
+                "description": "<p>Create a new plan acceptance rule.</p> <p>When evaluated, a plan acceptance rule determines whether the customer organization is considered in-network or out-of-network for an individual's health insurance based on the plan's type, the individual's state of residence, and the insurance company that offers the plan.</p>",
+                "requestBody": {
+                    "description": "<p>TODO</p>",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "<p>TODO</p>",
+                                "additionalProperties": false,
+                                "required": [
+                                    "effect"
+                                ],
+                                "properties": {
+                                    "payer_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                                        "description": "<p>The ID of a payer.</p> <p>You can get a list of payer IDs from the getPayers endpoint.</p>"
+                                    },
+                                    "plan_type": {
+                                        "$ref": "#/components/schemas/PlanType"
+                                    },
+                                    "state": {
+                                        "$ref": "#/components/schemas/State"
+                                    },
+                                    "effect": {
+                                        "$ref": "#/components/schemas/PlanAcceptanceRuleEffect"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostPlanAcceptanceRulesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "Plan Acceptance Rules"
+                ]
+            },
+            "get": {
+                "summary": "Get all plan acceptance rules",
+                "description": "Get a list of your existing plan acceptance rules.",
+                "operationId": "getPlanAcceptanceRules",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "An object containing a list of plan acceptance rules  and a count that indicates the number of items in the list.",
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "count",
+                                        "items"
+                                    ],
+                                    "properties": {
+                                        "count": {
+                                            "type": "number",
+                                            "example": 1,
+                                            "description": "The number of items in this list."
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "description": "A list of plan acceptance rules.",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlanAcceptanceRule"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "Plan Acceptance Rules"
+                ]
+            }
+        },
+        "/plan_acceptance_rules/{id}": {
+            "delete": {
+                "summary": "Delete one plan acceptance rule",
+                "description": "Delete one of your existing plan acceptance rules by ID.",
+                "operationId": "deletePlanAcceptanceRulesId",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                            "description": "The ID of the plan acceptance rule."
+                        },
+                        "required": true,
+                        "description": "The ID of the plan acceptance rule."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "Plan Acceptance Rules"
+                ]
+            }
+        },
         "/plan_acceptance_checks": {
             "post": {
                 "summary": "Create a plan acceptance check",
@@ -170,6 +302,7 @@
                                     "properties": {
                                         "count": {
                                             "type": "number",
+                                            "example": 1,
                                             "description": "The number of items in this list."
                                         },
                                         "items": {
@@ -266,6 +399,7 @@
                                     "properties": {
                                         "count": {
                                             "type": "number",
+                                            "example": 1,
                                             "description": "The number of items in this list."
                                         },
                                         "items": {
@@ -370,6 +504,14 @@
     },
     "components": {
         "schemas": {
+            "PlanAcceptanceRuleEffect": {
+                "type": "string",
+                "description": "<p>An enum that describes whether a plan acceptance rule is inclusionary or exclusionary.</p>",
+                "enum": [
+                    "include",
+                    "exclude"
+                ]
+            },
             "PlanType": {
                 "type": "string",
                 "description": "<p>An enum that describes health insurance plan types.</p>",
@@ -2088,6 +2230,38 @@
                     }
                 }
             },
+            "PlanAcceptanceRule": {
+                "type": "object",
+                "description": "<p>TODO</p>",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "effect"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                        "description": "A unique identifier."
+                    },
+                    "payer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                        "description": "<p>The ID of a payer.</p>"
+                    },
+                    "plan_type": {
+                        "$ref": "#/components/schemas/PlanType"
+                    },
+                    "state": {
+                        "$ref": "#/components/schemas/State"
+                    },
+                    "effect": {
+                        "$ref": "#/components/schemas/PlanAcceptanceRuleEffect"
+                    }
+                }
+            },
             "EligibilityInquiry": {
                 "type": "object",
                 "additionalProperties": false,
@@ -2103,6 +2277,9 @@
                         "description": "A unique identifier."
                     }
                 }
+            },
+            "PostPlanAcceptanceRulesResponse": {
+                "$ref": "#/components/schemas/PlanAcceptanceRule"
             },
             "PostPlanAcceptanceChecksResponse": {
                 "type": "object",
