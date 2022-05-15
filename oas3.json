@@ -151,16 +151,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "<p>An empty object.</p> <p>We return this (instead of nothing) because it makes TypeScript happier...</p>",
-                                    "additionalProperties": false
-                                }
-                            }
-                        }
+                        "description": "OK"
                     },
                     "default": {
                         "$ref": "#/components/responses/Default"
