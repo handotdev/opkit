@@ -518,6 +518,7 @@
                 "enum": [
                     "preferred_provider_organization",
                     "health_maintenance_organization",
+                    "exclusive_provider_organization",
                     "medicare_part_a",
                     "medicare_part_b",
                     "medicare_other",
