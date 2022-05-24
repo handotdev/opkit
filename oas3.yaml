@@ -21,7 +21,7 @@ servers:
 tags:
   - name: Eligibility Inquiries
   - name: Payers
-  - name: Internal
+  - name: For Opkit Internal Use
 paths:
   /plan_acceptance_rules:
     post:
@@ -72,7 +72,7 @@ paths:
         default:
           $ref: "#/components/responses/Default"
       tags:
-        - Plan Acceptance Rules
+        - For Opkit Internal Use
     # This should be paginated
     get:
       summary: Get all plan acceptance rules
@@ -109,7 +109,7 @@ paths:
         default:
           $ref: "#/components/responses/Default"
       tags:
-        - Plan Acceptance Rules
+        - For Opkit Internal Use
   /plan_acceptance_rules/{id}:
     delete:
       summary: Delete one plan acceptance rule
@@ -135,7 +135,7 @@ paths:
         default:
           $ref: "#/components/responses/Default"
       tags:
-        - Plan Acceptance Rules
+        - For Opkit Internal Use
   /plan_acceptance_checks:
     post:
       summary: Create a plan acceptance check
@@ -183,7 +183,7 @@ paths:
         default:
           $ref: "#/components/responses/Default"
       tags:
-        - Plan Acceptance Checks
+        - For Opkit Internal Use
   /eligibility_inquiries:
     post:
       summary: Create an eligibility inquiry
@@ -457,7 +457,7 @@ paths:
         default:
           $ref: "#/components/responses/Default"
       tags:
-        - Internal
+        - For Opkit Internal Use
 components:
   schemas:
     PlanAcceptanceRuleEffect:
