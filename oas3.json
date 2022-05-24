@@ -26,7 +26,7 @@
             "name": "Payers"
         },
         {
-            "name": "Internal"
+            "name": "For Opkit Internal Use"
         }
     ],
     "paths": {
@@ -83,7 +83,7 @@
                     }
                 },
                 "tags": [
-                    "Plan Acceptance Rules"
+                    "For Opkit Internal Use"
                 ]
             },
             "get": {
@@ -126,7 +126,7 @@
                     }
                 },
                 "tags": [
-                    "Plan Acceptance Rules"
+                    "For Opkit Internal Use"
                 ]
             }
         },
@@ -158,7 +158,7 @@
                     }
                 },
                 "tags": [
-                    "Plan Acceptance Rules"
+                    "For Opkit Internal Use"
                 ]
             }
         },
@@ -214,7 +214,7 @@
                     }
                 },
                 "tags": [
-                    "Plan Acceptance Checks"
+                    "For Opkit Internal Use"
                 ]
             }
         },
@@ -497,7 +497,7 @@
                     }
                 },
                 "tags": [
-                    "Internal"
+                    "For Opkit Internal Use"
                 ]
             }
         }
