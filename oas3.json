@@ -42,7 +42,7 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "description": "An object containing a list of widget configurations  and a count that indicates the number of items in the list.",
+                                    "description": "<p>An object containing a list of widget configurations and a count that indicates the number of items in the list.</p>",
                                     "additionalProperties": false,
                                     "required": [
                                         "count",
