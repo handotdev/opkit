@@ -30,6 +30,51 @@
         }
     ],
     "paths": {
+        "/widget_configurations": {
+            "get": {
+                "summary": "Get all widget configurations",
+                "description": "<p>Get a list of your existing widget configurations.</p>",
+                "operationId": "getWidgetConfigurations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "<p>An object containing a list of widget configurations and a count that indicates the number of items in the list.</p>",
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "count",
+                                        "items"
+                                    ],
+                                    "properties": {
+                                        "count": {
+                                            "type": "number",
+                                            "example": 1,
+                                            "description": "The number of items in this list."
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "description": "A list of widget configurations.",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WidgetConfiguration"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/Default"
+                    }
+                },
+                "tags": [
+                    "For Opkit Internal Use"
+                ]
+            }
+        },
         "/plan_acceptance_rules": {
             "post": {
                 "summary": "Create a plan acceptance rule",
@@ -132,7 +177,7 @@
         },
         "/plan_acceptance_rules/{id}": {
             "delete": {
-                "summary": "Delete one plan acceptance rule",
+                "summary": "Delete a plan acceptance rule",
                 "description": "Delete one of your existing plan acceptance rules by ID.",
                 "operationId": "deletePlanAcceptanceRulesId",
                 "parameters": [
@@ -328,7 +373,7 @@
         },
         "/eligibility_inquiries/{id}": {
             "get": {
-                "summary": "Get one eligibility inquiry",
+                "summary": "Get an eligibility inquiry",
                 "description": "Get one of your existing eligibility inquiries by ID.",
                 "operationId": "getEligibilityInquiriesId",
                 "parameters": [
@@ -425,8 +470,8 @@
         },
         "/register": {
             "post": {
-                "summary": "Register a user",
-                "description": "<p>Create a new customer user, customer organizaton, and API key in a single request.</p> <p>This endpoint is for Opkit internal use only and will return unauthorized for customer API keys. Please do not attempt to access it.</p>",
+                "summary": "Register a new organization and create basic resources",
+                "description": "<p>Create a new customer user and organization along with various organization-level resources, including API keys and a widget configuration.</p> <p>This endpoint is for Opkit internal use only and will return unauthorized for customer API keys. Please do not attempt to access it.</p>",
                 "operationId": "postRegister",
                 "requestBody": {
                     "description": "<p>A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and (optionally) the name to use for the new customer organization.</p> <p>If customer_organization_name is absent, the server will use a default value for the new customer organization name.</p>",
@@ -2394,6 +2439,66 @@
                     "in_network",
                     "out_of_network"
                 ]
+            },
+            "WidgetConfiguration": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>An object containing configuration settings for the Opkit widget.</p>",
+                "required": [
+                    "id",
+                    "customer_organization_name",
+                    "referral_url",
+                    "payers"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                        "description": "A unique identifier."
+                    },
+                    "customer_organization_name": {
+                        "type": "string",
+                        "description": "<p>The name of the customer organization that owns this widget configuration.</p>"
+                    },
+                    "referral_url": {
+                        "type": "string",
+                        "description": "<p>A URL that determines where widget users are sent when they click a call-to-action button.</p>"
+                    },
+                    "payers": {
+                        "type": "array",
+                        "description": "<p>A list of payers that should appear in the widget insurance selector.</p>",
+                        "items": {
+                            "$ref": "#/components/schemas/WidgetPayer"
+                        }
+                    }
+                }
+            },
+            "WidgetPayer": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>An object representing a payer as it appears in a widget configuration.</p>",
+                "required": [
+                    "id",
+                    "name",
+                    "provider_npi"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                        "description": "A unique identifier."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "<p>The name of the payer.</p>"
+                    },
+                    "provider_npi": {
+                        "type": "string",
+                        "description": "<p>The National Provider Identifier that should be used when submitting eligibility inquiries to this payer on behalf of this customer organization.</p>"
+                    }
+                }
             },
             "ErrorCode": {
                 "type": "string",
