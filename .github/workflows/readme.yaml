@@ -11,5 +11,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: readmeio/github-readme-sync@v2
         with:
-          readme-oas-key: 56Wdu8fQZxiIKEBDmNpCMwx6yViV0Mo3:61e62d55973c5bb5733f232e
+          readme-oas-key: ${{ secrets.README_OAS_KEY }}
           oas-file-path: "./v1.json"
