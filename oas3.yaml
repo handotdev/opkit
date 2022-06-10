@@ -2360,6 +2360,7 @@ components:
       required:
         - id
         - benefits
+        - errors
       properties:
         id:
           type: string
@@ -2490,7 +2491,6 @@ components:
         - id
         - customer_organization_name
         - referral_url
-        - payers
       properties:
         id:
           type: string
