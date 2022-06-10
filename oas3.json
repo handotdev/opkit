@@ -44,8 +44,6 @@
                                 "description": "<p>TODO</p>",
                                 "additionalProperties": false,
                                 "required": [
-                                    "payer_id",
-                                    "plan_id",
                                     "subscriber"
                                 ],
                                 "properties": {
