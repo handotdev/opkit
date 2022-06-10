@@ -2282,6 +2282,7 @@ components:
       required:
         - id
         - result
+        - benefits
       properties:
         id:
           type: string

@@ -2356,7 +2356,8 @@
                 "additionalProperties": false,
                 "required": [
                     "id",
-                    "result"
+                    "result",
+                    "benefits"
                 ],
                 "properties": {
                     "id": {
