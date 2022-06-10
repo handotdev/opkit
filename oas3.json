@@ -2432,7 +2432,8 @@
                 "description": "<p>A request for information from a payer about a health insurance policy's coverages, typically in relation to a particular subscriber.</p> <p>This object contains the results of an eligibility inquiry, including any benefits returned by the payer - or, if the inquiry was rejected for some reason, any errors returned by the clearinghouse and/or payer.</p>",
                 "required": [
                     "id",
-                    "benefits"
+                    "benefits",
+                    "errors"
                 ],
                 "properties": {
                     "id": {
@@ -2561,8 +2562,7 @@
                 "required": [
                     "id",
                     "customer_organization_name",
-                    "referral_url",
-                    "payers"
+                    "referral_url"
                 ],
                 "properties": {
                     "id": {
