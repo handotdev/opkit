@@ -23,8 +23,56 @@ tags:
   - name: Payers
   - name: For Opkit Internal Use
 paths:
+  /widget_submissions:
+    post:
+      summary: Create a widget submission
+      operationId: postWidgetSubmissions
+      description: >-
+        <p>Create a new widget submission.</p>
+        <p>A widget submission represents an instance of
+        the widget form being submitted by a user.</p>
+      requestBody:
+        description: >-
+          <p>TODO</p>
+        content:
+          "application/json":
+            schema:
+              type: object
+              description: >-
+                <p>TODO</p>
+              additionalProperties: false
+              required:
+                - subscriber
+              properties:
+                payer_id:
+                  type: string
+                  format: uuid
+                  example: 612e564c-567b-4d05-871c-1ba3a841b12d
+                  description: >-
+                    <p>The ID of a payer.</p>
+                    <p>You can get a list of payer IDs from the getPayers endpoint.</p>
+                plan_id:
+                  type: string
+                  format: uuid
+                  example: 612e564c-567b-4d05-871c-1ba3a841b12d
+                  description: >-
+                    <p>The ID of a plan.</p>
+                subscriber:
+                  $ref: "#/components/schemas/Subscriber"
+      responses:
+        "200":
+          description: >-
+            OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostWidgetSubmissionsResponse"
+        default:
+          $ref: "#/components/responses/Default"
+      tags:
+        - For Opkit Internal Use
   /widget_configurations:
-    # This should be paginated
+    # TODO: Make this paginated
     get:
       summary: Get all widget configurations
       description: >-
@@ -111,7 +159,7 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - For Opkit Internal Use
-    # This should be paginated
+    # TODO: Make this paginated
     get:
       summary: Get all plan acceptance rules
       description: >-
@@ -293,7 +341,7 @@ paths:
           $ref: "#/components/responses/Default"
       tags:
         - Eligibility Inquiries
-    # This should be paginated
+    # TODO: Make this paginated
     get:
       summary: Get all eligibility inquiries
       description: >-
@@ -355,13 +403,14 @@ paths:
           content:
             "application/json":
               schema:
+                # TODO: Make ths return GetEligibilityInquiriesIdResponse
                 $ref: "#/components/schemas/EligibilityInquiry"
         default:
           $ref: "#/components/responses/Default"
       tags:
         - Eligibility Inquiries
   /payers:
-    # This should be paginated
+    # TODO: Make this paginated
     get:
       summary: Get all payers
       description: >-
@@ -783,30 +832,6 @@ components:
         - vision_optometry
         - well_baby_care
         - medical_care
-    Plan:
-      type: object
-      additionalProperties: false
-      description: >-
-        <p>An object representing a health insurance plan offered by a payer.</p>
-        <p>A plan has features called "benefits". These include deductibles,
-        coinsurance, copayments, out-of-pocket maximums, limitations, and more.</p>
-      required:
-        - benefits
-      properties:
-        benefits:
-          type: array
-          description: >-
-            <p>A list of benefits that are included in this plan.
-            A benefit is a feature of a plan.</p>
-            <p>THIS LIST IS NOT COMPREHENSIVE. The benefits that appear
-            in this list are determined by the services specified in the
-            request payload.</p>
-            <p>There are some benefits that do not relate to a specific medical
-            service. For example, the plan's overall deductible. These "general
-            benefits" will appear under the "health_benefit_plan_coverage"
-            service. This is a convention in the health insurance industry.</p>
-          items:
-            $ref: "#/components/schemas/Benefit"
     BenefitType:
       type: string
       description: >-
@@ -2247,14 +2272,15 @@ components:
           $ref: "#/components/schemas/State"
         effect:
           $ref: "#/components/schemas/PlanAcceptanceRuleEffect"
-    EligibilityInquiry:
+    WidgetSubmission:
       type: object
-      additionalProperties: false
       description: >-
-        <p>A request for information from a payer about a health insurance policy's
-        coverages, typically in relation to a particular subscriber.</p>
+        <p>TODO</p>
+      additionalProperties: false
       required:
         - id
+        - result
+        - benefits
       properties:
         id:
           type: string
@@ -2262,6 +2288,42 @@ components:
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
             A unique identifier.
+        payer_id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            <p>The ID of a payer.</p>
+            <p>This field may be undefined if the widget submission
+            was created without a payer.</p>
+        plan_id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            <p>The ID of a plan.</p>
+            <p>This field may be undefined if the widget submission
+            was created without a plan.</p>
+        result:
+          $ref: "#/components/schemas/WidgetSubmissionResult"
+        benefits:
+          type: array
+          description: >-
+            <p>A list of benefits returned by the payer.</p>
+            <p>This list will be empty if result is inactive or unknown.</p>
+          items:
+            $ref: "#/components/schemas/Benefit"
+    WidgetSubmissionResult:
+      type: string
+      description: >-
+        <p>TODO</p>
+      enum:
+        - in_network
+        - out_of_network
+        - inactive
+        - unknown
+    PostWidgetSubmissionsResponse:
+      $ref: "#/components/schemas/WidgetSubmission"
     PostPlanAcceptanceRulesResponse:
       $ref: "#/components/schemas/PlanAcceptanceRule"
     PostPlanAcceptanceChecksResponse:
@@ -2286,18 +2348,18 @@ components:
           type: boolean
           description: >-
             <p>A boolean value indicating whether the plan is considered in-network.</p>
-    # TODO: Make this endpoint return an EligiblityInquiry
-    PostEligibilityInquiriesResponse:
+    EligibilityInquiry:
       type: object
       additionalProperties: false
       description: >-
-        <p>The response to a postEligibilityInquiries request.</p>
-        <p>This object contains the results of the eligibility inquiry,
-        including the subscriber's plan and any benefits. Or, if the inquiry
-        was rejected, it will include errors returned by the clearinghouse
-        or payer.</p>
+        <p>A request for information from a payer about a health insurance policy's
+        coverages, typically in relation to a particular subscriber.</p>
+        <p>This object contains the results of an eligibility inquiry,
+        including any benefits returned by the payer - or, if the inquiry was rejected
+        for some reason, any errors returned by the clearinghouse and/or payer.</p>
       required:
         - id
+        - benefits
         - errors
       properties:
         id:
@@ -2306,8 +2368,19 @@ components:
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
             A unique identifier.
-        plan:
-          $ref: "#/components/schemas/Plan"
+        benefits:
+          type: array
+          description: >-
+            <p>A list of benefits returned by the payer.</p>
+            <p>THIS LIST IS NOT COMPREHENSIVE. The benefits that appear
+            in this list are determined by the services specified in the
+            request payload.</p>
+            <p>There are some benefits that do not relate to a specific medical
+            service. For example, the plan's overall deductible. These "general
+            benefits" will appear under the "health_benefit_plan_coverage"
+            service. This is a convention in the health insurance industry.</p>
+          items:
+            $ref: "#/components/schemas/Benefit"
         errors:
           type: array
           description: >-
@@ -2318,11 +2391,39 @@ components:
             but rejected by either the clearinghouse or payer.</p>
           items:
             $ref: "#/components/schemas/EligibilityInquiryError"
+    PostEligibilityInquiriesResponse:
+      $ref: "#/components/schemas/EligibilityInquiry"
     Payer:
       type: object
       additionalProperties: false
       description: >-
-        A health insurance carrier that offers one or more health insurance plans.
+        <p>A health insurance carrier that offers one or more health insurance plans.</p>
+      required:
+        - id
+        - name
+        - plans
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            <p>A unique identifier.</p>
+        name:
+          type: string
+          description: >-
+            <p>The name of the payer.</p>
+        plans:
+          type: array
+          description: >-
+            <p>A list of plans belonging to this payer.</p>
+          items:
+            $ref: "#/components/schemas/Plan"
+    Plan:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>TODO</p>
       required:
         - id
         - name
@@ -2332,11 +2433,11 @@ components:
           format: uuid
           example: 612e564c-567b-4d05-871c-1ba3a841b12d
           description: >-
-            A unique identifier.
+            <p>A unique identifier.</p>
         name:
           type: string
           description: >-
-            The name of the payer.
+            <p>The name of the plan.</p>
     Subscriber:
       type: object
       additionalProperties: false
@@ -2390,7 +2491,6 @@ components:
         - id
         - customer_organization_name
         - referral_url
-        - payers
       properties:
         id:
           type: string
@@ -2406,37 +2506,6 @@ components:
           type: string
           description: >-
             <p>A URL that determines where widget users are sent when they click a call-to-action button.</p>
-        payers:
-          type: array
-          description: >-
-            <p>A list of payers that should appear in the widget insurance selector.</p>
-          items:
-            $ref: "#/components/schemas/WidgetPayer"
-    WidgetPayer:
-      type: object
-      additionalProperties: false
-      description: >-
-        <p>An object representing a payer as it appears in a widget configuration.</p>
-      required:
-        - id
-        - name
-        - provider_npi
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: >-
-            A unique identifier.
-        name:
-          type: string
-          description: >-
-            <p>The name of the payer.</p>
-        provider_npi:
-          type: string
-          description: >-
-            <p>The National Provider Identifier that should be used when submitting eligibility inquiries
-            to this payer on behalf of this customer organization.</p>
     # TODO: We probably don't need this; the type of error is
     # implicit in the HTTP response code (404 - not found, 401 - unauthorized,
     # 400 - bad request, etc.).
