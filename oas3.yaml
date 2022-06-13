@@ -42,8 +42,15 @@ paths:
                 <p>TODO</p>
               additionalProperties: false
               required:
+                - widget_configuration_id
                 - subscriber
               properties:
+                widget_configuration_id:
+                  type: string
+                  format: uuid
+                  example: 612e564c-567b-4d05-871c-1ba3a841b12d
+                  description: >-
+                    <p>The ID of a widget configuration.</p>
                 payer_id:
                   type: string
                   format: uuid
