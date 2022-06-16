@@ -55,8 +55,6 @@
                                 "required": [
                                     "widget_configuration_id",
                                     "subscriber",
-                                    "network_status",
-                                    "insurance_status",
                                     "result"
                                 ],
                                 "properties": {
@@ -268,7 +266,7 @@
                     {
                         "in": "query",
                         "name": "filter",
-                        "example": "in_network",
+                        "required": false,
                         "schema": {
                             "type": "string",
                             "description": "<p>An enum of possible plan filter modes.</p>",
@@ -276,8 +274,7 @@
                                 "in_network",
                                 "out_of_network"
                             ]
-                        },
-                        "required": false
+                        }
                     }
                 ],
                 "responses": {
