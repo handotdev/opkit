@@ -299,6 +299,7 @@ paths:
           content:
             "application/json":
               schema:
+                # TODO: Move to PostRegisterResponse object
                 type: object
                 description: >-
                   <p>An object containing various fields from the new customer user,
