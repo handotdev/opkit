@@ -50,8 +50,6 @@ paths:
               required:
                 - widget_configuration_id
                 - subscriber
-                - network_status
-                - insurance_status
                 - result
               properties:
                 plan_id:
@@ -224,7 +222,7 @@ paths:
       parameters:
         - in: query
           name: filter
-          example: in_network
+          required: false
           schema:
             type: string
             description: >-
@@ -232,7 +230,6 @@ paths:
             enum:
               - in_network
               - out_of_network
-          required: false
       responses:
         "200":
           description: >-
