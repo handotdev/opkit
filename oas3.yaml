@@ -1999,20 +1999,6 @@ components:
       enum:
         - active
         - inactive
-    PlanAcceptanceCheck:
-      type: object
-      additionalProperties: false
-      description: >-
-        <p>TODO</p>
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: >-
-            A unique identifier.
     WidgetSubmission:
       type: object
       description: >-
@@ -2055,28 +2041,6 @@ components:
       $ref: "#/components/schemas/EligibilityInquiry"
     PostWidgetSubmissionsResponse:
       $ref: "#/components/schemas/WidgetSubmission"
-    PostPlanAcceptanceChecksResponse:
-      type: object
-      additionalProperties: false
-      description: >-
-        <p>The response to a postPlanAcceptanceChecks request.</p>
-        <p>This object contains the results of a plan acceptance check,
-        which should indicate whether the plan provided is considered
-        in-network according to the customer organization's plan acceptance rules.</p>
-      required:
-        - id
-        - in_network
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: >-
-            A unique identifier.
-        in_network:
-          type: boolean
-          description: >-
-            <p>A boolean value indicating whether the plan is considered in-network.</p>
     EligibilityInquiry:
       type: object
       additionalProperties: false
