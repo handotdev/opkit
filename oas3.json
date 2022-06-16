@@ -26,6 +26,15 @@
             "name": "Payers"
         },
         {
+            "name": "Widget Submissions"
+        },
+        {
+            "name": "Widget Configurations"
+        },
+        {
+            "name": "Plans"
+        },
+        {
             "name": "For Opkit Internal Use"
         }
     ],
@@ -34,7 +43,7 @@
             "post": {
                 "summary": "Create a widget submission",
                 "operationId": "postWidgetSubmissions",
-                "description": "<p>Create a new widget submission.</p> <p>A widget submission represents an instance of the widget form being submitted by a user.</p>",
+                "description": "<p>Create a new widget submission.</p> <p>A widget submission represents an instance of the widget form being submitted by a user.</p> <p>This object stores both the inputs and the outputs of the widget submission event, including the result state that was shown to the user.</p>",
                 "requestBody": {
                     "description": "<p>TODO</p>",
                     "content": {
@@ -45,29 +54,32 @@
                                 "additionalProperties": false,
                                 "required": [
                                     "widget_configuration_id",
-                                    "subscriber"
+                                    "subscriber",
+                                    "network_status",
+                                    "insurance_status",
+                                    "result"
                                 ],
                                 "properties": {
-                                    "widget_configuration_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of a widget configuration.</p>"
-                                    },
-                                    "payer_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of a payer.</p> <p>You can get a list of payer IDs from the getPayers endpoint.</p>"
-                                    },
                                     "plan_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of a plan.</p>"
+                                        "$ref": "#/components/schemas/Identifier"
+                                    },
+                                    "widget_configuration_id": {
+                                        "$ref": "#/components/schemas/Identifier"
+                                    },
+                                    "eligibility_inquiry_id": {
+                                        "$ref": "#/components/schemas/Identifier"
                                     },
                                     "subscriber": {
                                         "$ref": "#/components/schemas/Subscriber"
+                                    },
+                                    "network_status": {
+                                        "$ref": "#/components/schemas/WidgetSubmissionNetworkStatus"
+                                    },
+                                    "insurance_status": {
+                                        "$ref": "#/components/schemas/WidgetSubmissionInsuranceStatus"
+                                    },
+                                    "result": {
+                                        "$ref": "#/components/schemas/WidgetSubmissionResult"
                                     }
                                 }
                             }
@@ -84,13 +96,10 @@
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
-                    "For Opkit Internal Use"
+                    "Widget Submissions"
                 ]
             }
         },
@@ -105,225 +114,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "description": "<p>An object containing a list of widget configurations and a count that indicates the number of items in the list.</p>",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "count",
-                                        "items"
-                                    ],
-                                    "properties": {
-                                        "count": {
-                                            "type": "number",
-                                            "example": 1,
-                                            "description": "The number of items in this list."
-                                        },
-                                        "items": {
-                                            "type": "array",
-                                            "description": "A list of widget configurations.",
-                                            "items": {
-                                                "$ref": "#/components/schemas/WidgetConfiguration"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/GetWidgetConfigurationsResponse"
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
-                    "For Opkit Internal Use"
-                ]
-            }
-        },
-        "/plan_acceptance_rules": {
-            "post": {
-                "summary": "Create a plan acceptance rule",
-                "operationId": "postPlanAcceptanceRules",
-                "description": "<p>Create a new plan acceptance rule.</p> <p>When evaluated, a plan acceptance rule determines whether the customer organization is considered in-network or out-of-network for an individual's health insurance based on the plan's type, the individual's state of residence, and the insurance company that offers the plan.</p>",
-                "requestBody": {
-                    "description": "<p>TODO</p>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>TODO</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "effect"
-                                ],
-                                "properties": {
-                                    "payer_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of a payer.</p> <p>You can get a list of payer IDs from the getPayers endpoint.</p>"
-                                    },
-                                    "plan_type": {
-                                        "$ref": "#/components/schemas/PlanType"
-                                    },
-                                    "state": {
-                                        "$ref": "#/components/schemas/State"
-                                    },
-                                    "effect": {
-                                        "$ref": "#/components/schemas/PlanAcceptanceRuleEffect"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PostPlanAcceptanceRulesResponse"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
-                    }
-                },
-                "tags": [
-                    "For Opkit Internal Use"
-                ]
-            },
-            "get": {
-                "summary": "Get all plan acceptance rules",
-                "description": "Get a list of your existing plan acceptance rules.",
-                "operationId": "getPlanAcceptanceRules",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "An object containing a list of plan acceptance rules  and a count that indicates the number of items in the list.",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "count",
-                                        "items"
-                                    ],
-                                    "properties": {
-                                        "count": {
-                                            "type": "number",
-                                            "example": 1,
-                                            "description": "The number of items in this list."
-                                        },
-                                        "items": {
-                                            "type": "array",
-                                            "description": "A list of plan acceptance rules.",
-                                            "items": {
-                                                "$ref": "#/components/schemas/PlanAcceptanceRule"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
-                    }
-                },
-                "tags": [
-                    "For Opkit Internal Use"
-                ]
-            }
-        },
-        "/plan_acceptance_rules/{id}": {
-            "delete": {
-                "summary": "Delete a plan acceptance rule",
-                "description": "Delete one of your existing plan acceptance rules by ID.",
-                "operationId": "deletePlanAcceptanceRulesId",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                            "description": "The ID of the plan acceptance rule."
-                        },
-                        "required": true,
-                        "description": "The ID of the plan acceptance rule."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
-                    }
-                },
-                "tags": [
-                    "For Opkit Internal Use"
-                ]
-            }
-        },
-        "/plan_acceptance_checks": {
-            "post": {
-                "summary": "Create a plan acceptance check",
-                "operationId": "postPlanAcceptanceChecks",
-                "description": "<p>Create a new plan acceptance check. This resource is used to determine whether a plan is considered in-network according to the customer organization's plan acceptance rules.</p>",
-                "requestBody": {
-                    "description": "<p>TODO</p>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>TODO</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "payer_id",
-                                    "plan_type",
-                                    "state"
-                                ],
-                                "properties": {
-                                    "payer_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of the payer to whom this plan belongs.</p> <p>You can get a list of payer IDs from the getPayers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>."
-                                    },
-                                    "plan_type": {
-                                        "$ref": "#/components/schemas/PlanType"
-                                    },
-                                    "state": {
-                                        "$ref": "#/components/schemas/State"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PostPlanAcceptanceChecksResponse"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
-                    }
-                },
-                "tags": [
-                    "For Opkit Internal Use"
+                    "Widget Configurations"
                 ]
             }
         },
@@ -348,10 +146,7 @@
                                 ],
                                 "properties": {
                                     "payer_id": {
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                                        "description": "<p>The ID of the payer you are inssuing the inquiry to.</p> <p>You can get a list of payer IDs from the getPayers endpoint.</p> <p>For more on finding the appropriate payer ID, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>."
+                                        "$ref": "#/components/schemas/Identifier"
                                     },
                                     "provider_npi": {
                                         "type": "string",
@@ -382,9 +177,6 @@
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
@@ -401,33 +193,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "description": "An object containing a list of eligibility inquiries  and a count that indicates the number of items in the list.",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "count",
-                                        "items"
-                                    ],
-                                    "properties": {
-                                        "count": {
-                                            "type": "number",
-                                            "example": 1,
-                                            "description": "The number of items in this list."
-                                        },
-                                        "items": {
-                                            "type": "array",
-                                            "description": "A list of eligibility inquiries.",
-                                            "items": {
-                                                "$ref": "#/components/schemas/EligibilityInquiry"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/GetEligibilityInquiriesResponse"
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
@@ -445,13 +214,10 @@
                         "in": "path",
                         "name": "id",
                         "schema": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                            "description": "The ID of the eligibility inquiry."
+                            "$ref": "#/components/schemas/Identifier"
                         },
                         "required": true,
-                        "description": "The ID of the eligibility inquiry."
+                        "description": "<p>The ID of an eligibility inquiry.</p>"
                     }
                 ],
                 "responses": {
@@ -460,13 +226,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/EligibilityInquiry"
+                                    "$ref": "#/components/schemas/GetEligibilityInquiriesIdResponse"
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
@@ -477,19 +240,44 @@
         "/payers": {
             "get": {
                 "summary": "Get all payers",
-                "description": "<p>Get a complete list of the payers supported by Opkit.</p> <p>This endpoint returns a list payers that you can interact with via the Opkit API. Opkit supports hundreds of payers across the United States.</p>",
+                "description": "<p>Get a complete list of payers supported by Opkit.</p>",
                 "operationId": "getPayers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetPayersResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Payers"
+                ]
+            }
+        },
+        "/plans": {
+            "get": {
+                "summary": "Get all plans",
+                "description": "<p>Get a complete list of plans supported by Opkit.</p>",
+                "operationId": "getPlans",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "search",
-                        "example": "anthem",
+                        "name": "filter",
+                        "example": "in_network",
                         "schema": {
                             "type": "string",
-                            "description": "<p>A substring to match payer names on. The casing of this value does not matter.</p>"
+                            "description": "<p>An enum of possible plan filter modes.</p>",
+                            "enum": [
+                                "in_network",
+                                "out_of_network"
+                            ]
                         },
-                        "required": false,
-                        "description": "<p>A substring to match payer names on. The casing of this value does not matter.</p>"
+                        "required": false
                     }
                 ],
                 "responses": {
@@ -498,37 +286,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "description": "An object containing a list of payers and a count that indicates the number of items in this list.",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "count",
-                                        "items"
-                                    ],
-                                    "properties": {
-                                        "count": {
-                                            "type": "number",
-                                            "example": 1,
-                                            "description": "The number of items in this list."
-                                        },
-                                        "items": {
-                                            "type": "array",
-                                            "description": "A list of payers.",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Payer"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/GetPlansResponse"
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
-                    "Payers"
+                    "Plans"
                 ]
             }
         },
@@ -600,9 +365,6 @@
                                 }
                             }
                         }
-                    },
-                    "default": {
-                        "$ref": "#/components/responses/Default"
                     }
                 },
                 "tags": [
@@ -613,17 +375,9 @@
     },
     "components": {
         "schemas": {
-            "PlanAcceptanceRuleEffect": {
-                "type": "string",
-                "description": "<p>An enum that describes whether a plan acceptance rule is inclusionary or exclusionary.</p>",
-                "enum": [
-                    "include",
-                    "exclude"
-                ]
-            },
             "PlanType": {
                 "type": "string",
-                "description": "<p>An enum that describes health insurance plan types.</p>",
+                "description": "<p>An enum of possible health insurance plan types.</p>",
                 "enum": [
                     "preferred_provider_organization",
                     "health_maintenance_organization",
@@ -701,7 +455,7 @@
             },
             "Service": {
                 "type": "string",
-                "description": "<p>An enum that describes medical goods and services.</p> <p>You must supply one or more services when performing an eligibility inquiry. The services you choose determine the benefits that are included in the response.</p> <p>\"health_benefit_plan_coverage\" is a generic service that covers general benefits, such as a plan's overall deductible. This is a convention of the health insurance industry.</p>",
+                "description": "<p>An enum of possible medical goods and services.</p> <p>You must supply one or more services when performing an eligibility inquiry. The services you choose determine the benefits that are included in the response.</p> <p>\"health_benefit_plan_coverage\" is a generic service that covers general benefits, such as a plan's overall deductible. This is a convention of the health insurance industry.</p>",
                 "enum": [
                     "abortion",
                     "acupuncture",
@@ -918,7 +672,7 @@
                 "properties": {
                     "source": {
                         "type": "string",
-                        "description": "<p>An enum that describes the source of the eligibility inquiry error.</p>",
+                        "description": "<p>An enum of possible eligibility inquiry error sources.</p>",
                         "enum": [
                             "clearinghouse",
                             "payer"
@@ -928,7 +682,7 @@
             },
             "BenefitCoverage": {
                 "type": "string",
-                "description": "<p>An enum that describes a benefit's level of coverage.</p>",
+                "description": "<p>An enum of possible benefit coverage levels.</p>",
                 "enum": [
                     "children_only",
                     "dependents_only",
@@ -959,7 +713,7 @@
             },
             "BenefitPeriod": {
                 "type": "string",
-                "description": "<p>An enum that describes benefit time period.</p>",
+                "description": "<p>An enum of possible benefit time period.</p>",
                 "enum": [
                     "12_hours",
                     "18_hours",
@@ -1048,6 +802,12 @@
                     }
                 }
             },
+            "Identifier": {
+                "type": "string",
+                "format": "uuid",
+                "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
+                "description": "<p>A unique identifier.</p>"
+            },
             "CustomerUser": {
                 "type": "object",
                 "additionalProperties": false,
@@ -1059,9 +819,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "<p>A unique identifier.</p>"
+                        "$ref": "#/components/schemas/Identifier"
                     },
                     "name": {
                         "type": "string",
@@ -1083,9 +841,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "<p>A unique identifier.</p>"
+                        "$ref": "#/components/schemas/Identifier"
                     },
                     "name": {
                         "type": "string",
@@ -1105,10 +861,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>A unique identifier.</p>"
+                        "$ref": "#/components/schemas/Identifier"
                     },
                     "type": {
                         "type": "string",
@@ -1139,7 +892,7 @@
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "<p>An enum that describes the type of a benefit value.</p>",
+                        "description": "<p>An enum of possible benefit value types.</p>",
                         "enum": [
                             "currency",
                             "percent",
@@ -2307,10 +2060,10 @@
                     "inactive"
                 ]
             },
-            "PlanAcceptanceCheck": {
+            "WidgetSubmission": {
                 "type": "object",
-                "additionalProperties": false,
                 "description": "<p>TODO</p>",
+                "additionalProperties": false,
                 "required": [
                     "id"
                 ],
@@ -2323,81 +2076,26 @@
                     }
                 }
             },
-            "PlanAcceptanceRule": {
-                "type": "object",
-                "description": "<p>TODO</p>",
-                "additionalProperties": false,
-                "required": [
-                    "id",
-                    "effect"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
-                    },
-                    "payer_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>The ID of a payer.</p>"
-                    },
-                    "plan_type": {
-                        "$ref": "#/components/schemas/PlanType"
-                    },
-                    "state": {
-                        "$ref": "#/components/schemas/State"
-                    },
-                    "effect": {
-                        "$ref": "#/components/schemas/PlanAcceptanceRuleEffect"
-                    }
-                }
+            "WidgetSubmissionInsuranceStatus": {
+                "type": "string",
+                "description": "<p>An enum of possible widget insurance statuses.</p>",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "unknown"
+                ]
             },
-            "WidgetSubmission": {
-                "type": "object",
-                "description": "<p>TODO</p>",
-                "additionalProperties": false,
-                "required": [
-                    "id",
-                    "result",
-                    "benefits"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
-                    },
-                    "payer_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>The ID of a payer.</p> <p>This field may be undefined if the widget submission was created without a payer.</p>"
-                    },
-                    "plan_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>The ID of a plan.</p> <p>This field may be undefined if the widget submission was created without a plan.</p>"
-                    },
-                    "result": {
-                        "$ref": "#/components/schemas/WidgetSubmissionResult"
-                    },
-                    "benefits": {
-                        "type": "array",
-                        "description": "<p>A list of benefits returned by the payer.</p> <p>This list will be empty if result is inactive or unknown.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/Benefit"
-                        }
-                    }
-                }
+            "WidgetSubmissionNetworkStatus": {
+                "type": "string",
+                "description": "<p>An enum of possible widget network statuses.</p>",
+                "enum": [
+                    "in_network",
+                    "out_of_network"
+                ]
             },
             "WidgetSubmissionResult": {
                 "type": "string",
-                "description": "<p>TODO</p>",
+                "description": "<p>An enum of possible widget result states.</p>",
                 "enum": [
                     "in_network",
                     "out_of_network",
@@ -2405,32 +2103,11 @@
                     "unknown"
                 ]
             },
+            "GetEligibilityInquiriesIdResponse": {
+                "$ref": "#/components/schemas/EligibilityInquiry"
+            },
             "PostWidgetSubmissionsResponse": {
                 "$ref": "#/components/schemas/WidgetSubmission"
-            },
-            "PostPlanAcceptanceRulesResponse": {
-                "$ref": "#/components/schemas/PlanAcceptanceRule"
-            },
-            "PostPlanAcceptanceChecksResponse": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>The response to a postPlanAcceptanceChecks request.</p> <p>This object contains the results of a plan acceptance check, which should indicate whether the plan provided is considered in-network according to the customer organization's plan acceptance rules.</p>",
-                "required": [
-                    "id",
-                    "in_network"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
-                    },
-                    "in_network": {
-                        "type": "boolean",
-                        "description": "<p>A boolean value indicating whether the plan is considered in-network.</p>"
-                    }
-                }
             },
             "EligibilityInquiry": {
                 "type": "object",
@@ -2478,10 +2155,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>A unique identifier.</p>"
+                        "$ref": "#/components/schemas/Identifier"
                     },
                     "name": {
                         "type": "string",
@@ -2506,14 +2180,32 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "<p>A unique identifier.</p>"
+                        "$ref": "#/components/schemas/Identifier"
                     },
                     "name": {
                         "type": "string",
                         "description": "<p>The name of the plan.</p>"
+                    }
+                }
+            },
+            "GetWidgetConfigurationsResponse": {
+                "type": "object",
+                "description": "<p>An object containing a list of widget configurations and a count that indicates the number of items in the list.</p>",
+                "additionalProperties": false,
+                "required": [
+                    "count",
+                    "items"
+                ],
+                "properties": {
+                    "count": {
+                        "$ref": "#/components/schemas/Count"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "<p>A list of widget configurations.</p>",
+                        "items": {
+                            "$ref": "#/components/schemas/WidgetConfiguration"
+                        }
                     }
                 }
             },
@@ -2553,13 +2245,39 @@
                     }
                 }
             },
+            "Count": {
+                "type": "number",
+                "example": 1,
+                "description": "<p>The number of items in a list.</p>"
+            },
             "BenefitNetwork": {
                 "type": "string",
-                "description": "<p>An enum that describes a benefit's network status.</p>",
+                "description": "<p>An enum of possible benefit network statuses.</p>",
                 "enum": [
                     "in_network",
                     "out_of_network"
                 ]
+            },
+            "GetEligibilityInquiriesResponse": {
+                "type": "object",
+                "description": "<p>An object containing a list of eligibility inquiries  and a count that indicates the number of items in the list.</p>",
+                "additionalProperties": false,
+                "required": [
+                    "count",
+                    "items"
+                ],
+                "properties": {
+                    "count": {
+                        "$ref": "#/components/schemas/Count"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "<p>A list of eligibility inquiries.</p>",
+                        "items": {
+                            "$ref": "#/components/schemas/EligibilityInquiry"
+                        }
+                    }
+                }
             },
             "WidgetConfiguration": {
                 "type": "object",
@@ -2587,41 +2305,44 @@
                     }
                 }
             },
-            "ErrorCode": {
-                "type": "string",
-                "description": "<p>An error code indicating the category of problem.</p>",
-                "enum": [
-                    "bad_request",
-                    "not_found",
-                    "unauthorized"
-                ]
-            },
-            "Error": {
+            "GetPayersResponse": {
                 "type": "object",
+                "description": "<p>An object containing a list of payers and a count that indicates the number of items in this list.</p>",
                 "additionalProperties": false,
-                "description": "<p>An object that is returned when an error has occured. This includes both client- and server-side errors.</p>",
                 "required": [
-                    "code",
-                    "message"
+                    "count",
+                    "items"
                 ],
                 "properties": {
-                    "code": {
-                        "$ref": "#/components/schemas/ErrorCode"
+                    "count": {
+                        "$ref": "#/components/schemas/Count"
                     },
-                    "message": {
-                        "type": "string",
-                        "description": "<p>A brief text description that expands upon this particular error code.</p>"
+                    "items": {
+                        "type": "array",
+                        "description": "<p>A list of payers.</p>",
+                        "items": {
+                            "$ref": "#/components/schemas/Payer"
+                        }
                     }
                 }
-            }
-        },
-        "responses": {
-            "Default": {
-                "description": "<p>A default error response if no other response is provided.</p> <p>If you see this response, it should be accompanied by a 4XX HTTP status code. You can use the error code to programmatically handle the error.</p> <p>5XX responses are unanticipated will not include an error object in the response body. You should try resubmitting the request.</p>",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
+            },
+            "GetPlansResponse": {
+                "type": "object",
+                "description": "<p>An object containing a list of plans and a count that indicates the number of items in this list.</p>",
+                "additionalProperties": false,
+                "required": [
+                    "count",
+                    "items"
+                ],
+                "properties": {
+                    "count": {
+                        "$ref": "#/components/schemas/Count"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "<p>A list of plans.</p>",
+                        "items": {
+                            "$ref": "#/components/schemas/Plan"
                         }
                     }
                 }
