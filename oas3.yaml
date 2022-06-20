@@ -2215,6 +2215,7 @@ components:
         - id
         - customer_organization_name
         - referral_url
+        - default_provider_npi
       properties:
         id:
           type: string
@@ -2230,6 +2231,10 @@ components:
           type: string
           description: >-
             <p>A URL that determines where widget users are sent when they click a call-to-action button.</p>
+        default_provider_npi:
+          type: string
+          description: >-
+            <p>A default provider NPI to use in eligibility inquiry requests.</p>
     GetPayersResponse:
       type: object
       description: >-
