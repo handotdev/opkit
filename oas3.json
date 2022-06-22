@@ -137,13 +137,13 @@
                                 "description": "<p>An object that containing information about the subscriber you are inquiring about, the health insurance carrier (or \"payer\") you are issuing the inquiry to, and the provider you are issuing the inquiry on behalf of.</p>",
                                 "additionalProperties": false,
                                 "required": [
-                                    "payer_id",
+                                    "change_healthcare_payer_id",
                                     "provider_npi",
                                     "subscriber",
                                     "services"
                                 ],
                                 "properties": {
-                                    "payer_id": {
+                                    "change_healthcare_payer_id": {
                                         "$ref": "#/components/schemas/Identifier"
                                     },
                                     "provider_npi": {
@@ -2182,6 +2182,9 @@
                     "name": {
                         "type": "string",
                         "description": "<p>The name of the plan.</p>"
+                    },
+                    "change_healthcare_payer_id": {
+                        "$ref": "#/components/schemas/Identifier"
                     }
                 }
             },
