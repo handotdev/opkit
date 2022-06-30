@@ -58,7 +58,8 @@
                                 "required": [
                                     "widget_configuration_id",
                                     "type",
-                                    "session"
+                                    "session",
+                                    "data"
                                 ],
                                 "properties": {
                                     "widget_configuration_id": {

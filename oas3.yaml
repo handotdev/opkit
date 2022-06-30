@@ -46,6 +46,7 @@ paths:
                 - widget_configuration_id
                 - type
                 - session
+                - data
               properties:
                 widget_configuration_id:
                   $ref: "#/components/schemas/Identifier"
