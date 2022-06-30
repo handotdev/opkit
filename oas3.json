@@ -76,7 +76,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PostWidgetEventResponse"
+                                    "$ref": "#/components/schemas/PostWidgetEventsResponse"
                                 }
                             }
                         }
@@ -2138,7 +2138,7 @@
                     "inactive"
                 ]
             },
-            "PostWidgetEventResponse": {
+            "PostWidgetEventsResponse": {
                 "$ref": "#/components/schemas/WidgetEvent"
             },
             "WidgetSubmission": {
