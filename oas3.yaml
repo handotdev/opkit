@@ -26,6 +26,38 @@ tags:
   - name: Plans
   - name: For Opkit Internal Use
 paths:
+  /widget_events:
+    post:
+      summary: Create a widget event
+      operationId: postWidgetEvents
+      description: TODO
+      requestBody:
+        description: >-
+          <p>TODO</>
+        content:
+          "application/json":
+            schema:
+              type: object
+              description: >-
+                <p>TODO</p>
+              additionalProperties: false
+              required:
+                - event
+              properties:
+                event:
+                  $ref: "#/components/schemas/WidgetEvent"
+                data:
+                  type: object
+      responses:
+        "200":
+          description: >-
+            OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostEventResponse"
+      tags:
+        - For Opkit Internal Use
   /widget_submissions:
     post:
       summary: Create a widget submission
@@ -324,6 +356,17 @@ paths:
         - For Opkit Internal Use
 components:
   schemas:
+    WidgetEvent:
+      type: string
+      description: >-
+        <p>TODO</p>
+      enum:
+        - load
+        - open
+        - form_part_1
+        - form_part_2
+        - submit
+        - convert
     PlanType:
       type: string
       description: >-
@@ -1997,6 +2040,20 @@ components:
       enum:
         - active
         - inactive
+    PostEventResponse:
+      type: object
+      description: >-
+        <p>TODO</p>
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 612e564c-567b-4d05-871c-1ba3a841b12d
+          description: >-
+            A unique identifier.
     WidgetSubmission:
       type: object
       description: >-
