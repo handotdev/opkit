@@ -56,9 +56,13 @@
                                 "description": "<p>TODO</p>",
                                 "additionalProperties": false,
                                 "required": [
-                                    "type"
+                                    "type",
+                                    "session"
                                 ],
                                 "properties": {
+                                    "session": {
+                                        "$ref": "#/components/schemas/Identifier"
+                                    },
                                     "type": {
                                         "$ref": "#/components/schemas/WidgetEventType"
                                     },
