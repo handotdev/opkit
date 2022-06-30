@@ -43,9 +43,12 @@ paths:
                 <p>TODO</p>
               additionalProperties: false
               required:
+                - widget_configuration_id
                 - type
                 - session
               properties:
+                widget_configuration_id:
+                  $ref: "#/components/schemas/Identifier"
                 session:
                   $ref: "#/components/schemas/Identifier"
                 type:
