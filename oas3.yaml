@@ -23,6 +23,7 @@ tags:
   - name: Payers
   - name: Widget Submissions
   - name: Widget Configurations
+  - name: Widget Events
   - name: Plans
   - name: For Opkit Internal Use
 paths:
@@ -42,10 +43,10 @@ paths:
                 <p>TODO</p>
               additionalProperties: false
               required:
-                - event
+                - type
               properties:
-                event:
-                  $ref: "#/components/schemas/WidgetEvent"
+                type:
+                  $ref: "#/components/schemas/WidgetEventType"
                 data:
                   type: object
       responses:
@@ -55,9 +56,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PostEventResponse"
+                $ref: "#/components/schemas/PostWidgetEventResponse"
       tags:
-        - For Opkit Internal Use
+        - Widget Events
   /widget_submissions:
     post:
       summary: Create a widget submission
@@ -356,7 +357,7 @@ paths:
         - For Opkit Internal Use
 components:
   schemas:
-    WidgetEvent:
+    WidgetEventType:
       type: string
       description: >-
         <p>TODO</p>
@@ -367,6 +368,23 @@ components:
         - form_part_2
         - submit
         - convert
+    WidgetEvent:
+      type: object
+      additionalProperties: false
+      description: >-
+        <p>TODO</p>
+      required:
+        - id
+        - type
+      properties:
+        id:
+          $ref: "#/components/schemas/Identifier"
+        type:
+          $ref: "#/components/schemas/WidgetEventType"
+        data:
+          type: object
+          description: >-
+            <p>Any data that is associated with this widget event.</p>
     PlanType:
       type: string
       description: >-
@@ -2040,20 +2058,8 @@ components:
       enum:
         - active
         - inactive
-    PostEventResponse:
-      type: object
-      description: >-
-        <p>TODO</p>
-      additionalProperties: false
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 612e564c-567b-4d05-871c-1ba3a841b12d
-          description: >-
-            A unique identifier.
+    PostWidgetEventResponse:
+      $ref: "#/components/schemas/WidgetEvent"
     WidgetSubmission:
       type: object
       description: >-
