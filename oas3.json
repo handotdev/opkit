@@ -32,6 +32,9 @@
             "name": "Widget Configurations"
         },
         {
+            "name": "Widget Events"
+        },
+        {
             "name": "Plans"
         },
         {
@@ -39,6 +42,51 @@
         }
     ],
     "paths": {
+        "/widget_events": {
+            "post": {
+                "summary": "Create a widget event",
+                "operationId": "postWidgetEvents",
+                "description": "TODO",
+                "requestBody": {
+                    "description": "<p>TODO</>",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "<p>TODO</p>",
+                                "additionalProperties": false,
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/WidgetEventType"
+                                    },
+                                    "data": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostWidgetEventsResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Widget Events"
+                ]
+            }
+        },
         "/widget_submissions": {
             "post": {
                 "summary": "Create a widget submission",
@@ -372,6 +420,40 @@
     },
     "components": {
         "schemas": {
+            "WidgetEventType": {
+                "type": "string",
+                "description": "<p>TODO</p>",
+                "enum": [
+                    "load",
+                    "open",
+                    "form_part_1",
+                    "form_part_2",
+                    "submit",
+                    "convert"
+                ]
+            },
+            "WidgetEvent": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "<p>TODO</p>",
+                "required": [
+                    "id",
+                    "type",
+                    "data"
+                ],
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/Identifier"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/WidgetEventType"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "<p>Any data that is associated with this widget event.</p>"
+                    }
+                }
+            },
             "PlanType": {
                 "type": "string",
                 "description": "<p>An enum of possible health insurance plan types.</p>",
@@ -2056,6 +2138,9 @@
                     "active",
                     "inactive"
                 ]
+            },
+            "PostWidgetEventsResponse": {
+                "$ref": "#/components/schemas/WidgetEvent"
             },
             "WidgetSubmission": {
                 "type": "object",
