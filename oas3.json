@@ -438,7 +438,8 @@
                 "description": "<p>TODO</p>",
                 "required": [
                     "id",
-                    "type"
+                    "type",
+                    "data"
                 ],
                 "properties": {
                     "id": {

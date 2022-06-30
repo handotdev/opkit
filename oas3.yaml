@@ -376,6 +376,7 @@ components:
       required:
         - id
         - type
+        - data
       properties:
         id:
           $ref: "#/components/schemas/Identifier"
