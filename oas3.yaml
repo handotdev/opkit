@@ -44,7 +44,10 @@ paths:
               additionalProperties: false
               required:
                 - type
+                - session
               properties:
+                session:
+                  $ref: "#/components/schemas/Identifier"
                 type:
                   $ref: "#/components/schemas/WidgetEventType"
                 data:
