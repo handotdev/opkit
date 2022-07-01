@@ -373,6 +373,7 @@ components:
         - open
         - form_part_1
         - form_part_2
+        - cant_find_insurance
         - submit
         - result
         - convert
