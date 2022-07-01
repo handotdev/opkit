@@ -374,6 +374,7 @@ components:
         - form_part_1
         - form_part_2
         - submit
+        - result
         - convert
     WidgetEvent:
       type: object
