@@ -58,7 +58,8 @@
                                 "required": [
                                     "widget_configuration_id",
                                     "type",
-                                    "session"
+                                    "session",
+                                    "data"
                                 ],
                                 "properties": {
                                     "widget_configuration_id": {
@@ -437,6 +438,7 @@
                     "form_part_1",
                     "form_part_2",
                     "submit",
+                    "result",
                     "convert"
                 ]
             },
@@ -446,11 +448,19 @@
                 "description": "<p>TODO</p>",
                 "required": [
                     "id",
+                    "session",
+                    "widget_configuration_id",
                     "type",
                     "data"
                 ],
                 "properties": {
                     "id": {
+                        "$ref": "#/components/schemas/Identifier"
+                    },
+                    "session": {
+                        "$ref": "#/components/schemas/Identifier"
+                    },
+                    "widget_configuration_id": {
                         "$ref": "#/components/schemas/Identifier"
                     },
                     "type": {
