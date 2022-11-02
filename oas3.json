@@ -1,2458 +1,441 @@
 {
-    "openapi": "3.0.1",
     "info": {
         "title": "Opkit",
-        "version": "v1",
-        "description": "The fastest, easiest way to integrate with health insurance.<br><br> Opkit is a modern, easy-to-use developer toolkit for healthcare  payments. We provide simple APIs for verifying insurance and submitting health insurance claims.<br><br>To get started, see <a href=https://docs.opkit.co/>here</a>.",
+        "version": "1.0.0",
+        "description": "Opkit is a platform for collecting and verifying patient health insurance details.",
         "contact": {
             "email": "founders@opkit.co"
         }
     },
     "externalDocs": {
-        "url": "https://docs.opkit.co/",
-        "description": "Read the documentation"
+        "url": "https://docs.opkit.co/"
     },
     "servers": [
         {
-            "url": "https://api.opkit.co/v1",
-            "description": "Production"
+            "url": "https://api.opkit.co/v1"
         }
     ],
     "tags": [
         {
-            "name": "Eligibility Inquiries"
+            "name": "Manual Eligibility Checks"
         },
         {
-            "name": "Payers"
+            "name": "Automated Eligibility Checks"
         },
         {
-            "name": "Widget Submissions"
+            "name": "Insurance Cards"
         },
         {
-            "name": "Widget Configurations"
-        },
-        {
-            "name": "Widget Events"
-        },
-        {
-            "name": "Plans"
-        },
-        {
-            "name": "For Opkit Internal Use"
+            "name": "Submissions"
         }
     ],
+    "openapi": "3.0.0",
     "paths": {
-        "/widget_events": {
-            "post": {
-                "summary": "Create a widget event",
-                "operationId": "postWidgetEvents",
-                "description": "TODO",
-                "requestBody": {
-                    "description": "<p>TODO</>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>TODO</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "widget_configuration_id",
-                                    "type",
-                                    "session",
-                                    "data"
-                                ],
-                                "properties": {
-                                    "widget_configuration_id": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "session": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "type": {
-                                        "$ref": "#/components/schemas/WidgetEventType"
-                                    },
-                                    "data": {
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PostWidgetEventsResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Widget Events"
-                ]
-            }
-        },
-        "/widget_submissions": {
-            "post": {
-                "summary": "Create a widget submission",
-                "operationId": "postWidgetSubmissions",
-                "description": "<p>Create a new widget submission.</p> <p>A widget submission represents an instance of the widget form being submitted by a user.</p> <p>This object stores both the inputs and the outputs of the widget submission event, including the result state that was shown to the user.</p>",
-                "requestBody": {
-                    "description": "<p>TODO</p>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>TODO</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "widget_configuration_id",
-                                    "subscriber",
-                                    "result"
-                                ],
-                                "properties": {
-                                    "plan_id": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "widget_configuration_id": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "eligibility_inquiry_id": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "subscriber": {
-                                        "$ref": "#/components/schemas/Subscriber"
-                                    },
-                                    "network_status": {
-                                        "$ref": "#/components/schemas/WidgetSubmissionNetworkStatus"
-                                    },
-                                    "insurance_status": {
-                                        "$ref": "#/components/schemas/WidgetSubmissionInsuranceStatus"
-                                    },
-                                    "result": {
-                                        "$ref": "#/components/schemas/WidgetSubmissionResult"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PostWidgetSubmissionsResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Widget Submissions"
-                ]
-            }
-        },
-        "/widget_configurations": {
+        "/insurance_cards": {
             "get": {
-                "summary": "Get all widget configurations",
-                "description": "<p>Get a list of your existing widget configurations.</p>",
-                "operationId": "getWidgetConfigurations",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetWidgetConfigurationsResponse"
-                                }
-                            }
-                        }
-                    }
-                },
+                "summary": "Get insurance cards",
                 "tags": [
-                    "Widget Configurations"
-                ]
-            }
-        },
-        "/eligibility_inquiries": {
-            "post": {
-                "summary": "Create an eligibility inquiry",
-                "operationId": "postEligibilityInquiries",
-                "description": "<p>Create a new eligibility inquiry for this payer, provider, and subscriber.</p> <p>The response will contain information about the subscriber's plan, including the status and any associated benefits. Or, if the inquiry was rejected, it will include errors returned by the clearinghouse or payer.</p>",
-                "requestBody": {
-                    "description": "<p>A payload with the ID of the payer you are issuing the inquiry to, the NPI of the provider you are issuing the inquiry on behalf of, the subscriber's insurance information, and the services you are inquiring about.</p>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>An object that containing information about the subscriber you are inquiring about, the health insurance carrier (or \"payer\") you are issuing the inquiry to, and the provider you are issuing the inquiry on behalf of.</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "change_healthcare_payer_id",
-                                    "provider_npi",
-                                    "subscriber",
-                                    "services"
-                                ],
-                                "properties": {
-                                    "change_healthcare_payer_id": {
-                                        "$ref": "#/components/schemas/Identifier"
-                                    },
-                                    "provider_npi": {
-                                        "type": "string",
-                                        "description": "<p>A valid <a href=https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand> National Provider Identifier (NPI)</a>.</p> <p>This can be the NPI of an organization or an individual.</p>"
-                                    },
-                                    "subscriber": {
-                                        "$ref": "#/components/schemas/Subscriber"
-                                    },
-                                    "services": {
-                                        "type": "array",
-                                        "description": "<p>A list of services to return benefits for. The eligibility response will only contain benefits relating to the services in this list.</p> <p>If you are unsure about which service or services to specify, see <a href=\"https://docs.opkit.co/docs/faq\">here</a>.",
-                                        "items": {
-                                            "$ref": "#/components/schemas/Service"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PostEligibilityInquiriesResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Eligibility Inquiries"
-                ]
-            },
-            "get": {
-                "summary": "Get all eligibility inquiries",
-                "description": "Get a list of your existing eligibility inquiries.",
-                "operationId": "getEligibilityInquiries",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetEligibilityInquiriesResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Eligibility Inquiries"
-                ]
-            }
-        },
-        "/eligibility_inquiries/{id}": {
-            "get": {
-                "summary": "Get an eligibility inquiry",
-                "description": "Get one of your existing eligibility inquiries by ID.",
-                "operationId": "getEligibilityInquiriesId",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "$ref": "#/components/schemas/Identifier"
-                        },
-                        "required": true,
-                        "description": "<p>The ID of an eligibility inquiry.</p>"
-                    }
+                    "Insurance Cards"
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetEligibilityInquiriesIdResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Eligibility Inquiries"
-                ]
-            }
-        },
-        "/payers": {
-            "get": {
-                "summary": "Get all payers",
-                "description": "<p>Get a complete list of payers supported by Opkit.</p>",
-                "operationId": "getPayers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetPayersResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Payers"
-                ]
-            }
-        },
-        "/plans": {
-            "get": {
-                "summary": "Get all plans",
-                "description": "<p>Get a complete list of plans supported by Opkit.</p>",
-                "operationId": "getPlans",
+                "operationId": "getInsuranceCards",
                 "parameters": [
                     {
+                        "name": "cursor",
                         "in": "query",
-                        "name": "filter",
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "description": "<p>An enum of possible plan filter modes.</p>",
-                            "enum": [
-                                "in_network",
-                                "out_of_network"
-                            ]
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "submission_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "A list of insurance cards",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GetPlansResponse"
+                                    "$ref": "#/components/schemas/GetInsuranceCardsResponse"
                                 }
                             }
                         }
                     }
-                },
-                "tags": [
-                    "Plans"
-                ]
+                }
             }
         },
-        "/register": {
-            "post": {
-                "summary": "Register a new organization and create basic resources",
-                "description": "<p>Create a new customer user and organization along with various organization-level resources, including API keys and a widget configuration.</p> <p>This endpoint is for Opkit internal use only and will return unauthorized for customer API keys. Please do not attempt to access it.</p>",
-                "operationId": "postRegister",
-                "requestBody": {
-                    "description": "<p>A payload containing the full name to use for the new customer user, the email address to use for the new customer user, and (optionally) the name to use for the new customer organization.</p> <p>If customer_organization_name is absent, the server will use a default value for the new customer organization name.</p>",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "<p>An object containing the full name to use for the new customer user, the email address to use for the new customer user, and (optionally) the name to use for the new customer organization.</p> <p>If customer_organization_name is absent, the server will use a default value for the new customer organization name.</p>",
-                                "additionalProperties": false,
-                                "required": [
-                                    "customer_user_name",
-                                    "customer_user_email"
-                                ],
-                                "properties": {
-                                    "customer_user_name": {
-                                        "type": "string",
-                                        "description": "The full name to use for the new customer user."
-                                    },
-                                    "customer_user_email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "description": "The email address to use for the new customer user."
-                                    },
-                                    "customer_organization_name": {
-                                        "type": "string",
-                                        "description": "<p>The name to use for the new customer organization. If this field is not provided, the server will use a default value for the customer organization name.</p>"
-                                    }
-                                }
-                            }
+        "/insurance_cards/{id}": {
+            "get": {
+                "summary": "Get a single insurance card",
+                "tags": [
+                    "Insurance Cards"
+                ],
+                "operationId": "getInsuranceCardsId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "A single insurance card",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "description": "<p>An object containing various fields from the new customer user, customer organization, and API key.</p> <p>This object will contain the secret value of the API key, which should NEVER be shared publicly.</p>",
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "customer_user",
-                                        "customer_organization",
-                                        "api_keys"
-                                    ],
-                                    "properties": {
-                                        "customer_user": {
-                                            "$ref": "#/components/schemas/CustomerUser"
-                                        },
-                                        "customer_organization": {
-                                            "$ref": "#/components/schemas/CustomerOrganization"
-                                        },
-                                        "api_keys": {
-                                            "type": "array",
-                                            "description": "<p>A list of API key objects. This list should contain two items: a public API key and a private API key.</p>",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ApiKey"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/GetInsuranceCardsIdResponse"
                                 }
                             }
                         }
                     }
-                },
+                }
+            }
+        },
+        "/submissions": {
+            "get": {
+                "summary": "Get submissions",
                 "tags": [
-                    "For Opkit Internal Use"
-                ]
+                    "Submissions"
+                ],
+                "operationId": "getSubmissions",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of submissions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSubmissionsResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/submissions/{id}": {
+            "get": {
+                "summary": "Get a single submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "operationId": "getSubmissionsId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single submission",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSubmissionsIdResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/manual_eligibility_checks": {
+            "get": {
+                "summary": "Get manual eligibility checks",
+                "tags": [
+                    "Manual Eligibility Checks"
+                ],
+                "operationId": "getManualEligibilityChecks",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of manual eligibility checks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetManualEligibilityChecksResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/manual_eligibility_checks/{id}": {
+            "get": {
+                "summary": "Get a single manual eligibility check",
+                "tags": [
+                    "Manual Eligibility Checks"
+                ],
+                "operationId": "getManualEligibilityChecksId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single manual eligibility check",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetManualEligibilityChecksIdResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/automated_eligibility_checks": {
+            "get": {
+                "summary": "Get automated eligibility checks",
+                "tags": [
+                    "Automated Eligibility Checks"
+                ],
+                "operationId": "getAutomatedEligibilityChecks",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of automated eligibility checks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAutomatedEligibilityChecksResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/automated_eligibility_checks/{id}": {
+            "get": {
+                "summary": "Get a single automated eligibility check",
+                "tags": [
+                    "Automated Eligibility Checks"
+                ],
+                "operationId": "getAutomatedEligibilityChecksId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single automated eligibility check",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAutomatedEligibilityChecksIdResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
     "components": {
         "schemas": {
-            "WidgetEventType": {
-                "type": "string",
-                "description": "<p>TODO</p>",
-                "enum": [
-                    "load",
-                    "open",
-                    "form_part_1",
-                    "form_part_2",
-                    "cant_find_insurance",
-                    "submit",
-                    "result",
-                    "convert"
-                ]
-            },
-            "WidgetEvent": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>TODO</p>",
+            "GetInsuranceCardsResponse": {
                 "required": [
-                    "id",
-                    "session",
-                    "widget_configuration_id",
-                    "type",
-                    "data"
+                    "items",
+                    "count"
                 ],
                 "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "session": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "widget_configuration_id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/WidgetEventType"
-                    },
-                    "data": {
-                        "type": "object",
-                        "description": "<p>Any data that is associated with this widget event.</p>"
-                    }
-                }
-            },
-            "PlanType": {
-                "type": "string",
-                "description": "<p>An enum of possible health insurance plan types.</p>",
-                "enum": [
-                    "preferred_provider_organization",
-                    "health_maintenance_organization",
-                    "exclusive_provider_organization",
-                    "medicare_part_a",
-                    "medicare_part_b",
-                    "medicare_other",
-                    "medicaid",
-                    "point_of_service",
-                    "cobra",
-                    "workers_compensation",
-                    "other"
-                ]
-            },
-            "State": {
-                "type": "string",
-                "description": "<p>An enum for US states.</p>",
-                "enum": [
-                    "alaska",
-                    "alabama",
-                    "arkansas",
-                    "american_samoa",
-                    "arizona",
-                    "california",
-                    "colorado",
-                    "connecticut",
-                    "district_of_columbia",
-                    "delaware",
-                    "florida",
-                    "georgia",
-                    "guam",
-                    "hawaii",
-                    "iowa",
-                    "idaho",
-                    "illinois",
-                    "indiana",
-                    "kansas",
-                    "kentucky",
-                    "louisiana",
-                    "massachusetts",
-                    "maryland",
-                    "maine",
-                    "michigan",
-                    "minnesota",
-                    "missouri",
-                    "mississippi",
-                    "montana",
-                    "north_carolina",
-                    "north_dakota",
-                    "nebraska",
-                    "new_hampshire",
-                    "new_jersey",
-                    "new_mexico",
-                    "nevada",
-                    "new_york",
-                    "ohio",
-                    "oklahoma",
-                    "oregon",
-                    "pennsylvania",
-                    "puerto_rico",
-                    "rhode_island",
-                    "south_carolina",
-                    "south_dakota",
-                    "tennessee",
-                    "texas",
-                    "utah",
-                    "virginia",
-                    "virgin_islands",
-                    "vermont",
-                    "washington",
-                    "wisconsin",
-                    "west_virginia",
-                    "wyoming"
-                ]
-            },
-            "Service": {
-                "type": "string",
-                "description": "<p>An enum of possible medical goods and services.</p> <p>You must supply one or more services when performing an eligibility inquiry. The services you choose determine the benefits that are included in the response.</p> <p>\"health_benefit_plan_coverage\" is a generic service that covers general benefits, such as a plan's overall deductible. This is a convention of the health insurance industry.</p>",
-                "enum": [
-                    "abortion",
-                    "acupuncture",
-                    "adjunctive_dental_services",
-                    "aids",
-                    "air_transportation",
-                    "alcoholism",
-                    "allergy",
-                    "allergy_testing",
-                    "alternate_method_dialysis",
-                    "ambulatory_service_center_facility",
-                    "anesthesia",
-                    "anesthesiologist",
-                    "audiology_exam",
-                    "benefit_disclaimer",
-                    "blood_charges",
-                    "brand_name_prescription_drug",
-                    "brand_name_prescription_drug_formulary",
-                    "brand_name_prescription_drug_non_formulary",
-                    "burn_care",
-                    "cabulance",
-                    "cancer",
-                    "cardiac",
-                    "cardiac_rehabilitation",
-                    "case_management",
-                    "chemotherapy",
-                    "chiropractic",
-                    "chiropractic_office_visits",
-                    "chronic_renal_disease_crd_equipment",
-                    "cognitive_therapy",
-                    "consultation",
-                    "coronary_care",
-                    "day_care_psychiatric",
-                    "dental_accident",
-                    "dental_care",
-                    "dental_crowns",
-                    "dermatology",
-                    "diabetic_supplies",
-                    "diagnostic_dental",
-                    "diagnostic_lab",
-                    "diagnostic_medical",
-                    "diagnostic_x_ray",
-                    "dialysis",
-                    "donor_procedures",
-                    "drug_addiction",
-                    "durable_medical_equipment",
-                    "durable_medical_equipment_purchase",
-                    "durable_medical_equipment_rental",
-                    "emergency_services",
-                    "endocrine",
-                    "endodontics",
-                    "escrow_or_impound_service",
-                    "experimental_drug_therapy",
-                    "eye",
-                    "eyewear_and_eyewear_accessories",
-                    "family_planning",
-                    "flu_vaccination",
-                    "frames",
-                    "free_standing_prescription_drug",
-                    "gastrointestinal",
-                    "general_benefits",
-                    "generic_prescription_drug",
-                    "generic_prescription_drug_formulary",
-                    "generic_prescription_drug_non_formulary",
-                    "gynecological",
-                    "health_benefit_plan_coverage",
-                    "home_health_care",
-                    "home_health_prescriptions",
-                    "home_health_visits",
-                    "hospice",
-                    "hospital",
-                    "hospital_ambulatory_surgical",
-                    "hospital_emergency_accident",
-                    "hospital_emergency_medical",
-                    "hospital_inpatient",
-                    "hospital_outpatient",
-                    "hospital_room_and_board",
-                    "immunizations",
-                    "in_vitro_fertilization",
-                    "independent_medical_evaluation",
-                    "infertility",
-                    "inhalation_therapy",
-                    "intensive_care",
-                    "invasive_procedures",
-                    "lenses",
-                    "licensed_ambulance",
-                    "long_term_care",
-                    "lymphatic",
-                    "mail_order_prescription_drug",
-                    "mail_order_prescription_drug_brand_name",
-                    "mail_order_prescription_drug_generic",
-                    "major_medical",
-                    "mammogram_high_risk_patient",
-                    "mammogram_low_risk_patient",
-                    "massage_therapy",
-                    "maternity",
-                    "maxillofacial_prosthetics",
-                    "medically_related_transportation",
-                    "mental_health",
-                    "mental_health_facility_inpatient",
-                    "mental_health_facility_outpatient",
-                    "mental_health_provider_inpatient",
-                    "mental_health_provider_outpatient",
-                    "mri_cat_scan",
-                    "neonatal_intensive_care",
-                    "neurology",
-                    "newborn_care",
-                    "non_escrow_or_non_impound_service",
-                    "nonmedically_necessary_physical",
-                    "nursery",
-                    "obstetrical",
-                    "obstetrical_gynecological",
-                    "occupational_therapy",
-                    "oncology",
-                    "oral_surgery",
-                    "orthodontics",
-                    "orthopedic",
-                    "other_medical",
-                    "otological_exam",
-                    "partial_hospitalization_psychiatric",
-                    "pathology",
-                    "pediatric",
-                    "periodontics",
-                    "pharmacy",
-                    "physical_medicine",
-                    "physical_therapy",
-                    "physician_visit_office_sick",
-                    "physician_visit_office_well",
-                    "plan_waiting_period",
-                    "pneumonia_vaccine",
-                    "podiatry",
-                    "podiatry_nursing_home_visits",
-                    "podiatry_office_visits",
-                    "pre_admission_testing",
-                    "private_duty_nursing",
-                    "private_duty_nursing_home",
-                    "private_duty_nursing_inpatient",
-                    "professional_physician",
-                    "professional_physician_visit_home",
-                    "professional_physician_visit_inpatient",
-                    "professional_physician_visit_nursing_home",
-                    "professional_physician_visit_office",
-                    "professional_physician_visit_outpatient",
-                    "professional_physician_visit_skilled_nursing_facility",
-                    "prosthetic_device",
-                    "prosthodontics",
-                    "psychiatric",
-                    "psychiatric_inpatient",
-                    "psychiatric_outpatient",
-                    "psychiatric_room_and_board",
-                    "psychotherapy",
-                    "pulmonary",
-                    "pulmonary_rehabilitation",
-                    "radiation_therapy",
-                    "rehabilitation",
-                    "rehabilitation_inpatient",
-                    "rehabilitation_outpatient",
-                    "rehabilitation_room_and_board",
-                    "renal",
-                    "renal_supplies_in_the_home",
-                    "residential_psychiatric_treatment",
-                    "respite_care",
-                    "restorative",
-                    "routine_exam",
-                    "routine_physical",
-                    "routine_preventive_dental",
-                    "screening_laboratory",
-                    "screening_x_ray",
-                    "second_surgical_opinion",
-                    "skilled_nursing_care",
-                    "skilled_nursing_care_room_and_board",
-                    "skin",
-                    "smoking_cessation",
-                    "social_work",
-                    "speech_therapy",
-                    "substance_abuse",
-                    "substance_abuse_facility_inpatient",
-                    "substance_abuse_facility_outpatient",
-                    "surgical",
-                    "surgical_assistance",
-                    "surgical_benefits_facility",
-                    "surgical_benefits_professional_physician",
-                    "third_surgical_opinion",
-                    "transitional_care",
-                    "transitional_nursery_care",
-                    "transplants",
-                    "urgent_care",
-                    "used_durable_medical_equipment",
-                    "vision_optometry",
-                    "well_baby_care",
-                    "medical_care"
-                ]
-            },
-            "BenefitType": {
-                "type": "string",
-                "description": "<p>An enum that indicates benefit type.</p>",
-                "enum": [
-                    "active_coverage",
-                    "coinsurance",
-                    "copayment",
-                    "deductible",
-                    "inactive",
-                    "limitations",
-                    "out_of_pocket_stop_loss"
-                ]
-            },
-            "EligibilityInquiryError": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object representing an eligibility inquiry error.</p> <p>An eligibility inquiry error is an error that is returned by either the clearinghouse or payer. This is is distinct from HTTP 4XX and 5XX errors, which are returned by Opkit's servers.</p> <p>Usually, an eligibility inquiry error occurs when there was a problem with the subscriber's insurance information. For example, a payer may return an error if the subscriber's member ID was not recognized.</p>",
-                "required": [
-                    "source"
-                ],
-                "properties": {
-                    "source": {
-                        "type": "string",
-                        "description": "<p>An enum of possible eligibility inquiry error sources.</p>",
-                        "enum": [
-                            "clearinghouse",
-                            "payer"
-                        ]
-                    }
-                }
-            },
-            "BenefitCoverage": {
-                "type": "string",
-                "description": "<p>An enum of possible benefit coverage levels.</p>",
-                "enum": [
-                    "children_only",
-                    "dependents_only",
-                    "employee_and_children",
-                    "employee_and_five_or_more_dependents",
-                    "employee_and_four_or_more_dependents",
-                    "employee_and_one_dependent",
-                    "employee_and_one_or_more_dependents",
-                    "employee_and_spouse",
-                    "employee_and_three_dependents",
-                    "employee_and_three_or_more_dependents",
-                    "employee_and_two_dependents",
-                    "employee_and_two_or_more_dependents",
-                    "employee_only",
-                    "family",
-                    "individual",
-                    "spouse_and_children",
-                    "spouse_only",
-                    "subscriber_and_1_child",
-                    "subscriber_and_1_or_more_children",
-                    "subscriber_and_2_or_more_children",
-                    "subscriber_and_spouse",
-                    "subscriber_spouse_and_1_child",
-                    "subscriber_spouse_and_1_or_more_children",
-                    "subscriber_spouse_and_2_or_more_children",
-                    "two_party"
-                ]
-            },
-            "BenefitPeriod": {
-                "type": "string",
-                "description": "<p>An enum of possible benefit time period.</p>",
-                "enum": [
-                    "12_hours",
-                    "18_hours",
-                    "24_hours",
-                    "admission",
-                    "calendar_year",
-                    "chargeable_periods",
-                    "contract",
-                    "credit_days",
-                    "day",
-                    "debit_days",
-                    "episode",
-                    "exceeded",
-                    "excess_days",
-                    "free_periods",
-                    "hazardous_days",
-                    "holidays",
-                    "hour",
-                    "initial_visit",
-                    "lifetime",
-                    "lifetime_remaining",
-                    "month",
-                    "mutually_defined",
-                    "not_applicable",
-                    "not_exceeded",
-                    "other_allowance_periods",
-                    "outlier",
-                    "periods_held",
-                    "remaining",
-                    "saturdays_and_sundays",
-                    "saturdays_sundays_and_holidays",
-                    "service_year",
-                    "six_hours",
-                    "sundays_and_holidays",
-                    "three_months",
-                    "visit",
-                    "week",
-                    "year_to_date",
-                    "years"
-                ]
-            },
-            "Benefit": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object that represents a discrete benefit.</p> <p>A benefit is a feature of the subscriber's insurance plan. For example, the plan may include a $100 co-pay for in-network physician office visits.</p> <p>The benefit object is polymorphic and may contain different fields depending on the service, type, coverage_level, and other factors.</p> <p>You can determine whether a subscriber is eligible to receive a certain medical service under their insurance plan by reviewing the list of benefits that are included in the eligibility inquiry response body.</p>",
-                "required": [
-                    "type",
-                    "service",
-                    "values",
-                    "name",
-                    "messages"
-                ],
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "<p>A semi-unique name that describes this particular benefit.</p> <p>This value is derived from other characteristics of the benefit, specifically the benefit's type, network, coverage, and period.</p> <p>Note that names are not unique across services. Two benefits with different services may share the same name.</p>"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/BenefitType"
-                    },
-                    "service": {
-                        "$ref": "#/components/schemas/Service"
-                    },
-                    "network": {
-                        "$ref": "#/components/schemas/BenefitNetwork"
-                    },
-                    "coverage": {
-                        "$ref": "#/components/schemas/BenefitCoverage"
-                    },
-                    "period": {
-                        "$ref": "#/components/schemas/BenefitPeriod"
-                    },
-                    "values": {
+                    "items": {
                         "type": "array",
-                        "description": "<p>A list of benefit values.</p> <p>Some benefits may have more than one value, although this is uncommon.</p>",
                         "items": {
-                            "$ref": "#/components/schemas/BenefitValue"
+                            "$ref": "#/components/schemas/InsuranceCard"
                         }
                     },
-                    "messages": {
+                    "count": {
+                        "type": "number"
+                    },
+                    "cursor": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "GetSubmissionsResponse": {
+                "required": [
+                    "items",
+                    "count"
+                ],
+                "properties": {
+                    "items": {
                         "type": "array",
-                        "description": "<p>A list of messages that were included by the payer as additional information for this benefit.</p>",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/Submission"
                         }
+                    },
+                    "count": {
+                        "type": "number"
+                    },
+                    "cursor": {
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
-            "Identifier": {
-                "type": "string",
-                "format": "uuid",
-                "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                "description": "<p>A unique identifier.</p>"
-            },
-            "CustomerUser": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object representing a customer user.</p>",
+            "GetAutomatedEligibilityChecksResponse": {
                 "required": [
-                    "id",
-                    "name",
-                    "email"
+                    "items",
+                    "count"
                 ],
                 "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomatedEligibilityCheck"
+                        }
                     },
-                    "name": {
-                        "type": "string",
-                        "description": "<p>The name of the customer user.</p>"
+                    "count": {
+                        "type": "number"
                     },
-                    "email": {
+                    "cursor": {
                         "type": "string",
-                        "description": "<p>The email of the customer user.</p>"
+                        "format": "uuid"
                     }
                 }
             },
-            "CustomerOrganization": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object representing a customer organization.</p>",
+            "GetManualEligibilityChecksResponse": {
                 "required": [
-                    "id",
-                    "name"
+                    "items",
+                    "count"
                 ],
                 "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomatedEligibilityCheck"
+                        }
                     },
-                    "name": {
+                    "count": {
+                        "type": "number"
+                    },
+                    "cursor": {
                         "type": "string",
-                        "description": "<p>The name of the customer customer organization.</p>"
+                        "format": "uuid"
                     }
                 }
             },
-            "ApiKey": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object representing an API key. This can be a public or secret key.</p>",
-                "required": [
-                    "id",
-                    "type",
-                    "value",
-                    "name"
-                ],
-                "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "type": {
-                        "type": "string",
-                        "description": "<p>The name of the API key.</p>",
-                        "enum": [
-                            "public",
-                            "secret"
-                        ]
-                    },
-                    "value": {
-                        "type": "string",
-                        "description": "<p>The value of the API key.</p>"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "<p>The name of the API key.</p>"
-                    }
-                }
+            "GetInsuranceCardsIdResponse": {
+                "$ref": "#/components/schemas/InsuranceCard"
             },
-            "BenefitValue": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>A value associated with a benefit.</p>",
-                "required": [
-                    "type",
-                    "value"
-                ],
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "description": "<p>An enum of possible benefit value types.</p>",
-                        "enum": [
-                            "currency",
-                            "percent",
-                            "quantity",
-                            "status",
-                            "plan_type",
-                            "plan_name"
-                        ]
-                    },
-                    "value": {
-                        "oneOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/BenefitValueStatus"
-                            },
-                            {
-                                "$ref": "#/components/schemas/PlanType"
-                            }
-                        ]
-                    },
-                    "qualifier": {
-                        "$ref": "#/components/schemas/BenefitValueQualifier"
-                    }
-                }
+            "GetSubmissionsIdResponse": {
+                "$ref": "#/components/schemas/Submission"
             },
-            "BenefitValueQualifier": {
-                "type": "string",
-                "description": "<p>An enum that appears alongside benefit values of type \"quantity\".</p> <p>This enum indicates the nature of the quantity. In most cases, this will be the units.</p>",
-                "enum": [
-                    "acceptable_unserviceable_quantity",
-                    "accidents",
-                    "accounts",
-                    "accounts_placed_for_collection",
-                    "acknowledged_quantity",
-                    "active_contracts_delinquent",
-                    "active_contracts_delinquent_buying_party_caused",
-                    "active_contracts_delinquent_contractor_caused",
-                    "active_contracts_delinquent_unknown_causes",
-                    "active_line_items_delinquent",
-                    "active_line_items_delinquent_buying_party_caused",
-                    "active_line_items_delinquent_contractor_caused",
-                    "active_line_items_delinquent_unknown_causes",
-                    "active_listings",
-                    "active_maintenance_time",
-                    "activity_codes",
-                    "actual",
-                    "actual_duration",
-                    "additional_amount",
-                    "additional_demand_quantity",
-                    "additional_usage_quantity",
-                    "adjusted_quantity",
-                    "administrators",
-                    "age",
-                    "age,_high_value",
-                    "age,_low_value",
-                    "age_at_death",
-                    "age_modifying_units",
-                    "age_nearest",
-                    "age_next",
-                    "age_of_financial_information",
-                    "aged_active_line_items_delinquent_contractor_caused",
-                    "aged_line_items_completed_contractor_caused",
-                    "aged_line_items_delinquent",
-                    "agents",
-                    "aggregate_benefit_period",
-                    "aircraft_radios",
-                    "airline_attendants",
-                    "allocated_delivery",
-                    "allocated_quantity",
-                    "allocated_receipt",
-                    "allotted_usage_quantity",
-                    "amortization_term",
-                    "anticipated_length_of_service",
-                    "approval_offer_duration",
-                    "approved_amount",
-                    "approximate_number_of_holders",
-                    "approximate_number_of_units_for_sale_projected",
-                    "approximate_number_of_units_projected",
-                    "area_damaged",
-                    "area_of_level",
-                    "area_per_units",
-                    "arrests",
-                    "assessment_hours",
-                    "associates",
-                    "at_complete_variance",
-                    "attendant_handled_quantity",
-                    "attendees",
-                    "auditors",
-                    "authorized_retention_level",
-                    "authorized_shares",
-                    "autistic_individuals",
-                    "available_for_cultivation",
-                    "available_quantity",
-                    "available_units",
-                    "average",
-                    "average_employees",
-                    "average_number_of_employees",
-                    "axles",
-                    "backorder_lines",
-                    "backorder_quantity",
-                    "bank_reject_item_count.",
-                    "bankruptcy_petitions",
-                    "bathroom_count",
-                    "bathrooms,_finished_area_above_grade",
-                    "bedroom_count",
-                    "bedrooms,_finished_area_above_grade",
-                    "beds",
-                    "beginning_shares",
-                    "benefit_amount",
-                    "benefit_period",
-                    "betterment_hours",
-                    "billable_quantity",
-                    "billed",
-                    "billing_units_per_pricing_unit",
-                    "birth_weight",
-                    "blank_votes",
-                    "blind_individuals",
-                    "blood_record",
-                    "book_inventory",
-                    "book_order_quantity",
-                    "branch_locations_leased",
-                    "branch_locations_owned",
-                    "branches",
-                    "brothers_deceased",
-                    "brothers_living",
-                    "budget",
-                    "budget_at_complete",
-                    "business_failure_class_incidence",
-                    "business_failure_industry_incidence",
-                    "business_failure_national_average_incidence",
-                    "buyers",
-                    "buyup_or_buydown_rate_per_basis_point",
-                    "bytes",
-                    "calendar_units",
-                    "carnegie_units",
-                    "certified_registered_nurse_anesthetist_crna_number_of_concurrent_procedures",
-                    "changes",
-                    "children",
-                    "circulating_oil",
-                    "citations",
-                    "claim_period",
-                    "clerks",
-                    "closing_statement_balance",
-                    "co2_injection_volume",
-                    "co_insured_actual",
-                    "co_insured_estimated",
-                    "collateral_requirements",
-                    "collection_period",
-                    "collectors",
-                    "commitment_period",
-                    "committed_quantity",
-                    "community_service_duration",
-                    "companies_in_same_activity_for_a_period",
-                    "companies_included_in_consolidation",
-                    "comparison_period",
-                    "completed",
-                    "completed_contracts",
-                    "completed_line_items",
-                    "component_meter_reading_count",
-                    "continuance_duration",
-                    "contract_buydown",
-                    "contract_buyup",
-                    "contract_completed_delinquent_contractor_caused",
-                    "contract_days",
-                    "contract_line_item_quantity",
-                    "contractor_at_complete",
-                    "contractor_cumulative_to_date",
-                    "contracts_completed_delinquent_buying_party_caused",
-                    "contracts_completed_delinquent_unknown_causes",
-                    "contribution_total",
-                    "contributions",
-                    "contributors",
-                    "conventional_mobiles",
-                    "convictions_sent",
-                    "cooperative_shares",
-                    "corrective_action_requests_method_c",
-                    "corrective_action_requests_method_d",
-                    "corrective_action_requests_method_e",
-                    "corrective_action_requests_verbal",
-                    "corrective_action_requests_written",
-                    "counter_clerks",
-                    "course_segments",
-                    "coverage",
-                    "covered_actual",
-                    "covered_estimated",
-                    "creditors",
-                    "criminal_sentence_duration",
-                    "cumulative_actual",
-                    "cumulative_beginning_imbalance_quantity",
-                    "cumulative_budget",
-                    "cumulative_current_period_imbalance_quantity",
-                    "cumulative_earned_value",
-                    "cumulative_effect_of_prior_period_adjustment",
-                    "cumulative_ending_imbalance_quantity",
-                    "cumulative_gas_injection_volume",
-                    "cumulative_gas_volume",
-                    "cumulative_liquid_injection_volume",
-                    "cumulative_oil_condensate_volume",
-                    "cumulative_prior_period_adjustment",
-                    "cumulative_quantity",
-                    "cumulative_quantity_on_order",
-                    "cumulative_quantity_rejected_material",
-                    "cumulative_quantity_rejected_material_disposition_credit",
-                    "cumulative_quantity_rejected_material_disposition_pending",
-                    "cumulative_quantity_rejected_material_disposition_replacement",
-                    "cumulative_quantity_required_prior_to_the_first_scheduled_period",
-                    "cumulative_quantity_shipped_long_disposition_challenged",
-                    "cumulative_quantity_shipped_long_disposition_pending",
-                    "cumulative_quantity_shipped_short_disposition_challenged",
-                    "cumulative_quantity_shipped_short_disposition_pending",
-                    "cumulative_schedule_variance",
-                    "cumulative_variance",
-                    "cumulative_water_volume",
-                    "current_days_on_market",
-                    "current_duration_in_calendar_units",
-                    "current_period_imbalance",
-                    "current_period_imbalance_quantity",
-                    "current_service_life",
-                    "current_share_balance",
-                    "daily_adjustments",
-                    "damaged_goods",
-                    "data_storage_quantity",
-                    "days",
-                    "days_operated",
-                    "days_produced",
-                    "days_supply",
-                    "deaf_blind_individuals",
-                    "deaf_individuals",
-                    "debentures",
-                    "debentures_filed_against_directors",
-                    "debited",
-                    "deductible_blood_units",
-                    "default_notification_response_period",
-                    "degree_segments",
-                    "deleted",
-                    "departments",
-                    "dependent_count",
-                    "dependent_total",
-                    "dependents_age",
-                    "depreciation_hours",
-                    "design_employees",
-                    "detrimental_legal_filings",
-                    "detrimental_legal_filings_against_directors",
-                    "direct_workers",
-                    "directors",
-                    "disbursement_period",
-                    "discharge_quantity",
-                    "discreet_quantity_rejected_material",
-                    "discrete_quantity",
-                    "discrete_quantity_rejected_material_disposition_credit",
-                    "discrete_quantity_rejected_material_disposition_pending",
-                    "discrete_quantity_rejected_material_disposition_replacement",
-                    "disposed",
-                    "distributed",
-                    "distributed_confirmed_delivery",
-                    "distributed_confirmed_receipt",
-                    "distributor_inventory",
-                    "divisions",
-                    "domestic_affiliated_companies",
-                    "domestic_uses",
-                    "dose",
-                    "drafts",
-                    "drivers",
-                    "due",
-                    "due_in",
-                    "duplicates",
-                    "duration_in_current_job",
-                    "duty_days",
-                    "dwelling_area",
-                    "earned_value",
-                    "educable_mentally_retarded_individuals",
-                    "effective_age",
-                    "eighth_grade_students",
-                    "electronic_signatures",
-                    "eleventh_grade_students",
-                    "elimination_period",
-                    "elimination_period_accident",
-                    "elimination_period_sickness",
-                    "emergency_modifying_units",
-                    "employed_at_location",
-                    "employed_at_this_location",
-                    "employed_by_this_company",
-                    "employed_in_this_profession",
-                    "employed_on_this_job",
-                    "employee_total",
-                    "employee_total_first_month_of_quarter",
-                    "employee_total_second_month_of_quarter",
-                    "employee_total_third_month_of_quarter",
-                    "employees_age",
-                    "employees_nonowner",
-                    "employees_number_of_days_away_from_work_due_to_injury",
-                    "employees_number_of_days_of_restricted_work_activity_due_to_injury",
-                    "employees_owner",
-                    "employees_part_time",
-                    "employees_same_duties",
-                    "employees_same_occupation",
-                    "employees_shared",
-                    "employees_total_number_of_days_away_from_work_due_to_illness",
-                    "end_of_month_inventory_prior_to_ship",
-                    "ending_stock",
-                    "ending_storage_balance",
-                    "endorsers",
-                    "energy",
-                    "engineered_standard",
-                    "engineers",
-                    "enrollees",
-                    "entitlement_quantity",
-                    "equity_security_holder",
-                    "estimate_at_complete",
-                    "estimated",
-                    "estimated_accounts",
-                    "estimated_discharge_quantity",
-                    "estimated_duration",
-                    "estimated_employees_at_location",
-                    "estimated_remaining_economic_life",
-                    "estimated_remaining_physical_life",
-                    "estimated_total_employees",
-                    "estimated_transfer_quantity",
-                    "evaporated_water",
-                    "exclusive_uses",
-                    "excursions",
-                    "executives",
-                    "existence_limit_period",
-                    "expenditure_quantity",
-                    "expense",
-                    "extended_term",
-                    "failed_businesses_of_directors",
-                    "federal_medicare_or_medicaid_claim_mandate_category_1",
-                    "federal_medicare_or_medicaid_claim_mandate_category_2",
-                    "federal_medicare_or_medicaid_claim_mandate_category_3",
-                    "federal_medicare_or_medicaid_claim_mandate_category_4",
-                    "federal_medicare_or_medicaid_claim_mandate_category_5",
-                    "federal_medicare_or_medicaid_payment_mandate_category_1",
-                    "federal_medicare_or_medicaid_payment_mandate_category_2",
-                    "federal_medicare_or_medicaid_payment_mandate_category_3",
-                    "federal_medicare_or_medicaid_payment_mandate_category_4",
-                    "federal_medicare_or_medicaid_payment_mandate_category_5",
-                    "federal_pension_mandate_category_1",
-                    "federal_pension_mandate_category_2",
-                    "federal_pension_mandate_category_3",
-                    "federal_pension_mandate_category_4",
-                    "federal_pension_mandate_category_5",
-                    "federal_votes",
-                    "field_workers",
-                    "fifth_grade_students",
-                    "financial_coverage_period",
-                    "financial_institutions",
-                    "finish_offset",
-                    "first_grade_students",
-                    "first_quarter_non_recurring_demand",
-                    "first_quarter_non_recurring_orders",
-                    "first_quarter_recurring_demand",
-                    "first_quarter_recurring_orders",
-                    "flare_or_flash",
-                    "flat_extra_premium",
-                    "forecast",
-                    "forecast_at_complete",
-                    "forecast_to_complete",
-                    "forecasted_scanned_quantity",
-                    "foreign_employees",
-                    "foreign_related_entities",
-                    "foremen",
-                    "fourth_grade_students",
-                    "fourth_quarter_non_recurring_demand",
-                    "fourth_quarter_non_recurring_orders",
-                    "fourth_quarter_recurring_demand",
-                    "fourth_quarter_recurring_orders",
-                    "free_float_in_calendar_units",
-                    "freelance_collectors",
-                    "freelance_salespersons",
-                    "frequency",
-                    "fuel",
-                    "fuel_consumed_or_burned_amount",
-                    "fuel_pumps",
-                    "full_baths",
-                    "full_time_equivalents",
-                    "functional_groups",
-                    "functions",
-                    "furnished_blood_units",
-                    "garage_or_carport_area",
-                    "gas_injection_volume",
-                    "gas_lift_volume",
-                    "gas_receipt_volume",
-                    "gas_returned_to_earth",
-                    "gas_returned_to_property_for_fuel",
-                    "gas_shrinkage",
-                    "gas_sold",
-                    "gas_used_for_drilling",
-                    "gas_used_for_fuel_system",
-                    "gas_used_for_plant_fuel",
-                    "gas_used_for_repressuring_or_pressure_maintenance",
-                    "gas_used_on_property",
-                    "gas_vented",
-                    "gas_volume",
-                    "general_elimination_period",
-                    "government_reporting_quantity",
-                    "grade_transfer_amount",
-                    "gross_annual_income_multiplier",
-                    "gross_building_area",
-                    "gross_estimate",
-                    "gross_living,_finished_area_above_grade",
-                    "gross_living_area",
-                    "gross_production",
-                    "gross_rent_multiplier",
-                    "group_employees",
-                    "guarantee_fee_buyup_maximum",
-                    "guarantee_fee_rate_after_alternate_payment_method",
-                    "guarantee_fee_rate_after_buyup_or_buydown",
-                    "guarantee_period",
-                    "guarantors",
-                    "hearing_impaired_individuals",
-                    "height",
-                    "high_fabrication_authorization_quantity",
-                    "high_raw_material_authorization_quantity",
-                    "holding_period",
-                    "hospital_homebound_individuals",
-                    "hours",
-                    "hours_flown_aircraft_type_flying",
-                    "hours_flown_aircraft_type_life",
-                    "hours_flown_aircraft_type_period",
-                    "hours_flown_lifetime",
-                    "hours_flown_type_flying",
-                    "impairment_duration",
-                    "impairment_frequency",
-                    "in_transit_quantity",
-                    "in_use",
-                    "incremental_order_quantity",
-                    "indirect_workers",
-                    "individuals_with_developmental_delay",
-                    "individuals_with_multiple_disabilities",
-                    "individuals_with_noncategorical_preschool_disability",
-                    "individuals_with_orthopedic_impairment",
-                    "individuals_with_other_health_impairment",
-                    "individuals_with_serious_emotional_disturbance",
-                    "individuals_with_specific_learning_disability",
-                    "individuals_with_speech_or_language_impairment",
-                    "individuals_with_traumatic_brain_injury",
-                    "individuals_with_visual_impairment",
-                    "information_provider_standardized_motor_vehicle_penalty_points",
-                    "inspectors",
-                    "installed_capacity",
-                    "installers",
-                    "installment_frequency",
-                    "installment_payments",
-                    "installments",
-                    "intended_change_time_period",
-                    "interim_term_period",
-                    "intertank_transfer_amount",
-                    "inventory_on_shelf_+_work_in_progress",
-                    "invoices",
-                    "involvement_period",
-                    "issued_shares",
-                    "jail_sentence_duration",
-                    "judgments",
-                    "judicial_stay_duration",
-                    "kindergarten_students",
-                    "laborers",
-                    "lag_as_in_lag_time_in_calendar_units",
-                    "land_holding",
-                    "land_size",
-                    "lanes",
-                    "late",
-                    "late_payment_period",
-                    "lead_time_in_calendar_units",
-                    "lease_periods",
-                    "length_of_residency",
-                    "level_resource_quantity",
-                    "levels_occupied",
-                    "license_withdrawal_duration",
-                    "license_withdrawals_sent",
-                    "liens",
-                    "life_time_reserve_actual",
-                    "life_time_reserve_estimated",
-                    "lifetime_reserve_days_applied_to_this_claim",
-                    "limited_quantity",
-                    "line_items_completed_delinquent_buying_party_caused",
-                    "line_items_completed_delinquent_contractor_caused",
-                    "line_items_completed_delinquent_unknown_causes",
-                    "line_thread_quantity",
-                    "liquid_injection_volume",
-                    "livestock",
-                    "loan_rate",
-                    "loan_repayment_total",
-                    "local_country_employees",
-                    "location_ending_storage_balance",
-                    "location_ending_storage_balance_firm",
-                    "location_ending_storage_balance_interruptible",
-                    "loss_allowance",
-                    "loss_or_gain",
-                    "lost_gas",
-                    "lost_oil",
-                    "lost_work_time_actual",
-                    "lost_work_time_estimated",
-                    "lot_size",
-                    "machines",
-                    "maintenance_units",
-                    "manufactured",
-                    "marine_radios",
-                    "market_price_change",
-                    "matching_equipment",
-                    "maximum",
-                    "maximum_age",
-                    "maximum_available_daily_injection_quantity",
-                    "maximum_available_daily_withdrawal_quantity",
-                    "maximum_benefit_period",
-                    "maximum_benefit_period_accident",
-                    "maximum_benefit_period_accident_to_age",
-                    "maximum_benefit_period_sickness",
-                    "maximum_benefit_period_sickness_to_age",
-                    "maximum_criminal_sentence_duration",
-                    "maximum_forecast_quantity",
-                    "maximum_maturity_extension",
-                    "maximum_number_free_miles",
-                    "maximum_number_of_employees",
-                    "maximum_number_of_employees_at_location",
-                    "maximum_number_of_shipments_allowed",
-                    "maximum_order_quantity",
-                    "maximum_quantity_to_which_tax_rate_applies",
-                    "maximum_ship_quantity",
-                    "maximum_stock_level",
-                    "maximum_transfer",
-                    "meals_per_week",
-                    "measured_quantity",
-                    "mechanics",
-                    "medication_duration",
-                    "members_in_group",
-                    "mentally_retarded_individuals",
-                    "messengers",
-                    "miles",
-                    "million_dollar_roundtable_credits",
-                    "minimum",
-                    "minimum_age",
-                    "minimum_average_time_requirement_matr_units",
-                    "minimum_contract_quantity",
-                    "minimum_criminal_sentence_duration",
-                    "minimum_employees_at_location",
-                    "minimum_fabrication_quantity",
-                    "minimum_forecast_quantity",
-                    "minimum_number_of_employees",
-                    "minimum_order_package_level",
-                    "minimum_order_quantity",
-                    "minimum_quantity_to_which_tax_rate_applies",
-                    "minimum_required_daily_injection_quantity",
-                    "minimum_required_daily_withdrawal_quantity",
-                    "minimum_ship_quantity",
-                    "minimum_stock_level",
-                    "minimum_transfer",
-                    "miscellaneous_allowance",
-                    "mobile_loading_allocation",
-                    "month",
-                    "mortgage_pool_count",
-                    "most_likely_duration",
-                    "mutually_defined",
-                    "net",
-                    "net_quantity_decrease",
-                    "net_quantity_increase",
-                    "net_to_pay_item_count.",
-                    "ninth_grade_students",
-                    "no_votes",
-                    "non_billable_quantity",
-                    "non_consolidated_total_domestic_subsidiaries",
-                    "non_consolidated_total_foreign_subsidiaries",
-                    "non_covered_estimated",
-                    "non_domestic_stockholders",
-                    "non_production_quantity",
-                    "non_union_employees",
-                    "non_urgent_delivery_quantity",
-                    "noncommitted_inventory_on_shelf",
-                    "nonconformance_quantity",
-                    "noncovered_actual",
-                    "nonexclusive_uses",
-                    "not_replaced_blood_units",
-                    "number_of_3_to_4_year_olds",
-                    "number_of_accounts_past_due",
-                    "number_of_active_accounts_this_cycle",
-                    "number_of_adjustment_periods",
-                    "number_of_attacks_or_occurrences",
-                    "number_of_batches",
-                    "number_of_borrowers",
-                    "number_of_cards_not_received",
-                    "number_of_cards_outstanding",
-                    "number_of_checks",
-                    "number_of_claimants",
-                    "number_of_co_insurance_days",
-                    "number_of_copies_of_bill_of_lading",
-                    "number_of_days_covered_by_inventory",
-                    "number_of_days_employed",
-                    "number_of_dead",
-                    "number_of_deaths",
-                    "number_of_delinquent_installments",
-                    "number_of_dependents",
-                    "number_of_disability_types",
-                    "number_of_end_users",
-                    "number_of_entitled_exemptions",
-                    "number_of_females",
-                    "number_of_franchisees",
-                    "number_of_full_time_employees",
-                    "number_of_hospitalizations",
-                    "number_of_hospitals",
-                    "number_of_hours_per_day",
-                    "number_of_hours_per_week",
-                    "number_of_hours_per_year",
-                    "number_of_injuries",
-                    "number_of_injuries_requiring_medical_treatment",
-                    "number_of_insured_lives",
-                    "number_of_interest_payments",
-                    "number_of_irregular_interest_payments",
-                    "number_of_items_authorized_at_store",
-                    "number_of_items_authorized_at_warehouse",
-                    "number_of_items_in_stock",
-                    "number_of_late_charges",
-                    "number_of_levels",
-                    "number_of_living",
-                    "number_of_loans",
-                    "number_of_lost_cards",
-                    "number_of_males",
-                    "number_of_members",
-                    "number_of_message_recipients",
-                    "number_of_months_per_year",
-                    "number_of_mortgagors",
-                    "number_of_non_covered_days",
-                    "number_of_nonsufficient_fund_items",
-                    "number_of_open_accounts",
-                    "number_of_operating_periods_at_failure",
-                    "number_of_operator_credits",
-                    "number_of_originals",
-                    "number_of_patient_admissions",
-                    "number_of_people_evacuated",
-                    "number_of_people_living_at_residence",
-                    "number_of_people_sheltered_in_place",
-                    "number_of_periods_per_week",
-                    "number_of_physicians",
-                    "number_of_producing_wells_remaining_on_property_or_facility",
-                    "number_of_producing_wells_remaining_on_royalty_account",
-                    "number_of_public_officials",
-                    "number_of_services_or_procedures",
-                    "number_of_shelf_facings",
-                    "number_of_shelf_tags",
-                    "number_of_signed_bills_of_lading",
-                    "number_of_stations",
-                    "number_of_stolen_cards",
-                    "number_of_theatres",
-                    "number_of_times",
-                    "number_of_times_deported",
-                    "number_of_units_housing",
-                    "number_of_unsigned_bills_of_lading",
-                    "number_of_weeks_per_year",
-                    "number_of_withholding_exemptions",
-                    "number_weeks_paid",
-                    "nurses",
-                    "oem_inventory",
-                    "off_lease_fuel",
-                    "off_premise_sales_quantity",
-                    "office_size",
-                    "office_workers",
-                    "oil_condensate_sold",
-                    "oil_condensate_used_on_property",
-                    "oil_condensate_volume",
-                    "oil_sedimentation",
-                    "oil_theft",
-                    "on_hand_and_due_in",
-                    "on_order_quantity",
-                    "on_premise_sales_quantity",
-                    "opening_statement_balance",
-                    "operating_beds",
-                    "operating_quantity",
-                    "operational_delivery",
-                    "operational_quantity",
-                    "operational_receipt",
-                    "operators",
-                    "operators_working_interest",
-                    "optimistic_duration",
-                    "optimum_order_quantity",
-                    "order_count",
-                    "order_quantity_multiple",
-                    "original",
-                    "original_duration_in_calendar_units",
-                    "original_loan_term",
-                    "original_payment_item_count.",
-                    "original_quantity",
-                    "original_term_in_years",
-                    "originals",
-                    "other_employee_type",
-                    "other_gas_disposition",
-                    "other_injection_volume",
-                    "other_miscellaneous_disposition",
-                    "other_oil_condensate_disposition",
-                    "other_unlisted_participants",
-                    "other_unlisted_stockholders",
-                    "other_war_reserve_material_requirements_protectable_owrmrp_quantity",
-                    "other_water_disposition",
-                    "outlier_days",
-                    "outstanding_shares",
-                    "overage",
-                    "overflow_quantity",
-                    "own_occupation_qualification_period",
-                    "owner",
-                    "owners_equity",
-                    "ownership_change_age",
-                    "ownership_duration",
-                    "ownership_percentage",
-                    "pagers",
-                    "paid",
-                    "paid_in_common_shares",
-                    "paid_in_preferred_shares",
-                    "parking_spaces",
-                    "part_time_employees",
-                    "partial_baths",
-                    "participant_total",
-                    "participation_shares",
-                    "partners",
-                    "passengers",
-                    "past_due_quantity",
-                    "patients",
-                    "payment_cancellation_item_count",
-                    "payment_duration_weeks",
-                    "payment_experiences_in_last_12_months",
-                    "payment_experiences_in_last_3_months",
-                    "payment_frequency",
-                    "payments_number",
-                    "penalty_variance_quantity",
-                    "percentage_of_ordered_quantity",
-                    "period_beginning_imbalance_quantity",
-                    "period_ending_imbalance_quantity",
-                    "period_of_employment",
-                    "persistency",
-                    "pessimistic_duration",
-                    "petitions_filed",
-                    "physical_status_iii",
-                    "physical_status_iv",
-                    "physical_status_v",
-                    "picture_count",
-                    "pilots",
-                    "pipeline_adjustment_or_allowance",
-                    "pitted_water",
-                    "placement_period_expiration",
-                    "planned_unit_development_pud_units",
-                    "plant_size",
-                    "plant_thermal_reduction",
-                    "plant_workers",
-                    "platform_count",
-                    "pledges",
-                    "points",
-                    "portable_radios",
-                    "ported_telephone_lines",
-                    "post_op_days",
-                    "poultry",
-                    "pre_kindergarten_students",
-                    "pre_op_days",
-                    "predominate_age",
-                    "prepaid_quantity_not_shipped",
-                    "prepaid_quantity_shipped",
-                    "prescription",
-                    "prescription_dosage",
-                    "prescription_effective_period",
-                    "prescription_frequency",
-                    "presidential_votes",
-                    "pressure_base",
-                    "previous_benefits",
-                    "previous_months_usage",
-                    "previous_number_of_accounts",
-                    "previous_number_of_branches",
-                    "previous_number_of_employees",
-                    "previous_week_quantity",
-                    "pricing_units_per_billing_unit",
-                    "primary_managers",
-                    "primary_meter_reading_value",
-                    "primary_net_quantity",
-                    "principals_included_as_employees",
-                    "prior_cumulative_imbalance",
-                    "prior_experience_in_education",
-                    "prior_experience_related_to_job",
-                    "prior_full_time_experience_in_education",
-                    "prior_full_time_experience_related_to_job",
-                    "prior_full_time_teaching_experience",
-                    "prior_part_time_experience_in_education",
-                    "prior_part_time_experience_related_to_job",
-                    "prior_part_time_teaching_experience",
-                    "prior_teaching_experience",
-                    "prior_units_accepted",
-                    "probation_duration",
-                    "producing_wells",
-                    "product_exchange_amount",
-                    "product_sales_amount",
-                    "production_delivery_quantity",
-                    "professionals",
-                    "professors",
-                    "programs_offered",
-                    "project_phases",
-                    "project_units_sold",
-                    "projected_available_inventory",
-                    "promoters",
-                    "promotional",
-                    "protected_quantity",
-                    "protested_bills",
-                    "purchase_of_product",
-                    "qualification_period",
-                    "qualifying_weeks",
-                    "quantity_approved",
-                    "quantity_available_for_return",
-                    "quantity_available_for_sale_stock_quantity",
-                    "quantity_available_on_shelf",
-                    "quantity_by_position",
-                    "quantity_cancelled",
-                    "quantity_carried_forward",
-                    "quantity_deferred",
-                    "quantity_delivered",
-                    "quantity_disapproved",
-                    "quantity_dispensed",
-                    "quantity_earned",
-                    "quantity_in_float",
-                    "quantity_in_hold_out",
-                    "quantity_of_dealer_license_plates",
-                    "quantity_on_hand",
-                    "quantity_on_hold",
-                    "quantity_per_skid",
-                    "quantity_received",
-                    "quantity_recovered",
-                    "quantity_recycled",
-                    "quantity_released",
-                    "quantity_serviced",
-                    "quantity_sold",
-                    "quantity_treated",
-                    "quantity_used",
-                    "quantity_withdrawn",
-                    "quote_quantity_on_inventory",
-                    "range_average",
-                    "range_maximum",
-                    "range_minimum",
-                    "rate_per_day_rpd",
-                    "receipts",
-                    "reconsideration_period",
-                    "refills_authorized",
-                    "registered_brands_distributed",
-                    "registered_brands_manufactured",
-                    "related_entities",
-                    "relationship_duration",
-                    "relatives_employed",
-                    "remaining_authorized_quantity",
-                    "remaining_duration_in_calendar_units",
-                    "remaining_quantity",
-                    "reorder_point_quantity",
-                    "repayment_plan_term",
-                    "replaced_amount",
-                    "replaced_blood_units",
-                    "replenishment_fill",
-                    "reported_deficiencies",
-                    "reports",
-                    "requested_amount",
-                    "requirement_quantity",
-                    "requirement_quantity_that_was_previously_released",
-                    "requisitioning_objective",
-                    "reserved",
-                    "residence_duration",
-                    "resource_quantity_available",
-                    "restriction_duration",
-                    "retail_sales_quantity",
-                    "retention_quantity",
-                    "returns",
-                    "room_count",
-                    "rooms",
-                    "rooms,_finished_area_above_grade",
-                    "royalty",
-                    "safety_level",
-                    "salespersons",
-                    "sample_amount",
-                    "scattered_votes",
-                    "schedule_variance",
-                    "scheduled_delivery",
-                    "scheduled_quantity",
-                    "scheduled_receipt",
-                    "scheduling_tolerance_delivery",
-                    "scheduling_tolerance_receipt",
-                    "scrap_allowed",
-                    "seasonal",
-                    "seats",
-                    "second_grade_students",
-                    "second_quarter_non_recurring_demand",
-                    "second_quarter_non_recurring_orders",
-                    "second_quarter_recurring_demand",
-                    "second_quarter_recurring_orders",
-                    "secondary_net_quantity",
-                    "secretaries",
-                    "segments",
-                    "sellers",
-                    "service_resale",
-                    "seventh_grade_students",
-                    "severely_mentally_retarded_individuals",
-                    "shareholders",
-                    "shares",
-                    "shares_added",
-                    "shares_deleted",
-                    "shares_held_as_treasury_stock",
-                    "shares_of_common_stock",
-                    "shares_of_preferred_stock",
-                    "shares_owned_by_in_state_residents",
-                    "shares_owned_by_out_of_state_residents",
-                    "shares_subscribed",
-                    "shares_subscribed_but_not_issued",
-                    "shifts",
-                    "ship_notice_quantity",
-                    "shipments",
-                    "shipped_quantity",
-                    "shortage",
-                    "since_last_travel",
-                    "sisters_deceased",
-                    "sisters_living",
-                    "site",
-                    "sixth_grade_students",
-                    "size_of_household",
-                    "skilled_workers",
-                    "small_business_uses",
-                    "solicited",
-                    "space_occupied",
-                    "special_partners",
-                    "speed_capacity",
-                    "split_quantity",
-                    "standard",
-                    "start_offset",
-                    "started",
-                    "state_or_province_motor_vehicle_penalty_points",
-                    "stock_transfers_in",
-                    "stock_transfers_out",
-                    "students",
-                    "subcontractor_at_complete",
-                    "subcontractor_cumulative_to_date",
-                    "subcontractors",
-                    "subject_to_loss_or_elimination",
-                    "submitted_quantity_returned",
-                    "submitted_quantity_sold",
-                    "subsidiaries",
-                    "suits",
-                    "supervisors",
-                    "suppliers",
-                    "suppliers_credit",
-                    "surveys_in_average_rating",
-                    "suspended_duration",
-                    "swan_ganz",
-                    "system_adjusted_hours",
-                    "tables",
-                    "talk_paths",
-                    "tank_allowance",
-                    "tariff_loss_allowance",
-                    "teachers",
-                    "technicians",
-                    "tenth_grade_students",
-                    "theoretical_quantity",
-                    "third_grade_students",
-                    "third_quarter_non_recurring_demand",
-                    "third_quarter_non_recurring_orders",
-                    "third_quarter_recurring_demand",
-                    "third_quarter_recurring_orders",
-                    "tickets_sold",
-                    "time_expended",
-                    "time_frame",
-                    "time_in_country",
-                    "time_in_position",
-                    "time_since_hospitalization",
-                    "time_since_last_application",
-                    "time_since_last_civilian_flight",
-                    "time_since_last_insurance_medical",
-                    "time_since_last_military_flight",
-                    "time_since_medical_consult",
-                    "time_since_medication_end",
-                    "time_since_medication_start",
-                    "time_since_onset",
-                    "time_since_surgery",
-                    "time_since_trip",
-                    "time_units",
-                    "time_units_known",
-                    "time_units_per_shift",
-                    "time_units_spent_on_duty",
-                    "tires",
-                    "total",
-                    "total_adjustments_volume",
-                    "total_at_complete",
-                    "total_authorized_quantity",
-                    "total_beginning_inventory",
-                    "total_claims_associated_with_repeated_trauma",
-                    "total_claims_with_days_away_from_work",
-                    "total_claims_with_disorders_due_to_physical_agents",
-                    "total_claims_with_dust_diseases_of_the_lungs",
-                    "total_claims_with_poisoning_illnesses",
-                    "total_claims_with_respiratory_conditions_due_to_toxic_agents",
-                    "total_claims_with_skin_diseases_or_disorders",
-                    "total_claims_without_days_away_from_work_and_without_restricted_work_activity",
-                    "total_clock_hours",
-                    "total_consolidated_domestic_subsidiaries",
-                    "total_consolidated_foreign_subsidiaries",
-                    "total_consolidated_subsidiaries",
-                    "total_contact_hours",
-                    "total_credit_hours",
-                    "total_credits",
-                    "total_credits_accepted",
-                    "total_credits_received",
-                    "total_credits_rejected",
-                    "total_days_approved",
-                    "total_days_away_from_work",
-                    "total_days_away_from_work_due_to_illness",
-                    "total_days_away_from_work_due_to_injury",
-                    "total_days_of_restricted_work_activity",
-                    "total_days_of_restricted_work_activity_due_to_illness",
-                    "total_days_on_market",
-                    "total_days_submitted",
-                    "total_days_with_restricted_work_activity_due_to_injury",
-                    "total_death_claims",
-                    "total_deaths_as_a_result_of_illness",
-                    "total_deaths_as_a_result_of_injury",
-                    "total_debits",
-                    "total_debits_accepted",
-                    "total_debits_received",
-                    "total_debits_rejected",
-                    "total_demand_orders",
-                    "total_demand_quantity",
-                    "total_ending_inventory",
-                    "total_federal_points",
-                    "total_float_in_calendar_units",
-                    "total_full_time_prior_experience",
-                    "total_gas_disposition",
-                    "total_gas_injection_volume",
-                    "total_hazardous_waste_generated",
-                    "total_illness_claims_with_days_away_from_work",
-                    "total_illness_claims_with_occupational_illnesses_not_otherwise_classified",
-                    "total_illness_claims_without_lost_work_days",
-                    "total_illness_with_lost_work_days_or_restricted_work_activity",
-                    "total_injury_claims_with_days_away_from_work",
-                    "total_injury_claims_with_days_away_from_work_or_restricted_work_activity",
-                    "total_injury_claims_without_lost_work_days",
-                    "total_inventory",
-                    "total_non_consolidated_subsidiaries",
-                    "total_non_credit_hours",
-                    "total_non_federal_points",
-                    "total_number_of_convictions",
-                    "total_number_of_loan_detail_records",
-                    "total_number_of_mortgagees",
-                    "total_number_of_parking_spaces",
-                    "total_number_of_units",
-                    "total_number_of_units_for_sale",
-                    "total_number_of_workers_compensation_combined_reports",
-                    "total_number_of_workers_compensation_first_reports",
-                    "total_number_of_workers_compensation_subsequent_reports",
-                    "total_of_issuable_assets",
-                    "total_oil_and_or_condensate_disposition",
-                    "total_oil_and_or_condensate_injection_volume",
-                    "total_other_properties_owned_and_financed",
-                    "total_part_time_prior_experience",
-                    "total_payments_rejected",
-                    "total_points",
-                    "total_post_advices_accepted",
-                    "total_post_advices_received",
-                    "total_post_advices_rejected",
-                    "total_pre_advices_accepted",
-                    "total_pre_advices_received",
-                    "total_pre_advices_rejected",
-                    "total_prenotes_accepted",
-                    "total_prenotes_received",
-                    "total_prenotes_rejected",
-                    "total_prior_experience",
-                    "total_production_volume",
-                    "total_resource_quantity",
-                    "total_rooms",
-                    "total_sales_volume",
-                    "total_service_backorder_quantity,_high_priority",
-                    "total_service_backorder_quantity,_low_priority",
-                    "total_shares_of_stock",
-                    "total_system_backorder_quantity,_high_priority",
-                    "total_system_backorder_quantity,_low_priority",
-                    "total_to_date",
-                    "total_transactions",
-                    "total_unduplicated_headcount",
-                    "total_unidentified_transactions_rejected",
-                    "total_water_disposition",
-                    "total_water_injection_volume",
-                    "total_worked_by_all_employees",
-                    "total_working_interest",
-                    "total_years_of_educational_service",
-                    "total_years_of_educational_service_in_this_district",
-                    "trademarks_represented",
-                    "trademarks_used",
-                    "trailers",
-                    "trainable_mentally_retarded_individuals",
-                    "trainees",
-                    "trainers",
-                    "transaction_sets",
-                    "transfer_quantity",
-                    "travel_frequency",
-                    "travel_period",
-                    "travelling_employees",
-                    "trip_duration",
-                    "trips",
-                    "trunked_channels",
-                    "twelfth_grade_students",
-                    "typical_credit_hours_taken_per_first_professional_student_full_time",
-                    "typical_credit_hours_taken_per_graduate_student_full_time",
-                    "typical_credit_hours_taken_per_undergraduate_student_full_time",
-                    "unacknowledged_quantity",
-                    "uniform_commercial_code_ucc_filings",
-                    "union_employees",
-                    "units",
-                    "units_completed",
-                    "units_for_sale",
-                    "units_rented",
-                    "units_worked_last_day",
-                    "units_worked_per_day",
-                    "units_worked_per_quarter",
-                    "units_worked_per_week",
-                    "unpaid",
-                    "until_next_travel",
-                    "unusable_quantity",
-                    "unused_accumulated_sick_days",
-                    "unverified_receipts",
-                    "urgent_delivery_quantity",
-                    "use_of_extracorporeal_circulation",
-                    "use_of_hyperbaric_pressurization",
-                    "use_of_hypertension",
-                    "use_of_hypotension",
-                    "use_of_hypothermia",
-                    "used",
-                    "user_adjusted_hours",
-                    "vacancies",
-                    "variance",
-                    "variance_adjustment",
-                    "vehicular_radios",
-                    "verified_receipts",
-                    "visitation_frequency",
-                    "visits",
-                    "voice_storage_quantity",
-                    "void_votes",
-                    "volume_shrinkage_adjustment_or_allowance",
-                    "votes",
-                    "voting_shares_held",
-                    "warehouse_employees",
-                    "warehouse_size",
-                    "water_re_injected_on_property",
-                    "water_volume",
-                    "weeks_worked",
-                    "weight",
-                    "weight_change_period",
-                    "weight_gain",
-                    "weight_loss",
-                    "wide_area_telephone_service_wats_800_service_units",
-                    "work_in_process",
-                    "work_period",
-                    "years",
-                    "years_in_school",
-                    "years_in_this_line_of_work_profession",
-                    "years_of_experience_as_classroom_teacher",
-                    "years_of_experience_as_school_principal",
-                    "years_on_job",
-                    "years_remaining",
-                    "years_worked_for_this_system",
-                    "yes_votes"
-                ]
+            "GetManualEligibilityChecksIdResponse": {
+                "$ref": "#/components/schemas/ManualEligibilityCheck"
             },
-            "BenefitValueStatus": {
-                "type": "string",
-                "description": "<p>An enum that appears in the \"value\" field of a benefit value.</p>",
-                "enum": [
-                    "active",
-                    "inactive"
-                ]
+            "GetAutomatedEligibilityChecksIdResponse": {
+                "$ref": "#/components/schemas/AutomatedEligibilityCheck"
             },
-            "PostWidgetEventsResponse": {
-                "$ref": "#/components/schemas/WidgetEvent"
-            },
-            "WidgetSubmission": {
-                "type": "object",
-                "description": "<p>TODO</p>",
-                "additionalProperties": false,
+            "InsuranceCard": {
                 "required": [
                     "id"
                 ],
                 "properties": {
                     "id": {
                         "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
+                        "format": "uuid"
                     }
                 }
             },
-            "WidgetSubmissionInsuranceStatus": {
-                "type": "string",
-                "description": "<p>An enum of possible widget insurance statuses.</p>",
-                "enum": [
-                    "active",
-                    "inactive",
-                    "unknown"
-                ]
-            },
-            "WidgetSubmissionNetworkStatus": {
-                "type": "string",
-                "description": "<p>An enum of possible widget network statuses.</p>",
-                "enum": [
-                    "in_network",
-                    "out_of_network"
-                ]
-            },
-            "WidgetSubmissionResult": {
-                "type": "string",
-                "description": "<p>An enum of possible widget result states.</p>",
-                "enum": [
-                    "in_network",
-                    "out_of_network",
-                    "inactive",
-                    "unknown"
-                ]
-            },
-            "GetEligibilityInquiriesIdResponse": {
-                "$ref": "#/components/schemas/EligibilityInquiry"
-            },
-            "PostWidgetSubmissionsResponse": {
-                "$ref": "#/components/schemas/WidgetSubmission"
-            },
-            "EligibilityInquiry": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>A request for information from a payer about a health insurance policy's coverages, typically in relation to a particular subscriber.</p> <p>This object contains the results of an eligibility inquiry, including any benefits returned by the payer - or, if the inquiry was rejected for some reason, any errors returned by the clearinghouse and/or payer.</p>",
+            "Submission": {
                 "required": [
-                    "id",
-                    "benefits",
-                    "errors"
+                    "id"
                 ],
                 "properties": {
                     "id": {
                         "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
-                    },
-                    "benefits": {
-                        "type": "array",
-                        "description": "<p>A list of benefits returned by the payer.</p> <p>THIS LIST IS NOT COMPREHENSIVE. The benefits that appear in this list are determined by the services specified in the request payload.</p> <p>There are some benefits that do not relate to a specific medical service. For example, the plan's overall deductible. These \"general benefits\" will appear under the \"health_benefit_plan_coverage\" service. This is a convention in the health insurance industry.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/Benefit"
-                        }
-                    },
-                    "errors": {
-                        "type": "array",
-                        "description": "<p>A list of eligibility inquiry errors.</p> <p>An eligibility inquiry error is an error that is returned by either the clearinghouse or payer. This list may contain error items if the eligibility inquiry was created successfully but rejected by either the clearinghouse or payer.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/EligibilityInquiryError"
-                        }
+                        "format": "uuid"
                     }
                 }
             },
-            "PostEligibilityInquiriesResponse": {
-                "$ref": "#/components/schemas/EligibilityInquiry"
-            },
-            "Payer": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>A health insurance carrier that offers one or more health insurance plans.</p>",
+            "AutomatedEligibilityCheck": {
                 "required": [
-                    "id",
-                    "name",
-                    "plans"
-                ],
-                "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "<p>The name of the payer.</p>"
-                    },
-                    "plans": {
-                        "type": "array",
-                        "description": "<p>A list of plans belonging to this payer.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/Plan"
-                        }
-                    }
-                }
-            },
-            "Plan": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>TODO</p>",
-                "required": [
-                    "id",
-                    "name"
-                ],
-                "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "<p>The name of the plan.</p>"
-                    },
-                    "change_healthcare_payer_id": {
-                        "$ref": "#/components/schemas/Identifier"
-                    }
-                }
-            },
-            "GetWidgetConfigurationsResponse": {
-                "type": "object",
-                "description": "<p>An object containing a list of widget configurations and a count that indicates the number of items in the list.</p>",
-                "additionalProperties": false,
-                "required": [
-                    "count",
-                    "items"
-                ],
-                "properties": {
-                    "count": {
-                        "$ref": "#/components/schemas/Count"
-                    },
-                    "items": {
-                        "type": "array",
-                        "description": "<p>A list of widget configurations.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/WidgetConfiguration"
-                        }
-                    }
-                }
-            },
-            "Subscriber": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An individual who is covered under a health insurance plan. <p>This should be the primary insurance holder - not a dependent. Opkit does not currently support eligibility inquiries for dependents.</p>",
-                "required": [
-                    "first_name",
-                    "last_name",
-                    "member_id",
-                    "date_of_birth",
-                    "email"
-                ],
-                "properties": {
-                    "first_name": {
-                        "type": "string",
-                        "description": "<p>The subscriber's first name as it appears on their insurance card.</p>"
-                    },
-                    "last_name": {
-                        "type": "string",
-                        "description": "<p>The subscriber's last name as it appears on their insurance card.</p>"
-                    },
-                    "member_id": {
-                        "type": "string",
-                        "description": "<p>The subscriber's member ID as it appears on their insurance card.</p>"
-                    },
-                    "date_of_birth": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "01-01-2021",
-                        "description": "<p>The subscriber's date of birth as it appears on their insurance card.</p> <p>This should be formatted like 01-01-2021.</p>"
-                    },
-                    "email": {
-                        "type": "string",
-                        "description": "<p>The subscriber's email address.</p>"
-                    }
-                }
-            },
-            "Count": {
-                "type": "number",
-                "example": 1,
-                "description": "<p>The number of items in a list.</p>"
-            },
-            "BenefitNetwork": {
-                "type": "string",
-                "description": "<p>An enum of possible benefit network statuses.</p>",
-                "enum": [
-                    "in_network",
-                    "out_of_network"
-                ]
-            },
-            "GetEligibilityInquiriesResponse": {
-                "type": "object",
-                "description": "<p>An object containing a list of eligibility inquiries  and a count that indicates the number of items in the list.</p>",
-                "additionalProperties": false,
-                "required": [
-                    "count",
-                    "items"
-                ],
-                "properties": {
-                    "count": {
-                        "$ref": "#/components/schemas/Count"
-                    },
-                    "items": {
-                        "type": "array",
-                        "description": "<p>A list of eligibility inquiries.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/EligibilityInquiry"
-                        }
-                    }
-                }
-            },
-            "WidgetConfiguration": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "<p>An object containing configuration settings for the Opkit widget.</p>",
-                "required": [
-                    "id",
-                    "customer_organization_name",
-                    "referral_url",
-                    "default_provider_npi"
+                    "id"
                 ],
                 "properties": {
                     "id": {
                         "type": "string",
-                        "format": "uuid",
-                        "example": "612e564c-567b-4d05-871c-1ba3a841b12d",
-                        "description": "A unique identifier."
-                    },
-                    "customer_organization_name": {
-                        "type": "string",
-                        "description": "<p>The name of the customer organization that owns this widget configuration.</p>"
-                    },
-                    "referral_url": {
-                        "type": "string",
-                        "description": "<p>A URL that determines where widget users are sent when they click a call-to-action button.</p>"
-                    },
-                    "default_provider_npi": {
-                        "type": "string",
-                        "description": "<p>A default provider NPI to use in eligibility inquiry requests.</p>"
+                        "format": "uuid"
                     }
                 }
             },
-            "GetPayersResponse": {
-                "type": "object",
-                "description": "<p>An object containing a list of payers and a count that indicates the number of items in this list.</p>",
-                "additionalProperties": false,
+            "ManualEligibilityCheck": {
                 "required": [
-                    "count",
-                    "items"
+                    "id"
                 ],
                 "properties": {
-                    "count": {
-                        "$ref": "#/components/schemas/Count"
-                    },
-                    "items": {
-                        "type": "array",
-                        "description": "<p>A list of payers.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/Payer"
-                        }
-                    }
-                }
-            },
-            "GetPlansResponse": {
-                "type": "object",
-                "description": "<p>An object containing a list of plans and a count that indicates the number of items in this list.</p>",
-                "additionalProperties": false,
-                "required": [
-                    "count",
-                    "items"
-                ],
-                "properties": {
-                    "count": {
-                        "$ref": "#/components/schemas/Count"
-                    },
-                    "items": {
-                        "type": "array",
-                        "description": "<p>A list of plans.</p>",
-                        "items": {
-                            "$ref": "#/components/schemas/Plan"
-                        }
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             }
@@ -2461,7 +444,7 @@
             "BasicAuth": {
                 "type": "http",
                 "scheme": "basic",
-                "description": "<p>Opkit authenticates requests using <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication\">HTTP Basic Auth</a>.</p> <p>Basic Auth usually involves two values: a username and password. In Opkit's case, you should provide your API key as the username. You do not need to provide a password.</p> <p>Therefore, your requests should include the following header: \"Authorization: Basic &lt;base64-encode(your-api-key-with-a-trailing-colon)&gt;\".</p> <p>For more information, see <a href=\"https://docs.opkit.co/docs/authorization\">here</a>.</p>"
+                "description": "The Opkit API uses HTTP Basic Auth for authentication. You should provide your API key in the Authorization header like so: \"Authorization: Bearer <api-key>\"."
             }
         }
     },
