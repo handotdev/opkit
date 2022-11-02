@@ -3,13 +3,16 @@ on:
   push:
     branches:
       - master
-      - main
+      - readme-test
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: readmeio/github-readme-sync@v2
+      - uses: readmeio/rdme@8.0.0
         with:
-          readme-oas-key: ${{ secrets.README_OAS_KEY }}
-          oas-file-path: "./v1.json"
+          rdme: openapi oas3.json --key=${{ secrets.README_API_KEY }} --id=v1.0
+      # - uses: readmeio/github-readme-sync@v2
+      #   with:
+      #     readme-oas-key: ${{ secrets.README_OAS_KEY }}
+      #     oas-file-path: "./v1.json"
