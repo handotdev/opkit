@@ -594,10 +594,10 @@ components:
   #         - "TN" # Transitional Nursery Care
   #         - "UC" # Urgent Care
   securitySchemes:
-    BasicAuth:
+    bearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
       description: >-
-        The Opkit API uses HTTP Basic Auth for authentication. You should provide your API key in the Authorization header like so: "Authorization: Bearer <api-key>".
+        The Opkit API uses the HTTP Bearer Token scheme for authentication. You should provide your API key in the Authorization header like so: "Authorization: Bearer <api-key>".
 security:
-  - BasicAuth: []
+  - bearerAuth: []
