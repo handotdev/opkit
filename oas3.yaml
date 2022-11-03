@@ -14,8 +14,22 @@ tags:
   - name: Automated Eligibility Checks
   - name: Insurance Cards
   - name: Submissions
+  - name: Test
 openapi: "3.0.0"
 paths:
+  /test:
+    get:
+      summary: Test
+      tags:
+        - Test
+      operationId: test
+      responses:
+        200:
+          description: Test
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInsuranceCardsResponse"
   /insurance_cards:
     get:
       summary: Get insurance cards
