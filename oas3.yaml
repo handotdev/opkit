@@ -655,6 +655,6 @@ components:
       type: http
       scheme: bearer
       description: >-
-        The Opkit API uses the HTTP Bearer Token scheme for authentication. You should provide your API key in the Authorization header like so: "Authorization: Bearer <<api-key>>".
+        The Opkit API uses the HTTP Bearer Token scheme for authentication. You should provide your API key in the Authorization header like so: "Authorization: Bearer \<api-key\>".
 security:
   - bearerAuth: []
