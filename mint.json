@@ -1,0 +1,58 @@
+{
+    "name": "Opkit",
+    "logo": {
+        "light": "/logo/light.svg",
+        "dark": "/logo/dark.svg"
+    },
+    "favicon": "/favicon.svg",
+    "colors": {
+        "primary": "#16A34A",
+        "light": "#4ADE80",
+        "dark": "#166534",
+        "ultraLight": "#DCFCE7",
+        "ultraDark": "#14532D"
+    },
+    "topbarLinks": [
+        {
+            "name": "Contact Us",
+            "url": "mailto:founders@opkit.co"
+        }
+    ],
+    "topbarCtaButton": {
+        "name": "Sign Up",
+        "url": "https://www.opkit.co"
+    },
+    "anchors": [
+        {
+            "name": "Documentation",
+            "icon": "rectangle-terminal",
+            "color": "#f59f0b",
+            "url": "docs"
+        },
+        {
+            "name": "Homepage",
+            "icon": "house-heart",
+            "color": "#2564eb",
+            "url": "https://www.opkit.co/"
+        }
+    ],
+    "navigation": [
+        {
+            "group": "INTRODUCTION",
+            "pages": [
+                "docs/INTRODUCTION.md",
+                "docs/GETTING_STARTED.md",
+                "docs/API_VS_WEBHOOKS.md",
+                "docs/THE_API.md",
+                "docs/WEBHOOKS.md",
+                "docs/SECURITY_AND_COMPLIANCE.md",
+                "docs/SUPPORT.md",
+                "docs/ABOUT_US.md"
+            ]
+        }
+    ],
+    "footerSocials": {
+        "github": "https://github.com/opkit-co",
+        "linkedin": "https://www.linkedin.com/company/opkit"
+    }
+}

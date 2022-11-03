@@ -1,0 +1,25 @@
+# The API
+
+Opkit exposes a JSON REST API that allows healthcare organizations to fetch their data on-demand from Opkit's backend servers.
+
+## Design Principles
+
+Opkit's API exhibits the following characteristics:
+
+- RESTful URLs
+- JSON request and response bodies
+- Standard HTTP methods and response codes
+- API key-based authentication
+- Cursor-based pagination
+
+## API Keys
+
+You can generate and manage API keys from the settings page of the Opkit dashboard. Remember to store these values somewhere safe. After all, they can be used to gain access to Protected Health Information (PHI).
+
+## Authentication
+
+Opkit's API uses API key-based authentication via the HTTP Bearer Token scheme. To authenticate a request, simply include an "Authorization" header with your API key, like so:
+
+```
+curl https://api.opkit.co/v1/insurance_cards -H "Authorization: Bearer [api-key]"
+```
