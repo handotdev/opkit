@@ -1,0 +1,27 @@
+# Webhooks
+
+In addition to our JSON REST API, Opkit also supports webhooks.
+
+## Webhook Event Types
+
+Opkit's webhooks implementation supports a number of different event types, each representing a different event within the Opkit system. You can find a list of event types, as well as their schema definitions, in the API reference section.
+
+## Registering a Webhook
+
+You can register a webhook endpoint from the settings page of the Opkit dashboard.
+
+## Implementing a Webhook Endpoint
+
+To start receiving webhook events, create a publicly-accessible HTTP POST endpoint on your server. We also recommend saving raw webhook events to a new database table.
+
+# At-Least-Once Delivery
+
+Opkit provides an at-least-once guarantee for the delivery of webhook events. This means Opkit will repeatedly send a webhook event to your server until endpoint until it receives a 200 HTTP status code in response. Note that "at-least-once" does not mean the same thing as "exactly-once". Due to Opkit’s retry logic, it is possible for your backend system to receive the same webhook event more than once.
+
+# Idempotency
+
+Opkit will resend webhook events under certain circumstances, for example if your server endpoint responds with a non-200 HTTP status code. To avoid any bad side effects resulting from this behavior, you should implement your webhook in such a way that it is idempotent. You can use the webhook event "id" field as an idempotency key.
+
+# Replaying Webhook Events
+
+Unfortunately, Opkit does not support the capability to replay webhook events at this time. Once a webhook event has been marked "delivered" by Opkit's servers, it cannot be re-sent.

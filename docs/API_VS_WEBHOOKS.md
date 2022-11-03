@@ -1,0 +1,7 @@
+# API vs. Webhooks
+
+Opkit supports two different integration modes: "pull" (via our API) and "push" (via webhooks). It's important that you understand the advantages and disadvantages of each in order to determine which mode is more appropriate for your use-case.
+
+In general, the API is easier to get started with, and will require less engineering work to integrate with overall. However, webhooks are much more powerful; they ensure that data reachces your application instantly and provide you with more fine-grained detail than you have access to through the API.
+
+After deciding which integration mode is right for you, continue to either [The API](/docs/THE_API.md) or [Webhooks](/docs/WEBHOOKS.md).
