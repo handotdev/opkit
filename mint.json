@@ -41,16 +41,27 @@
     {
       "group": "Home",
       "pages": [
-        "docs/introduction",
-        "docs/getting-started",
-        "docs/api-vs-webhooks",
-        "docs/the-api",
-        "docs/webhooks"
+        "introduction",
+        "getting-started",
+        "api-vs-webhooks",
+        "the-api",
+        "webhooks"
       ]
     },
     {
       "group": "Learn More",
-      "pages": ["docs/security-and-compliance", "docs/support", "docs/about-us"]
+      "pages": ["security-and-compliance", "support", "about-us"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/get-insurance-cards",
+        "api-reference/get-single-insurance-card",
+        "api-reference/get-submissions",
+        "api-reference/get-single-submission",
+        "api-reference/get-manual-eligibility-checks",
+        "api-reference/get-single-manual-eligibility-check"
+      ]
     }
   ],
   "footerSocials": {
