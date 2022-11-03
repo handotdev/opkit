@@ -40,13 +40,7 @@
   "navigation": [
     {
       "group": "Home",
-      "pages": [
-        "introduction",
-        "getting-started",
-        "api-vs-webhooks",
-        "the-api",
-        "webhooks"
-      ]
+      "pages": ["introduction", "api-vs-webhooks", "the-api", "webhooks"]
     },
     {
       "group": "Learn More",
