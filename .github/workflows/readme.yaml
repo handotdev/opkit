@@ -1,14 +1,14 @@
-name: Sync to ReadMe
+name: Sync OpenAPI Definition to ReadMe
 on:
   push:
     branches:
       - master
       - readme-test
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: readmeio/rdme@8.0.0
         with:
           rdme: openapi oas3.json --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_API_ID }}
